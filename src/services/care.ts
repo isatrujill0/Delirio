@@ -23,9 +23,14 @@ export interface NextDose {
 const pad2 = (n: number) => String(n).padStart(2, '0');
 const isoDay = (d: Date) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 
-/** False only for a treatment whose valid start date is still in the future. */
+/** False only for a treatment whose valid start date is still in the future (unreadable dates count as started). */
 export function hasStarted(t: Treatment, on: Date): boolean {
-  return !/^\d{4}-\d{2}-\d{2}$/.test(t.startDate) || t.startDate <= isoDay(on);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(t.startDate);
+  if (!m) return true;
+  const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const real = new Date(y, mo - 1, d);
+  if (real.getFullYear() !== y || real.getMonth() !== mo - 1 || real.getDate() !== d) return true; // e.g. 2026-13-45
+  return t.startDate <= isoDay(on);
 }
 
 /**

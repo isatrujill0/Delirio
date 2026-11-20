@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import fc from 'fast-check';
 import { sanitize, serialize, parse } from '../../src/services/storage';
 import { createDemoData } from '../../src/data/demo';
-import type { AppData } from '../../src/types';
+import type { AppData, Contact, FamilyMessage, Photo, Procedure, Recommendation, Treatment } from '../../src/types';
 
 const FIXED = new Date(2026, 10, 18, 10, 30);
 const defaults: AppData = createDemoData(FIXED);
@@ -31,6 +31,13 @@ const input = fc.oneof(json, shaped, goodish);
 
 const lists = ['contacts', 'messages', 'photos', 'treatments', 'procedures', 'recommendations'] as const;
 
+const isStr = (v: unknown) => typeof v === 'string';
+const nonEmpty = (v: unknown) => typeof v === 'string' && v !== '';
+const isBool = (v: unknown) => typeof v === 'boolean';
+const KINDS = ['audio', 'video', 'texto'];
+const STATUSES = ['programado', 'confirmado', 'realizado', 'reprogramado', 'cancelado'];
+const CATS = ['Descanso', 'Alimentación', 'Movimiento', 'Emociones', 'Visitas'];
+
 function assertValid(d: AppData) {
   expect(d.version).toBe(1);
   expect(Number.isInteger(d.prefs.volume)).toBe(true);
@@ -39,9 +46,51 @@ function assertValid(d: AppData) {
   expect(['normal', 'grande', 'muy-grande']).toContain(d.prefs.textSize);
   for (const k of lists) {
     expect(Array.isArray(d[k])).toBe(true);
-    for (const item of d[k] as { id: unknown }[]) expect(typeof item.id).toBe('string');
+    const ids = (d[k] as { id: unknown }[]).map((item) => item.id);
+    for (const id of ids) expect(typeof id).toBe('string');
+    expect(new Set(ids).size).toBe(ids.length);
   }
-  for (const t of d.treatments) { expect(Array.isArray(t.times)).toBe(true); t.times.forEach((x) => expect(typeof x).toBe('string')); }
+  for (const c of d.contacts) {
+    expect(nonEmpty(c.name) && c.name.trim() !== '').toBe(true);
+    expect([c.relation, c.phone, c.about].every(isStr)).toBe(true);
+    expect(isBool(c.demo)).toBe(true);
+    expect(c.photo === undefined || isStr(c.photo)).toBe(true);
+  }
+  for (const m of d.messages) {
+    expect(nonEmpty(m.contactId)).toBe(true);
+    expect(KINDS).toContain(m.kind);
+    expect(isStr(m.text)).toBe(true);
+    expect(Number.isFinite(m.createdAt)).toBe(true);
+    expect(isBool(m.read) && isBool(m.demo)).toBe(true);
+    expect(m.media === undefined || isStr(m.media)).toBe(true);
+    expect(m.duration === undefined || (Number.isFinite(m.duration) && m.duration >= 0)).toBe(true);
+  }
+  for (const p of d.photos) {
+    expect(nonEmpty(p.src)).toBe(true);
+    expect(isStr(p.caption)).toBe(true);
+    expect(isBool(p.demo)).toBe(true);
+    expect(p.contactId === undefined || isStr(p.contactId)).toBe(true);
+  }
+  for (const t of d.treatments) {
+    expect(nonEmpty(t.name)).toBe(true);
+    expect([t.description, t.startDate, t.frequency, t.observations].every(isStr)).toBe(true);
+    expect(isBool(t.demo)).toBe(true);
+    expect(Array.isArray(t.times)).toBe(true);
+    t.times.forEach((x) => expect(typeof x).toBe('string'));
+  }
+  for (const p of d.procedures) {
+    expect(nonEmpty(p.name) && nonEmpty(p.date)).toBe(true);
+    expect(isStr(p.description)).toBe(true);
+    expect(STATUSES).toContain(p.status);
+    expect(isBool(p.demo)).toBe(true);
+  }
+  for (const r of d.recommendations) {
+    expect(nonEmpty(r.title)).toBe(true);
+    expect(CATS).toContain(r.category);
+    expect([r.summary, r.body].every(isStr)).toBe(true);
+    expect(isBool(r.demo)).toBe(true);
+  }
+  expect(d.caregiverPin).toMatch(/^\d{4,6}$/);
   expect(Array.isArray(d.favorites)).toBe(true);
   const dates = d.moods.map((m) => m.date);
   expect(new Set(dates).size).toBe(dates.length);
@@ -49,6 +98,7 @@ function assertValid(d: AppData) {
   expect(d.moods.length).toBeLessThanOrEqual(60);
   for (const m of d.moods) { expect(Number.isInteger(m.value)).toBe(true); expect(m.value).toBeGreaterThanOrEqual(1); expect(m.value).toBeLessThanOrEqual(5); }
   if (d.vitals !== null) {
+    expect(Number.isFinite(d.vitals.recordedAt)).toBe(true);
     expect(d.vitals.heartRate).toBeGreaterThanOrEqual(0); expect(d.vitals.heartRate).toBeLessThanOrEqual(250);
     expect(d.vitals.respRate).toBeGreaterThanOrEqual(0); expect(d.vitals.respRate).toBeLessThanOrEqual(80);
     expect(d.vitals.spo2).toBeGreaterThanOrEqual(0); expect(d.vitals.spo2).toBeLessThanOrEqual(100);
@@ -109,5 +159,161 @@ describe('storage: parse', () => {
   });
   it('demo data survives a round trip unchanged', () => {
     expect(parse(serialize(defaults), defaults).data).toStrictEqual(defaults);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// Deep, per-record validation: damaged records are dropped, valid ones kept verbatim, first id wins.
+// ---------------------------------------------------------------------------------------------
+const nonBlank = fc.string({ minLength: 1, maxLength: 12 }).filter((s) => s.trim() !== '');
+const text = fc.string({ maxLength: 20 });
+const bool = fc.boolean();
+const opt = <T>(a: fc.Arbitrary<T>) => fc.option(a, { nil: undefined });
+/** Drops undefined-valued keys so toStrictEqual compares against what sanitize emits. */
+const clean = <T extends object>(o: T): T => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as T;
+
+const contactBody = fc.record({ name: nonBlank, relation: text, phone: text, about: text, demo: bool, photo: opt(nonBlank) }).map((r) => clean(r));
+const messageBody = fc.record({
+  contactId: nonBlank, kind: fc.constantFrom(...KINDS) as fc.Arbitrary<FamilyMessage['kind']>, text, media: opt(nonBlank),
+  duration: opt(fc.integer({ min: 0, max: 5000 })), createdAt: fc.integer({ min: 0, max: 2e12 }), read: bool, demo: bool,
+}).filter((m) => m.kind === 'texto' || !!m.media || m.text !== '').map((r) => clean(r));
+const photoBody = fc.record({ src: nonBlank, caption: text, contactId: opt(nonBlank), demo: bool }).map((r) => clean(r));
+const treatmentBody = fc.record({
+  name: nonBlank, description: text, startDate: text, frequency: text, times: fc.array(text, { maxLength: 4 }), observations: text, demo: bool,
+});
+const procedureBody = fc.record({ name: nonBlank, date: nonBlank, description: text, status: fc.constantFrom(...STATUSES) as fc.Arbitrary<Procedure['status']>, demo: bool });
+const recBody = fc.record({ title: nonBlank, category: fc.constantFrom(...CATS) as fc.Arbitrary<Recommendation['category']>, summary: text, body: text, demo: bool });
+
+/** Ways to break a field: remove it or give it the wrong type. */
+const wrongValue = fc.constantFrom<unknown>(null, true, {}, [], NaN, Infinity, '   ');
+type Rec = Record<string, unknown>;
+// Any non-string breaks every field (id included); a blank string breaks every field but id (ids may be any string).
+const damage = (required: string[]) => fc.tuple(fc.constantFrom(...required, 'id'), fc.boolean(), wrongValue).map(([field, remove, bad]) => (r: Rec): Rec => {
+  const out = { ...r };
+  if (remove || (field === 'id' && typeof bad === 'string')) delete out[field]; else out[field] = bad;
+  return out;
+});
+
+interface Slot<T> { id: string; body: T; broken: ((r: Rec) => Rec) | null }
+function slots<T>(body: fc.Arbitrary<T>, required: string[]) {
+  return fc.array(fc.record({
+    id: fc.integer({ min: 0, max: 6 }).map((n) => `id${n}`), // small pool: duplicate ids are common
+    body,
+    broken: fc.option(damage(required), { nil: null, freq: 3 }),
+  }), { maxLength: 12 }) as fc.Arbitrary<Slot<T>[]>;
+}
+
+/** Oracle: the raw list sanitize receives and the exact list it must return. */
+function split<T extends { id: string }>(ss: Slot<T>[], extraBreak?: (b: T) => boolean) {
+  const raw: Rec[] = [];
+  const expected: T[] = [];
+  const seen = new Set<string>();
+  for (const s of ss) {
+    const full = { ...s.body, id: s.id } as unknown as Rec;
+    const bad = s.broken !== null;
+    // damaging 'id' makes the record invalid regardless of the id value; a damaged field of a duplicated id never claims the id
+    raw.push(bad ? s.broken!(full) : full);
+    if (!bad && !(extraBreak?.(s.body))) {
+      if (!seen.has(s.id)) { seen.add(s.id); expected.push(full as unknown as T); }
+    }
+  }
+  return { raw, expected };
+}
+
+describe('storage: per-record validation', () => {
+  const run = <T extends { id: string }>(seed: number, key: typeof lists[number], body: fc.Arbitrary<Omit<T, 'id'>>, required: string[]) => {
+    fc.assert(fc.property(slots(body, required), (ss) => {
+      const { raw, expected } = split(ss as unknown as Slot<T>[]);
+      const out = sanitize({ ...defaults, [key]: raw }, defaults);
+      expect(out[key]).toEqual(expected);
+      assertValid(out);
+    }), cfg(seed, 400));
+  };
+  it('contacts: damaged dropped, valid kept in order, first id wins', () => run<Contact>(501, 'contacts', contactBody, ['name']));
+  it('messages: damaged dropped, valid kept in order, first id wins', () => run<FamilyMessage>(502, 'messages', messageBody, ['contactId', 'kind', 'createdAt']));
+  it('photos: damaged dropped, valid kept in order, first id wins', () => run<Photo>(503, 'photos', photoBody, ['src']));
+  it('treatments: damaged dropped, valid kept in order, first id wins', () => run<Treatment>(504, 'treatments', treatmentBody, ['name']));
+  it('procedures: damaged dropped, valid kept in order, first id wins', () => run<Procedure>(505, 'procedures', procedureBody, ['name', 'date']));
+  it('recommendations: damaged dropped, valid kept in order, first id wins', () => run<Recommendation>(506, 'recommendations', recBody, ['title', 'category']));
+
+  it('a non-text message with neither media nor text is dropped (nothing to play)', () => {
+    fc.assert(fc.property(fc.constantFrom('audio', 'video'), (kind) => {
+      const m = { id: 'x', contactId: 'c', kind, text: '', createdAt: 1, read: false, demo: false };
+      expect(sanitize({ ...defaults, messages: [m] }, defaults).messages).toEqual([]);
+    }), cfg(507, 20));
+  });
+  it('a procedure with an unknown status is kept as "programado"; a non-array list falls back to the defaults', () => {
+    fc.assert(fc.property(fc.oneof(fc.string(), fc.integer(), fc.constant(null)), fc.oneof(fc.string(), fc.integer(), fc.constant(null), fc.constant({})), (status, notList) => {
+      fc.pre(!STATUSES.includes(status as string));
+      const p = { id: 'p', name: 'n', date: '2026-11-18T10:00', status };
+      expect(sanitize({ ...defaults, procedures: [p] }, defaults).procedures[0].status).toBe('programado');
+      expect(sanitize({ ...defaults, contacts: notList }, defaults).contacts).toBe(defaults.contacts);
+    }), cfg(508));
+  });
+  it('caregiverPin: only 4-6 digit strings survive, otherwise the default', () => {
+    fc.assert(fc.property(fc.oneof(fc.stringMatching(/^\d{0,8}$/), fc.string(), fc.integer(), fc.constant(null)), (pin) => {
+      const out = sanitize({ ...defaults, caregiverPin: pin }, defaults).caregiverPin;
+      expect(out).toMatch(/^\d{4,6}$/);
+      if (typeof pin === 'string' && /^\d{4,6}$/.test(pin)) expect(out).toBe(pin); else expect(out).toBe(defaults.caregiverPin);
+    }), cfg(509, 500));
+  });
+  it('vitals without a finite recordedAt are dropped (null); with one they are kept', () => {
+    fc.assert(fc.property(fc.oneof(fc.constant(undefined), fc.constant(null), fc.string(), fc.constant(NaN), fc.constant(Infinity), fc.constant(-Infinity)), fc.integer({ min: 0, max: 2e12 }), (bad, ok) => {
+      expect(sanitize({ ...defaults, vitals: { heartRate: 70, respRate: 16, spo2: 97, recordedAt: bad } }, defaults).vitals).toBeNull();
+      expect(sanitize({ ...defaults, vitals: { heartRate: 70, respRate: 16, spo2: 97, recordedAt: ok } }, defaults).vitals?.recordedAt).toBe(ok);
+    }), cfg(510));
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// Round trip of an already valid AppData.
+// ---------------------------------------------------------------------------------------------
+const uniq = <T>(body: fc.Arbitrary<T>, prefix: string) => fc.array(body, { maxLength: 6 }).map((a) => a.map((b, i) => ({ id: `${prefix}${i}`, ...b })));
+const validData: fc.Arbitrary<AppData> = fc.record({
+  userName: fc.string({ maxLength: 40 }),
+  location: text,
+  weather: fc.record({ city: text, tempC: fc.integer({ min: -40, max: 60 }), condition: text }),
+  prefs: fc.record({
+    volume: fc.integer({ min: 0, max: 100 }), muted: bool, textSize: fc.constantFrom('normal', 'grande', 'muy-grande') as fc.Arbitrary<AppData['prefs']['textSize']>, reduceMotion: bool,
+    notifications: fc.record({ enabled: bool, sound: bool, treatments: bool, procedures: bool, messages: bool }),
+  }),
+  contacts: uniq(contactBody, 'c'),
+  messages: uniq(messageBody, 'm'),
+  photos: uniq(photoBody, 'p'),
+  treatments: uniq(treatmentBody, 't'),
+  procedures: uniq(procedureBody, 'pr'),
+  recommendations: uniq(recBody, 'r'),
+  moods: fc.uniqueArray(fc.tuple(dateStr, fc.integer({ min: 1, max: 5 }), bool), { selector: (x) => x[0], maxLength: 20 })
+    .map((a) => a.sort((x, y) => x[0].localeCompare(y[0])).map(([date, value, demo]) => ({ date, value: value as 1 | 2 | 3 | 4 | 5, demo }))),
+  vitals: fc.option(fc.record({ heartRate: fc.integer({ min: 0, max: 250 }), respRate: fc.integer({ min: 0, max: 80 }), spo2: fc.integer({ min: 0, max: 100 }), recordedAt: fc.integer({ min: 0, max: 2e12 }), demo: bool }), { nil: null }),
+  careNote: fc.record({ text: fc.string({ maxLength: 280 }), updatedAt: fc.integer({ min: 0, max: 2e12 }), demo: bool }),
+  favorites: fc.array(text, { maxLength: 5 }),
+  scores: fc.dictionary(fc.stringMatching(/^[a-z]{1,8}$/), fc.nat({ max: 1000 }), { maxKeys: 4 }),
+  dismissedNotifications: fc.array(text, { maxLength: 30 }),
+  caregiverPin: fc.stringMatching(/^\d{4,6}$/),
+}).map((r) => ({ ...r, version: 1 as const })) as fc.Arbitrary<AppData>;
+
+describe('storage: round-trip of valid data', () => {
+  it('sanitize(valid) deep-equals valid (generated records on top of the demo data)', () => {
+    fc.assert(fc.property(validData, (v) => {
+      expect(sanitize(v, defaults)).toEqual(v);
+      assertValid(v);
+    }), cfg(511, 400));
+  });
+  it('sanitize(valid) with demo lists spliced in is the identity as well', () => {
+    fc.assert(fc.property(validData, (v) => {
+      const mixed: AppData = { ...v, contacts: [...defaults.contacts, ...v.contacts], treatments: [...defaults.treatments, ...v.treatments] };
+      const ids = new Set<string>();
+      const dedup = <T extends { id: string }>(a: T[]) => a.filter((x) => !ids.has(x.id) && ids.add(x.id));
+      const m2 = { ...mixed, contacts: dedup(mixed.contacts), treatments: (ids.clear(), dedup(mixed.treatments)) };
+      expect(sanitize(m2, defaults)).toEqual(m2);
+    }), cfg(512, 200));
+  });
+  it('serialize/parse of valid data is the identity', () => {
+    fc.assert(fc.property(validData, (v) => {
+      const r = parse(serialize(v), defaults);
+      expect(r.error).toBeUndefined();
+      expect(r.data).toEqual(v);
+    }), cfg(513, 200));
   });
 });

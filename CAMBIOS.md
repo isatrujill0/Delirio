@@ -121,3 +121,15 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: public/sw.js, vite.config.ts, src/services/*.ts, src/types/index.ts, src/data/demo.ts, src/hooks/useCaregiver.tsx, src/hooks/useAppData.tsx, src/components/*.tsx, src/layouts/*.tsx, src/pages/**/*.tsx, src/styles/*.css, src/App.tsx, tests/**, tsconfig.json, .gitignore.
 * Resultado: tsc PASS (incluye pruebas), build PASS, propiedades 80/80, E2E 3/3 (con PIN), smoke PASS.
 * Estado: En progreso (faltan las pruebas nuevas de la ronda y la ronda 2 de revisión).
+
+16:49 — Pruebas nuevas de la ronda 1 y dos fallos que revelaron
+
+* E2E nuevas (5 archivos, 10 pruebas): sin conexión (recarga y música sin red), limpieza de IndexedDB al borrar foto y mensaje de video, PIN de cuidador (incorrecto, correcto, Bloquear, Restablecer), sonido real (ganancia del GainNode, voz cancelada al silenciar, video silenciado), confirmación al borrar signos, registros dañados y etiquetas «Ejemplo».
+* Propiedades nuevas (38): validación campo por campo de storage, round-trip de datos válidos, nextDose con fechas de inicio y empates, avisos por tratamiento, «Ejemplo · » en avisos de demostración, pruneDismissed, volumeToGain y la cola de reproducción.
+* Smoke: «reproducción iniciada» ahora exige que el audio avance (antes bastaba el punto encendido) y se mide que cada botón tenga al menos 56 × 56 px.
+* Fallo corregido: en el visor de fotos los botones (anterior, siguiente, eliminar) quedaban fuera de la pantalla a 1180 × 820.
+* Fallo corregido: los accesos «Paisajes» y «Recuerdos» de Mi mundo medían 52 px.
+* Fallo corregido: una fecha de inicio imposible (p. ej. 2026-13-45) impedía para siempre el recordatorio; ahora cuenta como iniciada.
+* Archivos afectados: tests/e2e/*.spec.ts, tests/property/*.test.ts, scripts/smoke.cjs, src/styles/components.css, src/styles/pages.css, src/services/care.ts, README.md.
+* Resultado: tsc PASS, build PASS, propiedades 118/118, E2E 13/13 (~14 s), smoke PASS con verificación de tamaño táctil.
+* Estado: Completado (queda la ronda 2 de revisión independiente).

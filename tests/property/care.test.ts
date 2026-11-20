@@ -56,6 +56,110 @@ describe('care: nextDose', () => {
   });
 });
 
+// ---- start-date aware oracle -------------------------------------------------------------------
+const isoOf = (d: Date) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n, 12);
+const hmOf = (m: number) => `${p2(Math.floor((((m % 1440) + 1440) % 1440) / 60))}:${p2((((m % 1440) + 1440) % 1440) % 60)}`;
+const nowAt = fc.tuple(fc.integer({ min: 0, max: 800 }), fc.integer({ min: 0, max: 1439 }))
+  .map(([day, min]) => new Date(2025, 0, 1 + day, Math.floor(min / 60), min % 60, 0));
+const badStart = fc.constantFrom('', 'garbage', '2026-1-1', '26-01-01', '2026/01/01', '20260101', ' 2026-01-01');
+/** Treatments with start dates 5 days either side of `n`, plus invalid dates, and times clustered around `n` so ties are frequent. */
+const scenario = nowAt.chain((n) => {
+  const nowMin = n.getHours() * 60 + n.getMinutes();
+  const start = fc.oneof(fc.integer({ min: -5, max: 5 }).map((k) => isoOf(addDays(n, k))), badStart);
+  const time = fc.oneof(fc.integer({ min: -3, max: 3 }).map((d) => hmOf(nowMin + d)), fc.integer({ min: 0, max: 1439 }).map(hmOf), fc.constantFrom('', 'x', '24:00'));
+  const t = fc.record({ name: fc.string(), description: fc.constant(''), startDate: start, frequency: fc.constant('x'), observations: fc.constant(''), times: fc.array(time, { maxLength: 4 }), demo: fc.boolean() });
+  return fc.array(t, { maxLength: 6 }).map((ts) => [n, ts.map((x, i) => ({ id: `t${i}`, ...x })) as Treatment[]] as const);
+});
+
+describe('care: nextDose with start dates', () => {
+  it('oracle: null iff no (started, valid time) pair; inMinutes is the minimum over started pairs; treatments is exactly the tied set in list order', () => {
+    fc.assert(fc.property(scenario, ([n, ts]) => {
+      const nowMin = n.getHours() * 60 + n.getMinutes();
+      const tomorrowIso = isoOf(addDays(n, 1));
+      const todayIso = isoOf(n);
+      const pairs: { t: Treatment; time: string; m: number; inMin: number }[] = [];
+      for (const t of ts) for (const time of t.times) {
+        const m = parseHM(time);
+        if (m === null) continue;
+        const later = m < nowMin;
+        const day = later ? tomorrowIso : todayIso;
+        const started = !/^\d{4}-\d{2}-\d{2}$/.test(t.startDate) || t.startDate <= day;
+        if (started) pairs.push({ t, time, m, inMin: later ? m + 1440 - nowMin : m - nowMin });
+      }
+      const r = nextDose(ts, n);
+      if (pairs.length === 0) { expect(r).toBeNull(); return; }
+      expect(r).not.toBeNull();
+      const best = Math.min(...pairs.map((x) => x.inMin));
+      expect(r!.inMinutes).toBe(best);
+      expect(r!.tomorrow).toBe(pairs.find((x) => x.inMin === best)!.m < nowMin);
+      const tied = ts.filter((t) => pairs.some((x) => x.t === t && x.inMin === best));
+      expect(r!.treatments).toEqual(tied);
+      expect(new Set(r!.treatments).size).toBe(r!.treatments.length);
+      expect(r!.treatment).toBe(r!.treatments[0]);
+      expect(parseHM(r!.time)).toBe(pairs.find((x) => x.inMin === best)!.m);
+      expect(r!.treatments.every((t) => t.times.some((x) => parseHM(x) === parseHM(r!.time)))).toBe(true);
+    }), cfg(501, 800));
+  });
+  it('scenario is not vacuous: both started and not-yet-started treatments, ties and tomorrow doses occur', () => {
+    const stats = { future: 0, past: 0, ties: 0, tomorrow: 0, nulls: 0, total: 0 };
+    fc.assert(fc.property(scenario, ([n, ts]) => {
+      stats.total++;
+      if (ts.some((t) => t.startDate > isoOf(n))) stats.future++;
+      if (ts.some((t) => /^\d{4}/.test(t.startDate) && t.startDate < isoOf(n))) stats.past++;
+      const r = nextDose(ts, n);
+      if (!r) stats.nulls++; else { if (r.treatments.length > 1) stats.ties++; if (r.tomorrow) stats.tomorrow++; }
+    }), cfg(502, 800));
+    expect(stats.future).toBeGreaterThan(stats.total / 4);
+    expect(stats.past).toBeGreaterThan(stats.total / 4);
+    expect(stats.ties).toBeGreaterThan(20);
+    expect(stats.tomorrow).toBeGreaterThan(20);
+    expect(stats.nulls).toBeGreaterThan(0);
+  });
+  it('a treatment starting tomorrow IS eligible for a time earlier than now (tomorrow\'s dose) but NOT for a later time today', () => {
+    fc.assert(fc.property(nowAt, fc.integer({ min: 1, max: 1439 }), (n, delta) => {
+      const nowMin = n.getHours() * 60 + n.getMinutes();
+      const mk = (time: string): Treatment => ({ id: 'a', name: 'x', description: '', startDate: isoOf(addDays(n, 1)), frequency: 'x', observations: '', demo: false, times: [time] });
+      if (nowMin >= 1) {
+        const earlier = mk(hmOf(nowMin - Math.min(delta, nowMin)));
+        const r = nextDose([earlier], n);
+        expect(r).not.toBeNull();
+        expect(r!.tomorrow).toBe(true);
+        expect(r!.treatment).toBe(earlier);
+      }
+      if (nowMin <= 1438) {
+        const later = mk(hmOf(nowMin + Math.min(delta, 1439 - nowMin)));
+        expect(nextDose([later], n)).toBeNull();
+      }
+      // exactly now, starting tomorrow: today's dose, not started yet
+      expect(nextDose([mk(hmOf(nowMin))], n)).toBeNull();
+    }), cfg(503, 500));
+  });
+  it('a treatment that started today or earlier is eligible for any time', () => {
+    fc.assert(fc.property(nowAt, fc.integer({ min: 0, max: 400 }), fc.integer({ min: 0, max: 1439 }), (n, back, m) => {
+      const t: Treatment = { id: 'a', name: 'x', description: '', startDate: isoOf(addDays(n, -back)), frequency: 'x', observations: '', demo: false, times: [hmOf(m)] };
+      expect(nextDose([t], n)?.treatment).toBe(t);
+    }), cfg(504));
+  });
+  it('invalid or empty startDate counts as started', () => {
+    fc.assert(fc.property(nowAt, badStart, fc.integer({ min: 0, max: 1439 }), (n, start, m) => {
+      const t: Treatment = { id: 'a', name: 'x', description: '', startDate: start, frequency: 'x', observations: '', demo: false, times: [hmOf(m)] };
+      const r = nextDose([t], n);
+      expect(r?.treatment).toBe(t);
+      expect(r!.inMinutes).toBe(m >= n.getHours() * 60 + n.getMinutes() ? m - (n.getHours() * 60 + n.getMinutes()) : m + 1440 - (n.getHours() * 60 + n.getMinutes()));
+    }), cfg(505));
+  });
+  it('the same treatment listed with the same time twice is returned once; distinct treatments tied are all returned in order', () => {
+    fc.assert(fc.property(nowAt, fc.integer({ min: 0, max: 1439 }), fc.integer({ min: 1, max: 5 }), (n, m, k) => {
+      const mk = (i: number, times: string[]): Treatment => ({ id: `t${i}`, name: 'x', description: '', startDate: '2000-01-01', frequency: 'x', observations: '', demo: false, times });
+      const ts = Array.from({ length: k }, (_, i) => mk(i, [hmOf(m), hmOf(m)]));
+      const r = nextDose(ts, n)!;
+      expect(r.treatments).toEqual(ts);
+      expect(r.treatment).toBe(ts[0]);
+    }), cfg(506));
+  });
+});
+
 const statuses: ProcedureStatus[] = ['programado', 'confirmado', 'realizado', 'reprogramado', 'cancelado'];
 const procDate = fc.oneof(
   fc.integer({ min: 0, max: 3000 }).map((n) => new Date(2026, 0, 1, 0, n * 17).toISOString().slice(0, 16)),
@@ -144,5 +248,15 @@ describe('care: validateTreatment / validateProcedure', () => {
     fc.assert(fc.property(fc.constantFrom('', 'nope', 'xx-yy'), (date) => {
       expect(validateProcedure({ name: 'a', date }).date).toBeTruthy();
     }), cfg(317, 50));
+  });
+});
+
+// Regression (found by the property writer): an impossible date used to block the treatment forever.
+describe('care: hasStarted with impossible dates', () => {
+  it('an impossible YYYY-MM-DD start date counts as started', () => {
+    fc.assert(fc.property(fc.constantFrom('2026-13-45', '9999-99-99', '2026-02-30', '2026-00-10'), now, (startDate, n) => {
+      const t = { id: 'a', name: 'x', description: '', startDate, frequency: 'x', observations: '', demo: false, times: ['08:00'] };
+      expect(nextDose([t], n)).not.toBeNull();
+    }), cfg(540, 100));
   });
 });
