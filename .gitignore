@@ -7,11 +7,8 @@ playwright-report
 verify-output
 *.log
 
-# Configuración local de Claude (solo se versiona la skill de verificación)
-.claude/*
-!.claude/skills/
-.claude/skills/*
-!.claude/skills/verify/
+# Configuración local de Claude (no se versiona)
+.claude/
 
 # Material de trabajo de impeccable
 .impeccable/review

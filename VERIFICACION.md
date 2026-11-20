@@ -1,9 +1,6 @@
----
-name: verify
-description: Verify NEXO before declaring any change done or committing it. Runs cheap checks first (typecheck, production build, property tests), then expensive ones (Playwright E2E), then starts the real app and drives it end to end at iPad Air 11" sizes, and ends with an evidence report of what ran, what passed and what failed. Use after every change to src/, public/, index.html, vite.config.ts or the tests, and whenever someone asks to "verify", "check", "test" or "validate" NEXO.
----
+# Verificación de NEXO
 
-# verify — NEXO verification layer
+Lista de pasos para verificar NEXO antes de dar un cambio por terminado o hacer commit. Es un documento normal del proyecto (no una skill de Claude Code): se sigue a mano o se le pide a Claude que lo siga.
 
 Run the steps **in order** from the repo root (`/home/user/Delirio` or wherever the repo lives).
 Stop at the first failing **cheap** step, fix it, and start again from step 1: there is no point paying for E2E on a build that does not compile.

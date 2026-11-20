@@ -144,3 +144,12 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/storage.ts, src/components/ErrorBoundary.tsx, src/hooks/useCaregiver.tsx, src/pages/HomePage.tsx, src/pages/CarePage.tsx, public/sw.js, CAMBIOS.md.
 * Resultado: tsc PASS, build PASS, propiedades 118/118, E2E 13/13.
 * Estado: En progreso (pausado a pedido del usuario; faltan pruebas de migración y de la pantalla de error, y la ronda 3 de revisión).
+
+16:57 — La verificación deja de ser una skill
+
+* A pedido del usuario, se quitó la skill .claude/skills/verify/SKILL.md del repositorio y de la carpeta local.
+* Sus pasos se conservan como documento normal del proyecto: VERIFICACION.md (typecheck, build, pruebas de propiedades, E2E, smoke en la app real e informe de evidencia).
+* .gitignore ya no versiona nada de .claude/.
+* Archivos afectados: VERIFICACION.md (antes .claude/skills/verify/SKILL.md), .gitignore.
+* Resultado: el repositorio no contiene skills de Claude Code.
+* Estado: Completado.
