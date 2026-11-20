@@ -24,9 +24,17 @@
   /* ---------- Tamaño de texto ---------- */
   const sizes = ['100%', '112%', '125%'];
   let si = Number(safe(() => localStorage.getItem('fs'))) || 0;
-  const sizeBtn = $('#textSize');
+  const sizeBtn = $('#textSize'), navBar = $('.nav');
+  // Si con el texto ampliado la barra no cabe, se pliega en el menú (los botones de la derecha siguen visibles)
+  const fitNav = () => {
+    root.classList.remove('nav-compact');
+    if (navBar.scrollWidth > navBar.clientWidth + 1) root.classList.add('nav-compact');
+  };
+  addEventListener('resize', fitNav);
+  safe(() => document.fonts.ready.then(fitNav));
   const applySize = () => {
     root.style.setProperty('--fs', sizes[si]);
+    fitNav();
     sizeBtn.setAttribute('aria-label', `Cambiar tamaño de texto (ahora ${sizes[si]})`);
     safe(() => localStorage.setItem('fs', si));
   };
@@ -109,11 +117,26 @@
     const travel = $('.travel'), hero = $('#inicio');
     // data-obj de cada sección: x (% del ancho), y (% del alto), escala, giro, opacidad
     const stops = $$('main section[data-obj]').map(el => ({ el, v: el.dataset.obj.split(' ').map(Number), top: 0 }));
-    const spreads = $$('.spread'), heads = $$('.section-head');
+    const spreads = $$('.spread').map(el => ({ el, top: 0 })), heads = $$('.section-head').map(el => ({ el, top: 0, land: 0 }));
+    const heroCopy = $('.hero-copy', hero);
+    let copyTop = 0, copyH = 1, headH = 0, maxScroll = 0;
     const place = () => {
       stops.forEach(st => st.top = st.el.getBoundingClientRect().top + scrollY);
+      // Posición en el documento de títulos y grupos (sus contenedores no se transforman) y
+      // dónde queda cada título al llegar desde el menú (scroll-padding-top + relleno de la sección)
+      const pad = parseFloat(getComputedStyle(root).scrollPaddingTop) || 0;
+      heads.forEach(h => {
+        const r = h.el.getBoundingClientRect(), sec = h.el.closest('section');
+        h.top = r.top + scrollY;
+        h.land = pad + (sec ? r.top - sec.getBoundingClientRect().top : 0);
+      });
+      spreads.forEach(g => g.top = g.el.getBoundingClientRect().top + scrollY);
+      headH = $('.site-header').offsetHeight;
+      copyTop = hero.getBoundingClientRect().top + scrollY + heroCopy.offsetTop;
+      copyH = heroCopy.offsetHeight || 1;
+      maxScroll = Math.max(0, root.scrollHeight - innerHeight);
       // Distancia de cada tarjeta al centro de su grupo (offset* ignora los transform)
-      spreads.forEach(g => {
+      spreads.forEach(({ el: g }) => {
         const cx = g.clientWidth / 2, cy = g.clientHeight / 2;
         [...g.children].forEach((c, k) => {
           c.style.setProperty('--dx', Math.round(cx - c.offsetLeft - c.offsetWidth / 2) + 'px');
@@ -128,8 +151,17 @@
       queued = false;
       const vh = innerHeight, mid = scrollY + vh / 2, small = innerWidth < 700;
       hero.style.setProperty('--hx', clamp01(scrollY / vh).toFixed(3));
-      spreads.forEach(g => g.style.setProperty('--q', clamp01((vh - g.getBoundingClientRect().top) / (vh * .7)).toFixed(3)));
-      heads.forEach(h => h.style.setProperty('--h', clamp01((vh - h.getBoundingClientRect().top) / (vh * .45)).toFixed(3)));
+      // La portada solo se desvanece cuando más de la mitad ya quedó bajo la cabecera
+      hero.style.setProperty('--hf', clamp01(((scrollY + headH - copyTop) / copyH - .5) / .5).toFixed(3));
+      // Progreso 0→1 mientras el borde superior sube de vh a «fin». El fin nunca queda por debajo
+      // de donde el elemento puede descansar: al llegar desde el menú (land) ni al final de la página.
+      const prog = (docTop, end) => {
+        const top = docTop - scrollY, rest = docTop - maxScroll;
+        return clamp01((vh - top) / Math.max(1, vh - Math.max(end, rest)));
+      };
+      // Todo lo que queda en el 70 % superior de la ventana ya está en su sitio y opaco
+      spreads.forEach(g => g.el.style.setProperty('--q', prog(g.top, vh * .7).toFixed(3)));
+      heads.forEach(h => h.el.style.setProperty('--h', prog(h.top, Math.max(vh * .7, h.land)).toFixed(3)));
       // El objeto se queda quieto casi toda la sección y al final viaja al sitio de la siguiente
       let i = stops.length - 1;
       while (i > 0 && stops[i].top > mid) i--;
@@ -142,7 +174,9 @@
     const queue = () => { if (!queued) { queued = true; requestAnimationFrame(frame); } };
     place(); frame();
     addEventListener('scroll', queue, { passive: true });
-    new ResizeObserver(() => { place(); queue(); }).observe($('main'));
+    const replace = () => { place(); queue(); };
+    new ResizeObserver(replace).observe($('main'));
+    addEventListener('resize', replace);
   }
 
   /* ---------- Dónde estás ---------- */
