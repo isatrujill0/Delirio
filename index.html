@@ -3,668 +3,857 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Delirio en Pacientes Críticos</title>
-  <meta name="description" content="Proyecto de divulgación sobre el delirio en la UCI: qué es, por qué pasa desapercibido y cómo reconocerlo y prevenirlo. Para familias, estudiantes y profesionales.">
+  <title>NEXO · Delirio en Pacientes Críticos</title>
+  <meta name="description" content="Qué es el delirio en la UCI, por qué pasa inadvertido, cómo se detecta y cómo puede acompañar la familia. Y NEXO, una propuesta de orientación y conexión para pacientes en UCI.">
+  <script>var d=document.documentElement;try{if(!sessionStorage.getItem('intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-on')}catch(e){}try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'light';var r=localStorage.getItem('route');if(r)document.documentElement.dataset.route=r}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;500&family=Reenie+Beanie&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v15M6 13l6 6 6-6"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M10 5H5v14h14v-5M14 5h5v5M19 5l-8 8"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M3 19 9 5l6 14M5.2 14h7.6M16 19l3-7 3 7M17.2 17h3.6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.400 1.400M17.600 17.600 19 19M5 19l1.400-1.400M17.600 6.400 19 5"/></symbol>
+    <symbol id="i-nexo" viewBox="0 0 24 24"><path d="M3 15a9 9 0 0 1 18 0"/><path d="M7 15a5 5 0 0 1 10 0"/><circle cx="12" cy="15" r="1.6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.800 12 21 12 21Z"/><circle cx="12" cy="9.500" r="2.500"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-8-4.600-8-10.500A4.500 4.500 0 0 1 12 7a4.500 4.500 0 0 1 8 2.500C20 15.400 12 20 12 20Z"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5 5-2Z"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.300"/><path d="M3 19c.6-3.300 3-5 6-5s5.400 1.700 6 5M15 14.300c2.500-.4 4.600.9 5.500 4.200"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.500" cy="18" r="2.500"/><circle cx="16.500" cy="16" r="2.500"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2h-15L6 16ZM10 20.500a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-room" viewBox="0 0 24 24"><path d="M3 18v-6h18v6M3 15h18M6 12V9h5v3M3 20v-2M21 20v-2"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.500V6.500A1.500 1.500 0 0 1 6.500 5h11A1.500 1.500 0 0 1 19 6.500v8a1.500 1.500 0 0 1-1.500 1.500H9L5 18.500Z"/></symbol>
+    <symbol id="i-screen" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="3"/><path d="M9 20h6M12 16v4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.500" width="10" height="19" rx="2.500"/><path d="M11 18.500h2"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3c.5 4.500 1.500 5.500 6 6-4.500.5-5.500 1.500-6 6-.5-4.500-1.500-5.500-6-6 4.500-.5 5.500-1.500 6-6ZM18.500 15c.2 1.800.7 2.300 2.500 2.500-1.800.2-2.300.7-2.500 2.500-.2-1.800-.7-2.300-2.500-2.500 1.800-.2 2.300-.7 2.500-2.500Z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5.500c0 4.300 3 7.800 7 9.500 4-1.700 7-5.200 7-9.500V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14M5 19l7-7"/></symbol>
+  </svg>
+
+  <div class="intro" id="intro" aria-hidden="true">
+    <p class="intro-word"><span>N</span><span>E</span><span>X</span><span>O</span></p>
+    <p class="intro-tag">Orientación que conecta, tecnología que acompaña</p>
+  </div>
+  <div class="travel" aria-hidden="true"><div class="travel-orb"><i></i><i></i><i></i></div></div>
+
   <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
 
   <header class="site-header" id="top">
-    <nav class="nav container" aria-label="Navegación principal">
-      <a href="#inicio" class="brand" aria-label="Delirio en Pacientes Críticos — inicio">Delirio<span>en la UCI</span></a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="#inicio" class="brand"><svg class="ico" aria-hidden="true"><use href="#i-nexo"/></svg><b>NEXO</b><span>Delirio en la UCI</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú"><span></span><span></span><span></span></button>
       <ul class="nav-links" id="menu">
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#proyecto">El proyecto</a></li>
-        <li><a href="#sindrome">El síndrome</a></li>
+        <li><a href="#que-es">Qué es</a></li>
+        <li><a href="#por-dentro">Por dentro</a></li>
+        <li><a href="#dos-caras">Las dos caras</a></li>
+        <li><a href="#deteccion">Detección</a></li>
+        <li><a href="#causas">Causas</a></li>
+        <li><a href="#prevencion">Prevención</a></li>
+        <li><a href="#familia">Familia</a></li>
+        <li><a href="#nexo">NEXO</a></li>
+        <li><a href="#station">La Station</a></li>
         <li><a href="#evidencia">Evidencia</a></li>
-        <li><a href="#testimonios">Testimonios</a></li>
-        <li><a href="#blog">Blog</a></li>
+        <li><a href="#historias">Historias</a></li>
+        <li><a href="#recursos">Recursos</a></li>
       </ul>
       <div class="tools">
-        <button class="icon-btn" id="textSize" aria-label="Aumentar tamaño de texto" title="Tamaño de texto">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19 9 5l6 14M5.2 14h7.6M16 19l3-7 3 7M17.2 17h3.6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="icon-btn" id="themeToggle" aria-label="Cambiar a modo oscuro" title="Modo claro / oscuro">
-          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
-          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
-        </button>
+        <button class="icon-btn" id="textSize" type="button" aria-label="Cambiar tamaño de texto" title="Tamaño de texto"><svg class="ico"><use href="#i-text"/></svg></button>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Cambiar a modo claro" title="Modo claro u oscuro"><svg class="ico i-moon"><use href="#i-moon"/></svg><svg class="ico i-sun"><use href="#i-sun"/></svg></button>
       </div>
     </nav>
-    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+    <div class="routebar">
+      <div class="route-pick" role="group" aria-labelledby="routeLabel">
+        <span id="routeLabel">Tu recorrido</span>
+        <button type="button" class="fam" data-route-btn="fam" aria-pressed="false">Familias</button>
+        <button type="button" class="est" data-route-btn="est" aria-pressed="false">Estudiantes</button>
+        <button type="button" class="pro" data-route-btn="pro" aria-pressed="false">Profesionales</button>
+      </div>
+      <p class="here">Estás en <b id="hereName">Inicio</b></p>
+    </div>
   </header>
 
   <main id="contenido">
-
-    <!-- ============ HERO: la hoja de turno ============ -->
-    <section class="hero" id="inicio" aria-labelledby="hero-title">
+    <!-- ============ INICIO ============ -->
+    <section class="hero" id="inicio" data-obj="74 52 1 0 1" data-title="Inicio" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1 id="hero-title">Cuando la UCI borra las referencias, <span class="soft">alguien tiene que devolverlas.</span></h1>
+          <p class="lead">El delirio es una confusión repentina que va y viene. Afecta hasta a 8 de cada 10 pacientes con ventilación mecánica y suele pasar sin que nadie lo nombre. Aquí puedes entenderlo y conocer NEXO, la propuesta que estamos diseñando para acompañar a quien lo vive.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#que-es">Entender el delirio<svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn" href="#station">Probar la Station</a>
+          </div>
+        </div>
+        <div class="hero-orbit" aria-hidden="true">
+          <div class="chip-card clock-card"><p class="cc-k">Hoy es</p><p class="cc-day" data-today>miércoles</p><p class="cc-time" data-now>10:30</p></div>
+          <div class="chip-card where-card"><svg class="ico"><use href="#i-pin"/></svg><span>Estás en la UCI. Estás recibiendo cuidado.</span></div>
+          <div class="chip-card wave-card">
+            <p>La atención a lo largo del día</p>
+            <svg viewBox="0 0 300 70" preserveAspectRatio="none"><path d="M0 22C30 22 40 12 62 16S95 40 120 44 160 60 185 52 215 18 240 20 280 34 300 30"/><circle cx="185" cy="52" r="7"/></svg>
+          </div>
+        </div>
+      </div>
       <div class="container">
-        <h1 id="hero-title">Delirio en pacientes críticos</h1>
-        <div class="hero-cols">
-          <p class="lead">Es una confusión repentina que va y viene. De madrugada el paciente no responde; en la ronda de la mañana <mark>parece estar bien</mark>. Así pasa desapercibida, y deja huella meses después del alta.</p>
-          <p class="origin">La iniciativa nació de ver, turno tras turno, a pacientes “desorientados” cuyo estado se atribuía a la gravedad, sin buscarlo como lo que es: una disfunción cerebral aguda, detectable y en parte prevenible. Quisimos que ese conocimiento fuera accesible para todos.</p>
-        </div>
-
-        <figure class="sheet">
-          <svg viewBox="0 0 1200 350" role="img" aria-labelledby="sheetTitle sheetDesc">
-            <title id="sheetTitle">Hoja de turno: atención de un paciente entre las 20:00 y las 08:00</title>
-            <desc id="sheetDesc">La atención del paciente cae por debajo del umbral de delirio durante la madrugada, con una caída a las 23:00 en la que intenta sacarse la vía y otra a las 02:00 en la que no responde, y vuelve a parecer lúcida en la ronda médica de las 08:00.</desc>
-            <rect x="70" y="150" width="1080" height="120" class="band"/>
-            <g class="grid">
-              <path d="M70 70h1080M70 110h1080M70 190h1080M70 230h1080M70 270h1080"/>
-              <path d="M70 40v230M160 40v230M250 40v230M340 40v230M430 40v230M520 40v230M610 40v230M700 40v230M790 40v230M880 40v230M970 40v230M1060 40v230M1150 40v230"/>
-            </g>
-            <path d="M70 150h1080" class="threshold"/>
-            <text x="1146" y="143" class="mono" text-anchor="end">UMBRAL · CAM-ICU POSITIVO</text>
-            <text x="76" y="58" class="mono">LÚCIDO</text>
-            <text x="76" y="264" class="mono">CONFUSO</text>
-            <path class="curve" d="M70 75L160 85L250 120L340 205L430 170L520 235L610 250L700 190L790 245L880 165L970 120L1060 85L1150 72"/>
-            <g class="pts">
-              <circle cx="70" cy="75" r="4"/><circle cx="160" cy="85" r="4"/><circle cx="250" cy="120" r="4"/><circle class="flag" cx="340" cy="205" r="6"/><circle cx="430" cy="170" r="4"/><circle cx="520" cy="235" r="4"/><circle class="flag" cx="610" cy="250" r="6"/><circle cx="700" cy="190" r="4"/><circle cx="790" cy="245" r="4"/><circle cx="880" cy="165" r="4"/><circle cx="970" cy="120" r="4"/><circle cx="1060" cy="85" r="4"/><circle class="ok" cx="1150" cy="72" r="6"/>
-            </g>
-            <g class="pen">
-              <text x="150" y="240" class="a1">23:00 · intenta sacarse la vía</text>
-              <path d="M330 228 337 214" class="lead-line l1"/>
-              <text x="470" y="296" class="a2">02:00 · no responde: «está dormido»</text>
-              <path d="M600 276 608 258" class="lead-line l2"/>
-              <text x="800" y="36" class="a3">08:00 · ronda médica: «lúcido, sin cambios»</text>
-              <path d="M1110 44 1146 66" class="lead-line l3"/>
-            </g>
-            <g class="mono ticks" text-anchor="middle">
-              <text x="70" y="334">20h</text><text x="160" y="334">21h</text><text x="250" y="334">22h</text><text x="340" y="334">23h</text><text x="430" y="334">00h</text><text x="520" y="334">01h</text><text x="610" y="334">02h</text><text x="700" y="334">03h</text><text x="790" y="334">04h</text><text x="880" y="334">05h</text><text x="970" y="334">06h</text><text x="1060" y="334">07h</text><text x="1150" y="334">08h</text>
-            </g>
-          </svg>
-          <figcaption>Hoja de turno · ejemplo ilustrativo del nivel de atención de un paciente a lo largo de una noche.</figcaption>
-        </figure>
-
-        <div class="cta-row">
-          <a class="btn btn-primary" href="#contraste">Ver cómo cambia un paciente</a>
-          <a class="btn btn-ghost" href="#testimonios">Compartir tu historia</a>
-        </div>
+        <nav class="directory" aria-labelledby="dirTitle">
+          <h2 id="dirTitle">Elige tu recorrido</h2>
+          <div class="dest-row">
+            <a class="dest fam" href="#que-es" data-go="fam"><i></i><span><b>Tengo un familiar ingresado</b><small>Qué le pasa y cómo acompañar</small></span><svg class="ico"><use href="#i-arrow"/></svg></a>
+            <a class="dest est" href="#que-es" data-go="est"><i></i><span><b>Estoy estudiando</b><small>El síndrome, sus subtipos y las fuentes</small></span><svg class="ico"><use href="#i-arrow"/></svg></a>
+            <a class="dest pro" href="#que-es" data-go="pro"><i></i><span><b>Trabajo en una UCI</b><small>Cribado con CAM-ICU en dos minutos</small></span><svg class="ico"><use href="#i-arrow"/></svg></a>
+          </div>
+        </nav>
+        <p class="lines-label" id="linesLabel">Tres recorridos, un mismo tema</p>
       </div>
     </section>
 
     <!-- ============ QUÉ ES ============ -->
-    <section class="section" id="intro" aria-labelledby="intro-title">
-      <div class="container intro-grid">
-        <div>
-          <h2 id="intro-title">El delirio no es locura ni cansancio: es el cerebro fallando de forma aguda</h2>
-          <p class="lead">Es un estado de confusión con alteración de la atención y de la conciencia. Afecta hasta a <span class="num">80&nbsp;%</span> de los pacientes con ventilación mecánica y se asocia a más días de ingreso, más mortalidad y secuelas cognitivas: a los <span class="num">12&nbsp;meses</span> algunos supervivientes aún muestran déficits.</p>
-          <p>La buena noticia: un cribado con CAM-ICU lleva unos <span class="num">2&nbsp;minutos</span>. Lo que no se busca, no se encuentra.</p>
-        </div>
-        <dl class="facts">
-          <div><dt>Inicio agudo</dt><dd>Aparece en horas o días, no en semanas.</dd></div>
-          <div><dt>Atención alterada</dt><dd>Cuesta enfocar, sostener o cambiar la atención.</dd></div>
-          <div><dt>Fluctúa</dt><dd>Mejora y empeora durante el día; la noche suele ser peor.</dd></div>
-          <div><dt>Tiene causa</dt><dd>Infección, fármacos, falta de sueño… casi siempre se puede buscar.</dd></div>
-        </dl>
-      </div>
-    </section>
-
-<!-- ============ COMPARADOR INTERACTIVO ============ -->
-    <section class="section dark" id="contraste" aria-labelledby="contraste-title">
-      <div class="container">
-        <header class="section-head center reveal">
-          <h2 id="contraste-title">De la calma al delirio hiperactivo</h2>
-          <p class="lead">Desliza la barra y observa cómo puede cambiar el estado de un mismo paciente en la UCI.</p>
-        </header>
-
-        <div class="compare reveal" id="compare">
-          <div class="act-stage" id="cmpStage" data-stage="0" style="--lvl:0">
-            <svg viewBox="0 0 800 420" role="img" aria-labelledby="actTitle" preserveAspectRatio="xMidYMid slice">
-              <title id="actTitle">Ilustración de un paciente en la cama que pasa de estar tranquilo a agitado, gritando y tratando de quitarse las sondas</title>
-
-              <!-- Habitación (se oscurece con el nivel) -->
-              <g class="room">
-                <rect width="800" height="420" fill="#f4e7d3"/>
-                <rect y="330" width="800" height="90" fill="#c9b08a"/>
-                <rect width="800" height="420" fill="#3a1450" style="opacity:calc(var(--lvl) * .55)"/>
-                <rect x="590" y="50" width="170" height="130" rx="6" fill="#bfe3f5" stroke="#a07a52" stroke-width="6"/>
-                <path d="M675 50v130M590 115h170" stroke="#a07a52" stroke-width="4"/>
-                <g class="g0 g1"><circle cx="720" cy="85" r="18" fill="#ffd66b"/></g>
-                <circle cx="400" cy="85" r="34" fill="#fffaf0" stroke="#a07a52" stroke-width="5"/>
-                <path d="M400 85V64M400 85l15 9" stroke="#a07a52" stroke-width="4" stroke-linecap="round"/>
-                <g class="g0 g1"><rect x="730" y="290" width="14" height="40" fill="#8a5a3b"/><path d="M737 292c-30-10-28-48-4-58 4 24 14 34 4 58Zm0 0c30-10 28-48 4-58-4 24-14 34-4 58Z" fill="#4fae7c"/></g>
-                <!-- cama -->
-                <rect x="96" y="190" width="26" height="140" rx="6" fill="#a07a52"/>
-                <rect x="110" y="262" width="400" height="56" rx="12" fill="#fff"/>
-                <rect x="120" y="318" width="10" height="22" fill="#a07a52"/><rect x="490" y="318" width="10" height="22" fill="#a07a52"/>
-                <ellipse cx="172" cy="252" rx="48" ry="20" fill="#f3f3f3"/>
-                <path d="M270 270c60-24 160-18 240 4v26H270Z" fill="#8cc3b5"/>
-              </g>
-
-              <!-- Poste de suero -->
-              <g>
-                <path d="M470 330V108M440 108h60" stroke="#8a97a3" stroke-width="5" stroke-linecap="round"/>
-                <rect x="448" y="112" width="44" height="62" rx="8" fill="#cfe9f7" stroke="#8fb8d0" stroke-width="3"/>
-                <rect x="452" y="140" width="36" height="30" rx="5" fill="#8fd0ef" opacity=".7"/>
-              </g>
-
-              <!-- Monitor -->
-              <g>
-                <rect x="540" y="236" width="130" height="88" rx="8" fill="#0a1218" stroke="#6b7a86" stroke-width="5"/>
-                <path class="g0 g1" d="M552 284h20l8-22 12 40 10-28 8 10h48" fill="none" stroke="#5fe0a2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="g2 g3 ecg-fast" d="M552 284l8-30 8 52 8-50 8 48 8-46 8 44 8-42 8 40 8-36 8 32h14" fill="none" stroke="#ff6b6b" stroke-width="3" stroke-linejoin="round"/>
-                <rect x="595" y="324" width="20" height="14" fill="#6b7a86"/>
-                <circle class="g3 alarm" cx="655" cy="248" r="6" fill="#ff4d4d"/>
-              </g>
-
-              <!-- Sonda nasal (todas las etapas) -->
-              <path d="M193 243c28 18 60 40 96 62s70 28 96 18" fill="none" stroke="#ffe08a" stroke-width="4" stroke-linecap="round"/>
-
-              <!-- Cuerpo del paciente -->
-              <g class="patient">
-                <path d="M205 268c2-32 30-40 60-32l20 38Z" fill="#9ab8d6"/>
-                <circle cx="182" cy="236" r="28" fill="#e8bf9f"/>
-                <path d="M155 232c0-26 40-34 56-12-14-6-36-6-56 12Z" fill="#5a3d2b"/>
-
-                <!-- Caras -->
-                <g class="g0" fill="none" stroke="#5a3d2b" stroke-width="2.5" stroke-linecap="round"><path d="M168 236q5 4 10 0M187 236q5 4 10 0M175 250q7 5 14 0"/></g>
-                <g class="g1">
-                  <circle cx="173" cy="236" r="3" fill="#3b2a1e"/><circle cx="193" cy="236" r="3" fill="#3b2a1e"/>
-                  <path d="M166 228l10 3M200 228l-10 3M176 251h12" fill="none" stroke="#5a3d2b" stroke-width="2.5" stroke-linecap="round"/>
-                </g>
-                <g class="g2">
-                  <circle cx="173" cy="235" r="6" fill="#fff"/><circle cx="194" cy="235" r="6" fill="#fff"/><circle cx="175" cy="233" r="2.5" fill="#3b2a1e"/><circle cx="196" cy="233" r="2.5" fill="#3b2a1e"/>
-                  <path d="M165 224q8-5 16 0M187 224q8-5 16 0" fill="none" stroke="#5a3d2b" stroke-width="2.5" stroke-linecap="round"/>
-                  <ellipse cx="184" cy="251" rx="4" ry="5" fill="#7a1f2b"/>
-                </g>
-                <g class="g3 shake">
-                  <circle cx="173" cy="235" r="6.500" fill="#fff"/><circle cx="194" cy="235" r="6.500" fill="#fff"/><circle cx="173" cy="236" r="3" fill="#3b2a1e"/><circle cx="194" cy="236" r="3" fill="#3b2a1e"/>
-                  <path d="M163 222l16 7M205 222l-16 7" stroke="#5a3d2b" stroke-width="3.500" stroke-linecap="round"/>
-                  <ellipse cx="184" cy="253" rx="10" ry="12" fill="#7a1f2b"/><ellipse cx="184" cy="259" rx="6" ry="4" fill="#e0707a"/>
-                  <path d="M140 236q-10 12 0 24M130 228q-18 20 0 40M120 220q-26 28 0 56" fill="none" stroke="#ff9a9a" stroke-width="3" stroke-linecap="round" opacity=".85"/>
-                  <path d="M215 214l12-8M222 226l14-2M154 206l-6-12" stroke="#ffd1d1" stroke-width="3" stroke-linecap="round"/>
-                </g>
-
-                <!-- Brazos -->
-                <g class="g0">
-                  <path d="M262 258l66 22" stroke="#9ab8d6" stroke-width="14" stroke-linecap="round"/><circle cx="334" cy="282" r="8" fill="#e8bf9f"/>
-                  <path d="M470 175c0 60-60 100-134 108" fill="none" stroke="#bcd6e6" stroke-width="3"/>
-                </g>
-                <g class="g1">
-                  <path d="M262 258l44-14" stroke="#9ab8d6" stroke-width="14" stroke-linecap="round"/><circle class="fidget" cx="312" cy="242" r="8" fill="#e8bf9f"/>
-                  <path d="M470 175c0 40-80 60-158 66" fill="none" stroke="#bcd6e6" stroke-width="3"/>
-                </g>
-                <g class="g2">
-                  <path d="M262 258l30-60" stroke="#9ab8d6" stroke-width="14" stroke-linecap="round"/><circle class="fidget" cx="296" cy="190" r="8" fill="#e8bf9f"/>
-                  <path d="M470 175c0 20-100 6-174 14" fill="none" stroke="#bcd6e6" stroke-width="3"/>
-                </g>
-                <g class="g3">
-                  <g class="flail"><path d="M262 258l30-95" stroke="#9ab8d6" stroke-width="14" stroke-linecap="round"/><circle cx="296" cy="152" r="9" fill="#e8bf9f"/></g>
-                  <path d="M262 262l8-52" stroke="#9ab8d6" stroke-width="14" stroke-linecap="round"/><circle cx="272" cy="204" r="9" fill="#e8bf9f"/>
-                  <path d="M472 172L278 202" fill="none" stroke="#bcd6e6" stroke-width="3"/>
-                  <path d="M300 195l-8-10M312 193l-4-12M290 205l-12-6" stroke="#ff9a9a" stroke-width="2.500" stroke-linecap="round"/>
-                </g>
-              </g>
-
-              <!-- Alucinaciones -->
-              <g class="g2 g3 halluc" fill="#b79cff" opacity=".75">
-                <g class="wisp w1"><path d="M290 70c-20 0-24 36-22 52 8-6 14 6 22 0s14 6 22 0c2-16-2-52-22-52Z" fill="rgba(183,156,255,.65)"/><circle cx="282" cy="92" r="3" fill="#2a1240"/><circle cx="298" cy="92" r="3" fill="#2a1240"/></g>
-                <g class="wisp w2"><path d="M520 120c-14 0-17 26-15 38 6-4 10 4 15 0s10 4 15 0c2-12-1-38-15-38Z" fill="rgba(183,156,255,.5)"/><circle cx="514" cy="136" r="2.500" fill="#2a1240"/><circle cx="526" cy="136" r="2.500" fill="#2a1240"/></g>
-                <g class="bugs" fill="#2a1240"><circle cx="360" cy="150" r="4"/><circle cx="380" cy="168" r="3.500"/><circle cx="342" cy="176" r="3"/><circle cx="410" cy="150" r="3"/></g>
-              </g>
-
-              <!-- Globos de diálogo -->
-              <g class="bubble g0"><rect x="52" y="120" width="70" height="36" rx="18" fill="#fff" opacity=".9"/><text x="68" y="144" font-size="18" fill="#6b7a86" font-family="Inter,sans-serif">z z z</text></g>
-              <g class="bubble g1"><rect x="20" y="60" width="200" height="44" rx="14" fill="#fff"/><text x="34" y="88" font-size="17" fill="#3a2d4a" font-family="Inter,sans-serif">¿Dónde estoy? ¿Qué hora es?</text></g>
-              <g class="bubble g2"><rect x="20" y="50" width="250" height="60" rx="14" fill="#fff"/><text x="34" y="76" font-size="17" fill="#3a2d4a" font-family="Inter,sans-serif">¿Quién está ahí? Hay algo</text><text x="34" y="98" font-size="17" fill="#3a2d4a" font-family="Inter,sans-serif">moviéndose en la pared…</text></g>
-              <g class="bubble g3"><path d="M10 40h280l-14 36 14 40H10Z" fill="#fff4f4" stroke="#e04848" stroke-width="3" stroke-linejoin="round"/><text x="26" y="68" font-size="20" font-weight="700" fill="#a11c1c" font-family="Inter,sans-serif">¡SÁQUENME ESTO!</text><text x="26" y="98" font-size="20" font-weight="700" fill="#a11c1c" font-family="Inter,sans-serif">¡QUIERO IRME!</text></g>
-              <text class="g3" x="560" y="222" font-size="18" fill="#ff9a9a" font-family="Inter,sans-serif" font-weight="700">¡BIP! ¡BIP!</text>
-            </svg>
-            <span class="act-badge" id="actBadge">Tranquilo</span>
-          </div>
-
-          <div class="range-row"><span>Tranquilo</span><span>Delirio hiperactivo</span></div>
-          <label class="visually-hidden" for="cmpRange">Nivel de delirio del paciente: de tranquilo a delirio hiperactivo</label>
-          <input class="range" type="range" id="cmpRange" min="0" max="100" value="0" aria-describedby="cmpDesc">
-          <p class="compare-desc" id="cmpDesc" aria-live="polite"></p>
-          <p class="fine center-note">Ilustración educativa. Estos comportamientos no son voluntarios: son síntomas de una disfunción cerebral aguda.</p>
-        </div>
-      </div>
-    </section>
-
-    
-<!-- ============ DELIRIO HIPOACTIVO ============ -->
-    <section class="section dark cont" id="hipoactivo" aria-labelledby="hipo-title">
-      <div class="container">
-        <header class="section-head center reveal">
-          <h2 id="hipo-title">Cuando nadie se alarma: el delirio hipoactivo</h2>
-          <p class="lead">Es el más frecuente y el que más se pasa por alto. Desliza la barra y mira qué ocurre afuera… y dentro del cerebro.</p>
-        </header>
-
-        <div class="hypo reveal" id="hypoWrap" style="--lvl:0">
-          <div class="hypo-grid">
-            <!-- Escena -->
-            <div class="act-stage hypo-stage" id="hypoStage" data-stage="0">
-              <svg viewBox="0 0 800 420" role="img" aria-labelledby="hypoTitle" preserveAspectRatio="xMidYMid slice">
-                <title id="hypoTitle">Ilustración de un paciente que pasa de estar despierto y comiendo a estar dormido, callado y sin tocar la bandeja, mientras una enfermera pasa sin notar nada</title>
-                <g class="room">
-                  <rect width="800" height="420" fill="#f4e7d3"/>
-                  <rect y="330" width="800" height="90" fill="#c9b08a"/>
-                  <rect width="800" height="420" fill="#2a3a52" style="opacity:calc(var(--lvl) * .35)"/>
-                  <rect x="545" y="40" width="100" height="110" rx="6" fill="#bfe3f5" stroke="#a07a52" stroke-width="6"/>
-                  <path d="M595 40v110M545 95h100" stroke="#a07a52" stroke-width="4"/>
-                  <!-- enfermera que pasa de largo -->
-                  <g class="g2 g3">
-                    <circle cx="430" cy="150" r="18" fill="#e8bf9f"/><path d="M412 146c2-18 32-18 36 0-10-6-26-6-36 0Z" fill="#4a3426"/>
-                    <rect x="408" y="168" width="44" height="100" rx="14" fill="#6aa6c8"/>
-                    <rect x="440" y="190" width="22" height="30" rx="3" fill="#fff" stroke="#9fb4c2" stroke-width="2" transform="rotate(8 450 205)"/>
-                  </g>
-                  <!-- cama -->
-                  <rect x="96" y="190" width="26" height="140" rx="6" fill="#a07a52"/>
-                  <rect x="110" y="262" width="400" height="56" rx="12" fill="#fff"/>
-                  <rect x="120" y="318" width="10" height="22" fill="#a07a52"/><rect x="490" y="318" width="10" height="22" fill="#a07a52"/>
-                  <ellipse cx="172" cy="252" rx="48" ry="20" fill="#f3f3f3"/>
-                  <path d="M270 270c60-24 160-18 240 4v26H270Z" fill="#8cc3b5"/>
-                </g>
-
-                <!-- Bandeja con comida -->
-                <g>
-                  <rect x="566" y="300" width="8" height="30" fill="#8a97a3"/><rect x="520" y="292" width="100" height="10" rx="3" fill="#8a97a3"/>
-                  <rect x="522" y="282" width="96" height="12" rx="4" fill="#d9dde1"/>
-                  <ellipse cx="570" cy="280" rx="38" ry="8" fill="#fff" stroke="#cfd6dc" stroke-width="2"/>
-                  <g style="opacity:calc(.12 + var(--lvl) * .9)">
-                    <ellipse cx="556" cy="276" rx="14" ry="7" fill="#e7b54a"/><ellipse cx="582" cy="277" rx="12" ry="6" fill="#7bb661"/><ellipse cx="570" cy="271" rx="10" ry="6" fill="#d9785a"/>
-                  </g>
-                  <g stroke="#cfd6dc" stroke-width="3" fill="none" stroke-linecap="round" style="opacity:calc(1 - var(--lvl) * 2.2)"><path d="M556 262c-6-8 6-12 0-20M572 262c-6-8 6-12 0-20M588 262c-6-8 6-12 0-20"/></g>
-                </g>
-
-                <!-- Monitor: todo "normal" -->
-                <g>
-                  <rect x="660" y="190" width="110" height="82" rx="8" fill="#0a1218" stroke="#6b7a86" stroke-width="5"/>
-                  <path d="M670 236h18l8-20 12 38 10-26 8 8h34" fill="none" stroke="#5fe0a2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                  <rect x="705" y="272" width="20" height="58" fill="#6b7a86"/>
-                </g>
-
-                <!-- Sonda e IV -->
-                <path d="M193 243c28 18 60 40 96 62s70 28 96 18" fill="none" stroke="#ffe08a" stroke-width="4" stroke-linecap="round"/>
-                <path d="M470 330V120M440 120h60" stroke="#8a97a3" stroke-width="5" stroke-linecap="round"/>
-                <rect x="448" y="124" width="44" height="58" rx="8" fill="#cfe9f7" stroke="#8fb8d0" stroke-width="3"/>
-                <path d="M470 182c0 60-60 96-134 102" fill="none" stroke="#bcd6e6" stroke-width="3"/>
-
-                <!-- Paciente -->
-                <g>
-                  <path d="M205 268c2-32 30-40 60-32l20 38Z" fill="#9ab8d6"/>
-                  <path d="M262 258l66 22" stroke="#9ab8d6" stroke-width="14" stroke-linecap="round"/><circle cx="334" cy="282" r="8" fill="#e8bf9f"/>
-                  <circle cx="182" cy="236" r="28" fill="#e8bf9f"/>
-                  <path d="M155 232c0-26 40-34 56-12-14-6-36-6-56 12Z" fill="#5a3d2b"/>
-                  <g class="g2 g3" fill="#b58f8a" opacity=".45"><ellipse cx="173" cy="243" rx="7" ry="2.500"/><ellipse cx="193" cy="243" rx="7" ry="2.500"/></g>
-
-                  <g class="g0"><circle cx="173" cy="235" r="3" fill="#3b2a1e"/><circle cx="193" cy="235" r="3" fill="#3b2a1e"/><path d="M175 249q7 5 14 0" fill="none" stroke="#5a3d2b" stroke-width="2.500" stroke-linecap="round"/></g>
-                  <g class="g1"><ellipse cx="173" cy="237" rx="4" ry="1.800" fill="#3b2a1e"/><ellipse cx="193" cy="237" rx="4" ry="1.800" fill="#3b2a1e"/><path d="M167 234h13M187 234h13M177 251h10" fill="none" stroke="#5a3d2b" stroke-width="2.500" stroke-linecap="round"/></g>
-                  <g class="g2"><path d="M168 237q5 2 10 0M188 237q5 2 10 0M176 252q7-3 14 0" fill="none" stroke="#5a3d2b" stroke-width="2.500" stroke-linecap="round"/></g>
-                  <g class="g3"><path d="M168 236q5 4 10 0M188 236q5 4 10 0" fill="none" stroke="#5a3d2b" stroke-width="2.500" stroke-linecap="round"/><ellipse cx="184" cy="252" rx="3.500" ry="2.500" fill="#7a1f2b"/></g>
-                </g>
-
-                <!-- Globos -->
-                <g class="bubble g0"><rect x="20" y="70" width="190" height="40" rx="14" fill="#fff"/><text x="34" y="96" font-size="17" fill="#3a2d4a" font-family="Inter,sans-serif">Buenos días, gracias.</text></g>
-                <g class="bubble g1"><rect x="20" y="70" width="150" height="40" rx="14" fill="#fff" opacity=".85"/><text x="34" y="96" font-size="17" fill="#6b7a86" font-family="Inter,sans-serif">…sí… no sé…</text></g>
-                <g class="g3 zz" font-family="Inter,sans-serif" fill="#cfe0ee" font-weight="700"><text x="150" y="190" font-size="22">z</text><text x="170" y="168" font-size="28">z</text><text x="196" y="140" font-size="34">Z</text></g>
-                <g class="bubble g2 g3"><rect x="240" y="14" width="260" height="50" rx="14" fill="#fff"/><text x="254" y="37" font-size="16" fill="#3a2d4a" font-family="Inter,sans-serif">Todo tranquilo: está</text><text x="254" y="56" font-size="16" fill="#3a2d4a" font-family="Inter,sans-serif">descansando…</text></g>
-              </svg>
-              <span class="act-badge" id="hypoBadge">Alerta</span>
-            </div>
-
-            <!-- Cerebro -->
-            <aside class="brain-panel" aria-label="Lo que ocurre en el cerebro">
-              <h3>Dentro del cerebro</h3>
-              <svg class="brain-svg" viewBox="95 105 210 180" aria-hidden="true">
-                <path class="outline" d="M130 250c-30-10-40-50-20-80 8-30 40-50 70-45 20-20 60-20 80 5 35 0 60 30 55 65 15 25 0 60-30 65-15 15-40 18-58 5-20 10-45 5-60-10-12 2-26 0-37-5Z" fill="rgba(127,224,212,.08)" stroke-width="3"/>
-                <g class="links" fill="none" stroke-linecap="round">
-                  <path d="M150 170 185 150 220 145 255 165 270 200 245 230 205 240 170 225 140 200Z"/>
-                  <path d="M150 170 205 195 255 165M185 150 205 195 270 200M220 145 205 195 245 230M170 225 205 195 140 200"/>
-                </g>
-                <g class="nodes">
-                  <circle class="n" style="--d:0s" cx="150" cy="170" r="6"/><circle class="n" style="--d:.2s" cx="185" cy="150" r="6"/><circle class="n" style="--d:.4s" cx="220" cy="145" r="6"/>
-                  <circle class="n" style="--d:.1s" cx="255" cy="165" r="6"/><circle class="n" style="--d:.3s" cx="270" cy="200" r="6"/><circle class="n" style="--d:.5s" cx="245" cy="230" r="6"/>
-                  <circle class="n" style="--d:.15s" cx="205" cy="240" r="6"/><circle class="n" style="--d:.35s" cx="170" cy="225" r="6"/><circle class="n" style="--d:.25s" cx="140" cy="200" r="6"/><circle class="n" style="--d:.45s" cx="205" cy="195" r="8"/>
-                </g>
-              </svg>
-              <ul class="meters" id="meters">
-                <li data-k="att"><span>Atención</span><div class="bar"><i></i></div><b></b></li>
-                <li data-k="rsp"><span>Respuesta al hablarle</span><div class="bar"><i></i></div><b></b></li>
-                <li data-k="app"><span>Apetito</span><div class="bar"><i></i></div><b></b></li>
-                <li data-k="ale"><span>Nivel de alerta</span><div class="bar"><i></i></div><b></b></li>
-                <li data-k="vis" class="warn"><span>Qué tan fácil es notarlo</span><div class="bar"><i></i></div><b></b></li>
-              </ul>
-            </aside>
-          </div>
-
-          <div class="range-row"><span>Despierto y participativo</span><span>Delirio hipoactivo</span></div>
-          <label class="visually-hidden" for="hypoRange">Nivel de delirio hipoactivo: de despierto a apagado y somnoliento</label>
-          <input class="range range-hypo" type="range" id="hypoRange" min="0" max="100" value="0" aria-describedby="hypoDesc">
-          <p class="compare-desc" id="hypoDesc" aria-live="polite"></p>
-
-          <div class="callout">
-            <strong>¿Por qué pasa desapercibido?</strong> No hay gritos, alarmas ni agitación: el paciente “solo duerme”, come poco y habla menos. Por eso se recomienda un <em>cribado sistemático</em> (CAM-ICU, ICDSC) cada turno: pide, por ejemplo, apretar la mano al oír una letra concreta y mide la atención.
-          </div>
-          <p class="fine center-note">Ilustración educativa y simplificada. Se cree que intervienen inflamación, desequilibrio de neurotransmisores (p. ej., acetilcolina), alteración del sueño y menor conexión entre redes cerebrales; el mecanismo exacto aún se investiga.</p>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ============ PROYECTO ============ -->
-    <section class="section" id="proyecto" aria-labelledby="proyecto-title">
-      <div class="container split">
-        <div>
-          <h2 id="proyecto-title">Un problema que se subestima</h2>
-          <p>En muchas unidades de cuidados intensivos el delirio sigue viéndose como algo “esperable”. Esa normalización tiene un coste:</p>
-          <ul class="rows">
-            <li><strong>Infradiagnóstico.</strong> El delirio hipoactivo (paciente callado, apagado) se confunde con cansancio o sedación.</li>
-            <li><strong>Sin cribado sistemático.</strong> Sin escalas validadas, el diagnóstico depende de la impresión clínica.</li>
-            <li><strong>Impacto en la recuperación.</strong> Más ventilación, más estancia, más riesgo de deterioro cognitivo, ansiedad y estrés postraumático.</li>
-            <li><strong>Familias sin información.</strong> Ver a un ser querido confuso o agitado genera miedo y culpa si nadie lo explica.</li>
-          </ul>
-        </div>
-        <aside aria-label="Objetivos y visión">
-          <h3>Qué buscamos</h3>
-          <ul class="rows tight">
-            <li>Hacer comprensible el delirio para familias, estudiantes y profesionales.</li>
-            <li>Promover el cribado sistemático con herramientas validadas.</li>
-            <li>Difundir medidas de prevención y manejo no farmacológico.</li>
-            <li>Dar voz a pacientes y familias.</li>
-          </ul>
-          <p class="vision">Una UCI donde ningún delirio pase inadvertido y donde la familia sea parte del cuidado.</p>
-        </aside>
-      </div>
-    </section>
-
-    <!-- ============ SÍNDROME ============ -->
-    <section class="section alt" id="sindrome" aria-labelledby="sindrome-title">
+    <section class="section" id="que-es" data-obj="86 26 .55 50 .9" data-title="Qué es" data-lines="fam est pro" aria-labelledby="que-es-t">
       <div class="container">
         <header class="section-head">
-          <h2 id="sindrome-title">Cómo se presenta, por qué aparece y qué provoca</h2>
+          <h2 id="que-es-t">Qué es el delirio</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">Es un fallo agudo del cerebro: de pronto, la persona no puede mantener la atención ni pensar con claridad. No es locura, no es demencia y no es «lo normal» de estar grave.</p>
         </header>
 
-        <div class="tabs" data-tabs>
-          <div role="tablist" aria-label="Subtipos de delirio" class="tablist">
-            <button role="tab" id="tab-hiper" aria-controls="panel-hiper" aria-selected="true">Hiperactivo</button>
-            <button role="tab" id="tab-hipo" aria-controls="panel-hipo" aria-selected="false" tabindex="-1">Hipoactivo</button>
-            <button role="tab" id="tab-mixto" aria-controls="panel-mixto" aria-selected="false" tabindex="-1">Mixto</button>
+        <dl class="facts spread">
+          <div><dt>Empieza de golpe</dt><dd>Aparece en horas o en pocos días, no en meses.</dd></div>
+          <div><dt>Falla la atención</dt><dd>Cuesta seguir una conversación, una orden sencilla o una mirada.</dd></div>
+          <div><dt>Va y viene</dt><dd>Mejora y empeora a lo largo del día. La noche suele ser peor.</dd></div>
+          <div><dt>Tiene una causa</dt><dd>Infección, fármacos, dolor, falta de sueño. Casi siempre se puede buscar y tratar.</dd></div>
+        </dl>
+
+        <ul class="stats spread">
+          <li><b>8 <small>de cada</small> 10</b><span>pacientes con ventilación mecánica lo presentan durante el ingreso.</span><a href="#ev-ely2001">Ely, 2001</a></li>
+          <li><b>&lt;2 <small>de cada</small> 100</b><span>casos son solo hiperactivos. El resto no hace ruido.</span><a href="#ev-peterson">Peterson, 2006</a></li>
+          <li><b>1 <small>de cada</small> 3</b><span>supervivientes sigue con fallos de memoria o atención al año.</span><a href="#ev-pandharipande">Pandharipande, 2013</a></li>
+          <li><b>2 <small>min</small></b><span>lleva el cribado con CAM-ICU a pie de cama.</span><a href="#deteccion">Cómo se hace</a></li>
+        </ul>
+
+        <details class="more">
+          <summary><span>No es lo mismo que la demencia ni la depresión</span><svg class="ico"><use href="#i-plus"/></svg></summary>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Comparación entre delirio, demencia y depresión">
+            <table class="tbl">
+              <thead><tr><th scope="col"><span class="visually-hidden">Rasgo</span></th><th scope="col">Delirio</th><th scope="col">Demencia</th><th scope="col">Depresión</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Inicio</th><td>Horas o días</td><td>Meses o años</td><td>Semanas o meses</td></tr>
+                <tr><th scope="row">Durante el día</th><td>Fluctúa; peor de noche</td><td>Bastante estable</td><td>Estable</td></tr>
+                <tr><th scope="row">Atención</th><td>Alterada desde el principio</td><td>Conservada al inicio</td><td>Poco afectada</td></tr>
+                <tr><th scope="row">Conciencia</th><td>Agitado o adormilado</td><td>Normal</td><td>Normal</td></tr>
+                <tr><th scope="row">Reversible</th><td>Casi siempre, tratando la causa</td><td>No; avanza</td><td>Sí, con tratamiento</td></tr>
+              </tbody>
+            </table>
           </div>
-          <div role="tabpanel" id="panel-hiper" aria-labelledby="tab-hiper" class="tabpanel">
-            <div class="tab-art" aria-hidden="true">
-              <svg viewBox="0 0 200 120"><path d="M0 60l15-30 15 55 15-70 15 80 15-50 15 40 15-60 15 75 15-45 15 30 15-20 15 25" fill="none" stroke="var(--red)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
-              <span>Energía alta</span>
-            </div>
-            <div>
-              <h3>Delirio hiperactivo</h3>
-              <p>Es el más visible: agitación, inquietud, intentos de retirarse sondas o catéteres, alucinaciones, a veces agresividad. Suele detectarse porque “molesta”, pero también puede malinterpretarse como un problema de conducta.</p>
-              <ul class="tags"><li>Agitación</li><li>Alucinaciones</li><li>Ideas paranoides</li><li>Insomnio</li></ul>
-            </div>
+          <p class="fine">Pueden coincidir: una persona con demencia tiene más riesgo de sufrir delirio.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ POR DENTRO (cerebro 3D anclado al scroll) ============ -->
+    <section class="section night story" id="por-dentro" data-obj="50 60 .35 100 0" data-title="Por dentro" data-lines="fam est pro" aria-labelledby="por-dentro-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="por-dentro-t">Qué le pasa al cerebro</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">El delirio no se ve en una radiografía. Baja despacio y mira cómo cambia el cerebro de un paciente a lo largo de una noche.</p>
+        </header>
+      </div>
+      <div class="story-track">
+        <div class="story-stage">
+          <canvas class="story-canvas" aria-hidden="true"></canvas>
+          <div class="container story-col">
+            <ol class="beats">
+              <li class="beat">
+                <h3>Un cerebro despierto</h3>
+                <p>Miles de millones de neuronas trabajan coordinadas. Gracias a esa red, una persona sabe dónde está, sigue una conversación y distingue lo real de lo soñado.</p>
+              </li>
+              <li class="beat">
+                <h3>La red pierde el ritmo</h3>
+                <p>La infección, algunos fármacos, la falta de sueño o de oxígeno alteran la comunicación entre regiones. No hay una lesión en un punto: falla la red entera.</p>
+                <p class="sign"><b>Desde fuera</b> Está raro, distinto a como es.</p>
+              </li>
+              <li class="beat">
+                <h3>Se apaga la atención</h3>
+                <p>Es lo primero en caer. No consigue seguir una frase hasta el final ni cumplir una orden sencilla. Por eso las pruebas de detección miden la atención.</p>
+                <p class="sign"><b>Desde fuera</b> Pierde el hilo. Hay que repetirle las cosas.</p>
+              </li>
+              <li class="beat">
+                <h3>El día y la noche se mezclan</h3>
+                <p>El reloj interno se desajusta. Duerme a ratos de día y pasa la madrugada despierto. De noche, todo empeora.</p>
+                <p class="sign"><b>Desde fuera</b> Dormido en la visita, inquieto a las tres de la mañana.</p>
+              </li>
+              <li class="beat">
+                <h3>Lo real y lo imaginado se confunden</h3>
+                <p>Puede ver personas o insectos que no están, o creer que quieren hacerle daño. Para él o para ella es completamente real, y da miedo.</p>
+                <p class="sign"><b>Desde fuera</b> Habla con alguien que no está. Se asusta, desconfía.</p>
+              </li>
+              <li class="beat">
+                <h3>Dos salidas: el ruido o el silencio</h3>
+                <p>El mismo fallo tiene dos caras. Unos pacientes se agitan. La mayoría se apaga, y por eso nadie lo nota.</p>
+                <p class="sign"><b>Desde fuera</b> O no para quieto, o casi no se mueve ni habla.</p>
+              </li>
+            </ol>
+            <p class="story-count" aria-hidden="true"><b id="storyN">1</b> de 6<svg class="ico"><use href="#i-down"/></svg></p>
           </div>
-          <div role="tabpanel" id="panel-hipo" aria-labelledby="tab-hipo" class="tabpanel" hidden>
-            <div class="tab-art" aria-hidden="true">
-              <svg viewBox="0 0 200 120"><path d="M0 60c40 0 50-6 100-6s60 6 100 6" fill="none" stroke="var(--cobalt)" stroke-width="3"/></svg>
-              <span>Energía baja</span>
+        </div>
+      </div>
+      <div class="container story-end">
+        <p class="fine">Modelo ilustrativo, no una imagen médica. Los mecanismos exactos se siguen investigando: se cree que intervienen la inflamación, los neurotransmisores y la conexión entre redes cerebrales.</p>
+      </div>
+    </section>
+
+    <!-- ============ LAS DOS CARAS ============ -->
+    <section class="section night" id="dos-caras" data-obj="50 60 .35 140 0" data-title="Las dos caras" data-lines="fam est pro" aria-labelledby="dos-caras-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="dos-caras-t">Dos habitaciones, la misma noche</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">El delirio tiene dos caras. Una grita y la otra calla. Avanza la noche hora a hora y mira cuál de los dos pacientes recibe atención.</p>
+        </header>
+
+        <div class="sim" id="sim">
+          <div class="sim-clock">
+            <output class="sim-hour" id="simHour" for="simRange">20:00</output>
+            <div class="sim-ctrl">
+              <button class="icon-btn" id="simPrev" type="button" aria-label="Hora anterior"><svg class="ico"><use href="#i-back"/></svg></button>
+              <div class="sim-range">
+                <input class="range" type="range" id="simRange" min="0" max="12" step="1" value="0" aria-label="Hora de la noche, de 20:00 a 08:00">
+                <div class="ticks" aria-hidden="true"><span>20</span><span>21</span><span>22</span><span>23</span><span>00</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span></div>
+              </div>
+              <button class="icon-btn" id="simNext" type="button" aria-label="Hora siguiente"><svg class="ico"><use href="#i-arrow"/></svg></button>
             </div>
-            <div>
-              <h3>Delirio hipoactivo</h3>
-              <p>El más frecuente en UCI y el más ignorado. El paciente está apagado, somnoliento, apático, habla poco y responde con lentitud. Como no genera alarma, pasa inadvertido, y se asocia a peor pronóstico.</p>
-              <ul class="tags"><li>Apatía</li><li>Somnolencia</li><li>Respuesta lenta</li><li>Poco habla</li></ul>
-            </div>
+            <button class="btn btn-ghost" id="simPlay" type="button"><svg class="ico"><use href="#i-play"/></svg><span>Recorrer la noche</span></button>
           </div>
-          <div role="tabpanel" id="panel-mixto" aria-labelledby="tab-mixto" class="tabpanel" hidden>
-            <div class="tab-art" aria-hidden="true">
-              <svg viewBox="0 0 200 120"><path d="M0 60h40l10-40 15 80 10-60 10 20h30l10-30 12 55 10-35h53" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>
-              <span>Alterna</span>
+
+          <div class="rooms">
+            <article class="room" data-room="r7" aria-labelledby="r7t">
+              <header class="plate">
+                <span class="plate-num" aria-hidden="true">7</span>
+                <div><h3 id="r7t">Habitación 7</h3><p>Delirio hiperactivo</p></div>
+                <p class="call"><i></i><span>Luz de llamada apagada</span></p>
+              </header>
+              <div class="monitor" aria-hidden="true">
+                <svg viewBox="0 0 300 60" preserveAspectRatio="none"><g class="ecg"><path d="M0 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6M100 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6M200 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6M300 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6"/></g></svg>
+                <p class="mon-hr"><b data-f="hr">78</b><span>lpm</span></p>
+              </div>
+              <p class="mon-cap" data-f="mon">Constantes normales.</p>
+              <div class="trace-wrap">
+                <p class="trace-cap">Nivel de atención, hora a hora</p>
+                <div class="trace" aria-hidden="true"></div>
+              </div>
+              <dl class="now">
+                <div><dt>Lo que pasa</dt><dd data-f="do"></dd></div>
+                <div><dt>Lo que queda anotado</dt><dd><ol class="log" data-f="log"></ol></dd></div>
+              </dl>
+              <dl class="tally">
+                <div><dt>Avisos al personal</dt><dd data-f="calls">0</dd></div>
+                <div><dt>Horas con la atención alterada</dt><dd data-f="low">0</dd></div>
+              </dl>
+            </article>
+
+            <article class="room" data-room="r8" aria-labelledby="r8t">
+              <header class="plate">
+                <span class="plate-num" aria-hidden="true">8</span>
+                <div><h3 id="r8t">Habitación 8</h3><p>Delirio hipoactivo</p></div>
+                <p class="call"><i></i><span>Luz de llamada apagada</span></p>
+              </header>
+              <div class="monitor" aria-hidden="true">
+                <svg viewBox="0 0 300 60" preserveAspectRatio="none"><g class="ecg"><path d="M0 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6M100 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6M200 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6M300 40h30l5-4 5 4h8l4 6 6-38 6 44 4-12h10l8-8 8 8h6"/></g></svg>
+                <p class="mon-hr"><b data-f="hr">78</b><span>lpm</span></p>
+              </div>
+              <p class="mon-cap" data-f="mon">Constantes normales.</p>
+              <div class="trace-wrap">
+                <p class="trace-cap">Nivel de atención, hora a hora</p>
+                <div class="trace" aria-hidden="true"></div>
+              </div>
+              <dl class="now">
+                <div><dt>Lo que pasa</dt><dd data-f="do"></dd></div>
+                <div><dt>Lo que queda anotado</dt><dd><ol class="log" data-f="log"></ol></dd></div>
+              </dl>
+              <dl class="tally">
+                <div><dt>Avisos al personal</dt><dd data-f="calls">0</dd></div>
+                <div><dt>Horas con la atención alterada</dt><dd data-f="low">0</dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <p class="sim-verdict" id="simVerdict" role="status"></p>
+          <p class="fine">Ejemplo ilustrativo, no un caso real. Las barras rayadas marcan las horas en que la atención está por debajo de lo que detectaría un cribado.</p>
+        </div>
+
+        <div class="two why">
+          <div>
+            <h3>Por qué el silencioso pasa inadvertido</h3>
+            <ul class="rows">
+              <li><strong>No molesta.</strong> No hay gritos ni alarmas: el paciente «solo duerme», come poco y habla menos.</li>
+              <li><strong>Se parece a otra cosa.</strong> Se confunde con cansancio, tristeza o efecto de la sedación.</li>
+              <li><strong>Fluctúa.</strong> En la ronda de la mañana puede contestar bien, y nadie vio la noche.</li>
+              <li><strong>No se busca.</strong> Sin una escala validada, el diagnóstico depende de la impresión de cada turno.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Tres formas de presentarse</h3>
+            <dl class="defs">
+              <div><dt>Hiperactivo</dt><dd>Agitación, inquietud, alucinaciones, intentos de retirarse sondas o catéteres. Es el más visible y el menos frecuente.</dd></div>
+              <div><dt>Hipoactivo</dt><dd>Apagado, somnoliento, apático, de respuesta lenta. Es frecuente, pasa inadvertido y se asocia a peor pronóstico.</dd></div>
+              <div><dt>Mixto</dt><dd>Alterna fases de agitación y de apagamiento, a veces en el mismo día. Es la forma más habitual en la UCI.</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DETECCIÓN ============ -->
+    <section class="section" id="deteccion" data-obj="90 22 .5 190 .85" data-title="Detección" data-lines="est pro" aria-labelledby="deteccion-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="deteccion-t">Cómo se detecta</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">Lo que no se busca no se encuentra. El CAM-ICU es una prueba validada que se hace a pie de cama, sin que el paciente tenga que hablar, y lleva unos dos minutos. Las guías recomiendan repetirla en cada turno.</p>
+        </header>
+
+        <p class="pre"><strong>Paso previo: el nivel de sedación.</strong> Se mide con la escala RASS. Si el paciente está en −4 o −5 no se puede evaluar todavía; se vuelve a intentar más tarde.</p>
+
+        <ol class="cam spread">
+          <li>
+            <h3>Inicio agudo o curso fluctuante</h3>
+            <p>¿Ha cambiado su estado mental respecto a cómo estaba antes? ¿Ha fluctuado en las últimas 24 horas?</p>
+            <p class="crit">Si no, se detiene aquí: no hay delirio.</p>
+          </li>
+          <li>
+            <h3>Inatención</h3>
+            <p>Se le leen diez letras y se le pide que apriete la mano solo cuando oiga la «A».</p>
+            <p class="crit">Presente con más de 2 errores.</p>
+          </li>
+          <li>
+            <h3>Nivel de conciencia alterado</h3>
+            <p>Cualquier valor de RASS distinto de 0, es decir, que no esté alerta y tranquilo.</p>
+            <p class="crit">Presente si RASS no es 0.</p>
+          </li>
+          <li>
+            <h3>Pensamiento desorganizado</h3>
+            <p>Cuatro preguntas de sí o no («¿Flota una piedra en el agua?») y una orden sencilla: enseñar dos dedos.</p>
+            <p class="crit">Presente con más de 1 error.</p>
+          </li>
+        </ol>
+        <p class="cam-rule"><strong>CAM-ICU positivo:</strong> rasgo 1 y rasgo 2, más el rasgo 3 o el 4.</p>
+
+        <div class="ltest" id="ltest">
+          <div class="ltest-txt">
+            <h3>Prueba tú el rasgo 2</h3>
+            <p>Van a aparecer diez letras, una cada segundo y medio. Pulsa <strong>Apretar la mano</strong> solo cuando veas la letra A. A pie de cama se hace con la voz y la mano del paciente.</p>
+            <div class="ltest-btns">
+              <button class="btn btn-primary" id="ltStart" type="button">Empezar la prueba</button>
+              <button class="btn btn-ghost" id="ltSqueeze" type="button" disabled>Apretar la mano</button>
             </div>
-            <div>
-              <h3>Delirio mixto</h3>
-              <p>El paciente alterna fases de agitación y de apagamiento, a veces en el mismo día. Esa fluctuación es una característica central del delirio y una pista clave para reconocerlo.</p>
-              <ul class="tags"><li>Fluctuación</li><li>Peor por la noche</li><li>Atención variable</li></ul>
-            </div>
+            <p class="ltest-result" id="ltResult" role="status"></p>
+          </div>
+          <div class="ltest-stage">
+            <p class="ltest-letter" id="ltLetter" aria-live="assertive" aria-atomic="true">A</p>
+            <ol class="ltest-cells" id="ltCells" aria-label="Letras mostradas"></ol>
           </div>
         </div>
 
-        <div class="split-2">
+        <details class="more">
+          <summary><span>Ver la escala RASS completa</span><svg class="ico"><use href="#i-plus"/></svg></summary>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Escala RASS de agitación y sedación">
+            <table class="tbl rass">
+              <thead><tr><th scope="col">Valor</th><th scope="col">Estado</th><th scope="col">Qué se observa</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">+4</th><td>Combativo</td><td>Violento, peligro inmediato para el personal</td></tr>
+                <tr><th scope="row">+3</th><td>Muy agitado</td><td>Tira de tubos o catéteres, agresivo</td></tr>
+                <tr><th scope="row">+2</th><td>Agitado</td><td>Movimientos frecuentes sin propósito, lucha con el ventilador</td></tr>
+                <tr><th scope="row">+1</th><td>Inquieto</td><td>Ansioso, sin movimientos agresivos</td></tr>
+                <tr class="zero"><th scope="row">0</th><td>Alerta y tranquilo</td><td>El único valor que no puntúa en el rasgo 3</td></tr>
+                <tr><th scope="row">−1</th><td>Somnoliento</td><td>Se mantiene despierto más de 10 segundos al llamarle</td></tr>
+                <tr><th scope="row">−2</th><td>Sedación ligera</td><td>Despierta menos de 10 segundos al llamarle</td></tr>
+                <tr><th scope="row">−3</th><td>Sedación moderada</td><td>Se mueve o abre los ojos a la voz, sin contacto visual</td></tr>
+                <tr><th scope="row">−4</th><td>Sedación profunda</td><td>Sin respuesta a la voz; sí al estímulo físico</td></tr>
+                <tr><th scope="row">−5</th><td>No despertable</td><td>Sin respuesta a la voz ni al estímulo físico</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+        <p class="fine">La otra herramienta validada es la ICDSC: una lista de ocho ítems que se completa con lo observado durante el turno. Cuatro puntos o más indican delirio.</p>
+      </div>
+    </section>
+
+    <!-- ============ CAUSAS ============ -->
+    <section class="section alt" id="causas" data-obj="8 36 .7 230 .8" data-title="Causas" data-lines="fam est" aria-labelledby="causas-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="causas-t">Por qué aparece y qué deja</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li></ul>
+          <p class="lead">Casi nunca hay una sola causa. Se suman la enfermedad, los fármacos, el entorno y la fragilidad de cada persona.</p>
+        </header>
+
+        <div class="two">
           <div>
             <h3>Causas y factores de riesgo</h3>
-            <p class="muted">Casi siempre es multifactorial.</p>
-            <div class="accordion" data-accordion>
-              <details><summary>La enfermedad crítica</summary><p>Sepsis, hipoxia, fallo orgánico, inflamación sistémica, alteraciones metabólicas.</p></details>
-              <details><summary>Fármacos</summary><p>Benzodiacepinas, opioides a dosis altas, anticolinérgicos y sedación profunda aumentan el riesgo.</p></details>
-              <details><summary>Entorno de la UCI</summary><p>Ruido, luz continua, sueño fragmentado, inmovilización, falta de gafas o audífonos.</p></details>
-              <details><summary>Factores del paciente</summary><p>Edad avanzada, demencia previa, consumo de alcohol, fragilidad o delirio anterior.</p></details>
+            <div class="accordion">
+              <details name="causas" open><summary><span>La enfermedad crítica</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>Sepsis, falta de oxígeno, fallo de órganos, inflamación generalizada y alteraciones metabólicas.</p></details>
+              <details name="causas"><summary><span>Los fármacos</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>Benzodiacepinas, opioides a dosis altas, anticolinérgicos y la sedación profunda aumentan el riesgo.</p></details>
+              <details name="causas"><summary><span>El entorno de la UCI</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>Ruido, luz continua, sueño fragmentado, inmovilidad y falta de gafas o audífonos.</p></details>
+              <details name="causas"><summary><span>La persona</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>Edad avanzada, demencia previa, consumo de alcohol, fragilidad o un delirio anterior.</p></details>
             </div>
           </div>
           <div>
             <h3>Consecuencias</h3>
-            <dl class="conseq">
-              <div><dt>Durante el ingreso</dt><dd>Más días de ventilación y de estancia, retirada accidental de dispositivos, mayor mortalidad.</dd></div>
-              <div><dt>Tras el alta</dt><dd>Deterioro cognitivo prolongado: atención, memoria y función ejecutiva.</dd></div>
-              <div><dt>Emocionales</dt><dd>Ansiedad, depresión, recuerdos delirantes y estrés postraumático, en pacientes y familias.</dd></div>
+            <dl class="defs">
+              <div><dt>Durante el ingreso</dt><dd>Más días de ventilación y de estancia, retirada accidental de sondas y catéteres, y mayor mortalidad.</dd></div>
+              <div><dt>Tras el alta</dt><dd>Problemas de atención, memoria y planificación que pueden durar meses.</dd></div>
+              <div><dt>Emocionales</dt><dd>Ansiedad, depresión, recuerdos delirantes y estrés postraumático, en pacientes y en familias.</dd></div>
             </dl>
           </div>
         </div>
 
-        <div class="mosaic-wrap">
-          <h3>El entorno de la UCI también influye</h3>
-          <p class="muted">Pulsa cada tarjeta para ver qué puede ayudar.</p>
-          <div class="mosaic" id="mosaic">
-            <button class="tile t1" type="button" aria-pressed="false"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 1 1 12 0v5l1.500 2h-15L6 16ZM10 21h4"/></svg><strong>Ruido y alarmas</strong><span class="problem">Alarmas constantes que confunden y asustan.</span><span class="solution">Ajustar alarmas, hablar bajo, agrupar cuidados.</span></button>
-            <button class="tile t2" type="button" aria-pressed="false"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.500 10.900V16h7v-2.100A6 6 0 0 0 12 3Z"/></svg><strong>Luz continua</strong><span class="problem">Sin diferencia entre el día y la noche.</span><span class="solution">Luz natural de día; penumbra por la noche.</span></button>
-            <button class="tile t3" type="button" aria-pressed="false"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/></svg><strong>Sueño fragmentado</strong><span class="problem">Interrupciones frecuentes impiden descansar.</span><span class="solution">Agrupar intervenciones y proteger el sueño.</span></button>
-            <button class="tile t4" type="button" aria-pressed="false"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5M7 11.500h.01"/></svg><strong>Inmovilidad</strong><span class="problem">Reposo prolongado y sedación profunda.</span><span class="solution">Movilización precoz y despertares diarios.</span></button>
-            <button class="tile t5" type="button" aria-pressed="false"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14a3.500 3.500 0 1 0 7 0 3.500 3.500 0 0 0-7 0ZM14 14a3.500 3.500 0 1 0 7 0 3.500 3.500 0 0 0-7 0ZM10 13.500h4"/></svg><strong>Sin gafas ni audífonos</strong><span class="problem">No ve ni oye bien su entorno.</span><span class="solution">Devolverle sus gafas y audífonos cuanto antes.</span></button>
-            <button class="tile t6" type="button" aria-pressed="false"><svg class="tile-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3 20c0-3.500 2.500-6 6-6s6 2.500 6 6M17 11a2.500 2.500 0 1 0 0-5M17 14c2.500.3 4 2.300 4 5"/></svg><strong>Soledad</strong><span class="problem">Rostros desconocidos y poca compañía.</span><span class="solution">Visitas flexibles, voces y fotos familiares.</span></button>
-          </div>
+        <details class="more env-more">
+        <summary><span>El entorno también cuenta: qué desorienta y qué ayuda</span><svg class="ico"><use href="#i-plus"/></svg></summary>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Factores del entorno y qué ayuda">
+          <table class="tbl env">
+            <thead><tr><th scope="col">Factor</th><th scope="col">Lo que desorienta</th><th scope="col">Lo que ayuda</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Ruido</th><td>Alarmas constantes que confunden y asustan</td><td>Ajustar alarmas, hablar bajo, agrupar cuidados</td></tr>
+              <tr><th scope="row">Luz</th><td>Ninguna diferencia entre el día y la noche</td><td>Luz natural de día y penumbra de noche</td></tr>
+              <tr><th scope="row">Sueño</th><td>Interrupciones cada poco tiempo</td><td>Agrupar intervenciones y proteger el descanso</td></tr>
+              <tr><th scope="row">Movimiento</th><td>Reposo prolongado y sedación profunda</td><td>Movilización precoz y despertares diarios</td></tr>
+              <tr><th scope="row">Sentidos</th><td>Sin gafas ni audífonos no ve ni oye bien</td><td>Devolvérselos cuanto antes</td></tr>
+              <tr><th scope="row">Compañía</th><td>Rostros desconocidos y horas a solas</td><td>Visitas flexibles, voces y fotos familiares</td></tr>
+            </tbody>
+          </table>
         </div>
+        </details>
+      </div>
+    </section>
 
-        <div class="tabs steps" data-tabs>
-          <div class="steps-head"><h3>Cómo acompañar en 5 pasos</h3><p class="muted">Para familiares y cuidadores.</p></div>
-          <div class="steps-body">
-            <div role="tablist" aria-label="Pasos para acompañar" class="tablist steps-list">
-              <button role="tab" id="st1" aria-controls="sp1" aria-selected="true"><span>1</span>Preséntate</button>
-              <button role="tab" id="st2" aria-controls="sp2" aria-selected="false" tabindex="-1"><span>2</span>Trae lo conocido</button>
-              <button role="tab" id="st3" aria-controls="sp3" aria-selected="false" tabindex="-1"><span>3</span>Habla con calma</button>
-              <button role="tab" id="st4" aria-controls="sp4" aria-selected="false" tabindex="-1"><span>4</span>Cuida el ritmo día/noche</button>
-              <button role="tab" id="st5" aria-controls="sp5" aria-selected="false" tabindex="-1"><span>5</span>Habla con el equipo</button>
-            </div>
-            <div class="steps-panels">
-              <div role="tabpanel" id="sp1" aria-labelledby="st1" class="tabpanel"><div><h3>Preséntate cada vez</h3><p>Di quién eres, qué día es y dónde está. Repetirlo con serenidad ayuda a orientar, aunque no lo recuerde después.</p></div></div>
-              <div role="tabpanel" id="sp2" aria-labelledby="st2" class="tabpanel" hidden><div><h3>Trae lo conocido</h3><p>Gafas, audífonos, fotos, un reloj o su música favorita (según lo permita el equipo) le anclan a la realidad.</p></div></div>
-              <div role="tabpanel" id="sp3" aria-labelledby="st3" class="tabpanel" hidden><div><h3>Habla con calma y frases cortas</h3><p>No discutas lo que ve o escucha. Valida la emoción (“entiendo que te asustes”) y redirige con suavidad.</p></div></div>
-              <div role="tabpanel" id="sp4" aria-labelledby="st4" class="tabpanel" hidden><div><h3>Ayuda a marcar el día y la noche</h3><p>Abre cortinas de día, conversa y estimula; por la tarde-noche baja luces y ruido para favorecer el sueño.</p></div></div>
-              <div role="tabpanel" id="sp5" aria-labelledby="st5" class="tabpanel" hidden><div><h3>Habla con el equipo</h3><p>Pregunta si se hace cribado de delirio, qué fármacos pueden influir y cómo puedes participar en el cuidado.</p></div></div>
-            </div>
-          </div>
+    <!-- ============ PREVENCIÓN ============ -->
+    <section class="section" id="prevencion" data-obj="92 72 .55 270 .85" data-title="Prevención" data-lines="est pro" aria-labelledby="prevencion-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="prevencion-t">Prevenir y tratar</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">No hay una pastilla contra el delirio. Lo que funciona es un conjunto de cuidados aplicados cada día, conocido como paquete ABCDEF.</p>
+        </header>
+
+        <ol class="bundle spread">
+          <li><span class="letter">A</span><div><h3>Evaluar y tratar el dolor</h3><p>El dolor mal controlado desencadena delirio. Primero la analgesia, después la sedación.</p></div></li>
+          <li><span class="letter">B</span><div><h3>Despertar y respirar</h3><p>Pruebas diarias de despertar y de respiración espontánea para acortar la ventilación.</p></div></li>
+          <li><span class="letter">C</span><div><h3>Elegir bien la sedación</h3><p>La mínima necesaria. Evitar benzodiacepinas siempre que sea posible.</p></div></li>
+          <li><span class="letter">D</span><div><h3>Delirio: buscarlo y manejarlo</h3><p>Cribado en cada turno con CAM-ICU o ICDSC y tratamiento de la causa.</p></div></li>
+          <li><span class="letter">E</span><div><h3>Movilización precoz</h3><p>Sentarse, ponerse de pie y caminar en cuanto sea seguro, incluso con ventilador.</p></div></li>
+          <li><span class="letter">F</span><div><h3>Familia presente</h3><p>Implicar a la familia en el cuidado y en las decisiones.</p></div></li>
+        </ol>
+
+        <div class="note">
+          <h3>¿Y los antipsicóticos?</h3>
+          <p>En el ensayo MIND-USA, ni el haloperidol ni la ziprasidona acortaron el delirio frente a placebo. Las guías PADIS desaconsejan su uso rutinario y los reservan para la agitación que pone en riesgo al paciente. <a href="#ev-girard">Ver el estudio</a></p>
         </div>
+      </div>
+    </section>
 
-        <div class="diagram">
-          <h3>Del riesgo a la acción: el ciclo de cuidado</h3>
-          <ol class="flow">
-            <li><strong>Prevenir</strong><small>Reducir sedantes, movilizar, dormir bien</small></li>
-            <li><strong>Detectar</strong><small>Cribado con CAM-ICU o ICDSC cada turno</small></li>
-            <li><strong>Tratar la causa</strong><small>Dolor, infección, fármacos, metabolismo</small></li>
-            <li><strong>Acompañar</strong><small>Familia, reorientación, entorno amable</small></li>
-          </ol>
-        </div>
+    <!-- ============ FAMILIA ============ -->
+    <section class="section alt" id="familia" data-obj="10 22 .65 310 .9" data-title="Familia" data-lines="fam" aria-labelledby="familia-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="familia-t">Si tu familiar tiene delirio</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li></ul>
+          <p class="lead">No es culpa de nadie y casi siempre es temporal. Tu presencia es parte del tratamiento: eres la voz y la cara que reconoce.</p>
+        </header>
 
-        <div class="family">
+        <h3>Cinco cosas que ayudan</h3>
+        <ol class="steps spread">
+          <li><h4>Preséntate cada vez</h4><p>Di quién eres, qué día es y dónde está. Repetirlo con calma orienta, aunque luego no lo recuerde.</p></li>
+          <li><h4>Trae lo conocido</h4><p>Gafas, audífonos, fotos, un reloj o su música, si el equipo lo permite.</p></li>
+          <li><h4>Habla despacio y con frases cortas</h4><p>No discutas lo que ve u oye. Reconoce el miedo y cambia de tema con suavidad.</p></li>
+          <li><h4>Marca el día y la noche</h4><p>De día, cortinas abiertas y conversación. Por la tarde, menos luz y menos ruido.</p></li>
+          <li><h4>Pregunta al equipo</h4><p>Si se hace cribado de delirio, qué fármacos pueden influir y cómo puedes participar.</p></li>
+        </ol>
+
+        <div class="two">
           <div>
-            <h3>Si tu familiar tiene delirio</h3>
-            <p>No es culpa de nadie y suele ser temporal. Tu presencia ayuda.</p>
+            <h3>Qué decir y qué evitar</h3>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Qué decir y qué evitar">
+              <table class="tbl say">
+                <thead><tr><th scope="col">Mejor así</th><th scope="col">Mejor evitar</th></tr></thead>
+                <tbody>
+                  <tr><td>«Soy Ana, tu hija. Estás en el hospital y estás a salvo.»</td><td>«¿No sabes quién soy?»</td></tr>
+                  <tr><td>«Entiendo que te asuste. Estoy aquí contigo.»</td><td>«Ahí no hay nadie, no digas tonterías.»</td></tr>
+                  <tr><td>«Es martes por la tarde. Mañana vuelvo.»</td><td>Hacerle muchas preguntas seguidas.</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <ul class="tips">
-            <li>Preséntate y di la fecha y el lugar con calma.</li>
-            <li>Trae gafas, audífonos y fotos familiares.</li>
-            <li>Habla con frases cortas; no discutas las alucinaciones.</li>
-            <li>Pregunta al equipo qué están haciendo para detectarlo.</li>
+          <div>
+            <h3>Preguntas frecuentes</h3>
+            <div class="accordion">
+              <details><summary><span>¿Se va a quedar así?</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>En la mayoría de los casos el delirio mejora en días o semanas, a medida que se trata la causa. Algunas personas notan después fallos de memoria o de concentración que pueden durar meses; conviene comentarlo en las revisiones.</p></details>
+              <details><summary><span>¿Es demencia?</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>No. La demencia avanza despacio durante años; el delirio aparece en horas o días y suele revertir.</p></details>
+              <details><summary><span>¿Se acordará de esto?</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>Depende. Muchos pacientes no recuerdan casi nada; otros guardan recuerdos sueltos o imágenes que les asustaron y que vivieron como reales. Hablar de ello después ayuda.</p></details>
+              <details><summary><span>Me dice cosas hirientes o no me reconoce. ¿Por qué?</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>No es él ni ella quien habla: es un síntoma. No lo hace a propósito y no refleja lo que siente por ti.</p></details>
+              <details><summary><span>¿Puedo empeorarlo sin querer?</span><svg class="ico"><use href="#i-plus"/></svg></summary><p>Es muy difícil. Acompañar con calma ayuda. Si le ves más confuso, más dormido o distinto a como le dejaste, díselo al equipo: tú le conoces mejor que nadie.</p></details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NEXO: LA PROPUESTA ============ -->
+    <section class="section" id="nexo" data-obj="82 40 1.05 360 1" data-title="NEXO" data-lines="fam est pro" aria-labelledby="nexo-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="nexo-t">NEXO: orientación que conecta, <span class="soft">tecnología que acompaña</span></h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">Durante la estancia en la UCI, el delirio puede romper las referencias de tiempo, lugar y personas. NEXO propone devolverlas con un dispositivo junto a la cama, una plataforma para la familia y el personal, y una ayuda de inteligencia artificial que siempre pasa por revisión humana.</p>
+        </header>
+
+        <h3>¿Qué sucede cuando una persona pierde sus referencias?</h3>
+        <ul class="cards problems spread">
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><h4>Pérdida de orientación temporal</h4><p>Dificultad para reconocer la hora, el día o el momento de la jornada.</p></li>
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-room"/></svg></span><h4>Entorno poco familiar</h4><p>Equipos, alarmas, rutinas clínicas y ausencia de objetos personales.</p></li>
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg></span><h4>Desconexión familiar</h4><p>Ausencia de fotografías, voces y mensajes de personas cercanas.</p></li>
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></span><h4>Dificultad para comunicar necesidades</h4><p>Limitaciones para expresar incomodidad o pedir ayuda.</p></li>
+        </ul>
+
+        <h3 class="sub-h">Tres elementos, una misma experiencia</h3>
+        <ul class="cards elements spread">
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-screen"/></svg></span><h4><span class="kicker">Lo que ve el paciente</span>NEXO Station</h4><p>Dispositivo físico junto a la cama. Es lo que el paciente ve, escucha y toca: fecha, hora, lugar, fotos y voces de su gente.</p></li>
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg></span><h4><span class="kicker">Lo que usan familia y equipo</span>NEXO Care</h4><p>Plataforma donde la familia prepara contenidos y el personal de salud los revisa, aprueba, programa o detiene.</p></li>
+          <li><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></span><h4><span class="kicker">La ayuda para redactar</span>NEXO AI</h4><p>Transforma información personal autorizada en cápsulas breves y comprensibles. Nada llega a la pantalla sin aprobación humana.</p></li>
+        </ul>
+
+        <h3 class="sub-h">De la casa a la cabecera</h3>
+        <p>Así viaja una «cápsula» —un mensaje con foto, voz o texto— desde la familia hasta la pantalla del paciente. Pulsa cada paso o sigue el recorrido completo.</p>
+        <div class="flow" id="flow">
+          <ol class="flow-steps">
+            <li><button type="button" data-who="Familia · NEXO Care"><span class="fs-n">01</span><span>Preparación familiar</span></button><p class="fs-d">La familia registra información personal autorizada, sube fotografías, graba mensajes de voz o escribe un mensaje.</p></li>
+            <li><button type="button" data-who="Familia · NEXO Care"><span class="fs-n">02</span><span>Creación de la cápsula</span></button><p class="fs-d">La familia reúne los elementos y pide a NEXO AI una propuesta de texto breve.</p></li>
+            <li><button type="button" data-who="NEXO AI y familia"><span class="fs-n">03</span><span>Generación y edición</span></button><p class="fs-d">La IA organiza la información y propone un mensaje. El familiar puede revisarlo y editarlo.</p></li>
+            <li><button type="button" data-who="Personal de salud"><span class="fs-n">04</span><span>Revisión del personal</span></button><p class="fs-d">El personal de salud aprueba, edita o rechaza el contenido antes de publicarlo.</p></li>
+            <li><button type="button" data-who="Personal de salud"><span class="fs-n">05</span><span>Programación</span></button><p class="fs-d">Se define cuándo se presentará el contenido, respetando los momentos de descanso.</p></li>
+            <li><button type="button" data-who="Paciente · NEXO Station"><span class="fs-n">06</span><span>Presentación en la Station</span></button><p class="fs-d">El contenido aprobado aparece en el dispositivo, en pantalla o como audio.</p></li>
+            <li><button type="button" data-who="Paciente y personal"><span class="fs-n">07</span><span>Pausa y seguimiento</span></button><p class="fs-d">El paciente o el personal pueden detener la experiencia cuando sea necesario. El sistema contempla errores y reconexión.</p></li>
+          </ol>
+          <div class="flow-panel" aria-live="polite">
+            <p class="flow-who" id="flowWho"></p>
+            <h3 id="flowT"></h3>
+            <p id="flowD"></p>
+            <div class="flow-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="flow-ctrl">
+              <button class="icon-btn" id="flowPrev" type="button" aria-label="Paso anterior"><svg class="ico"><use href="#i-back"/></svg></button>
+              <button class="btn small" id="flowPlay" type="button"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg><span>Seguir una cápsula</span></button>
+              <button class="icon-btn" id="flowNext" type="button" aria-label="Paso siguiente"><svg class="ico"><use href="#i-arrow"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <p class="motto">La familia prepara, la IA redacta, el personal aprueba y la Station presenta.</p>
+
+        <div class="note">
+          <h3>Lo que NEXO no hace</h3>
+          <ul>
+            <li>No diagnostica, no trata y no elimina el delirio. Busca mitigar algunos factores asociados a la desorientación y mejorar la experiencia de cuidado.</li>
+            <li>La IA no inventa recuerdos, no interpreta síntomas, no prescribe y no decide cuándo mostrar los estímulos.</li>
+            <li>Es un prototipo académico: no está certificado para uso asistencial y las pruebas de usabilidad no equivalen a una validación clínica.</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- ============ EVIDENCIA ============ -->
-    <section class="section" id="evidencia" aria-labelledby="evidencia-title">
+    <!-- ============ NEXO STATION (maqueta interactiva) ============ -->
+    <section class="section" id="station" data-obj="50 55 1.5 400 .55" data-title="La Station" data-lines="fam est pro" aria-labelledby="station-t">
       <div class="container">
         <header class="section-head">
-          <h2 id="evidencia-title">Lo que dice la ciencia</h2>
-          <p class="lead">Estudios y guías de referencia. Cada resumen es una síntesis breve; consulta la fuente original para el detalle.</p>
+          <h2 id="station-t">Prueba la Station</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">Esta es una maqueta de la pantalla que estaría junto a la cama. Muestra lo esencial, con pocos elementos a la vez. Recorre sus cuatro espacios y usa los botones físicos de abajo.</p>
+        </header>
+
+        <div class="station-wrap">
+          <div class="station glass" id="stationUi" data-mode="autonomo">
+            <div class="st-screen">
+              <div class="st-top">
+                <span class="st-logo"><svg class="ico" aria-hidden="true"><use href="#i-nexo"/></svg>NEXO</span>
+                <span class="st-tag">Orientación que conecta, tecnología que acompaña.</span>
+                <span class="st-badge" id="stBadge">Modo autónomo</span>
+                <span class="st-light" role="img" aria-label="Indicador luminoso"></span>
+              </div>
+              <div class="st-body">
+                <div class="st-nav" role="tablist" aria-label="Espacios de la Station" aria-orientation="vertical">
+                  <button type="button" role="tab" id="st-t-guia" aria-controls="st-p-guia" aria-selected="true"><svg class="ico" aria-hidden="true"><use href="#i-compass"/></svg>Mi guía</button>
+                  <button type="button" role="tab" id="st-t-gente" aria-controls="st-p-gente" aria-selected="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg>Mi gente</button>
+                  <button type="button" role="tab" id="st-t-mundo" aria-controls="st-p-mundo" aria-selected="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-music"/></svg>Mi mundo</button>
+                  <button type="button" role="tab" id="st-t-cuidado" aria-controls="st-p-cuidado" aria-selected="false" tabindex="-1"><svg class="ico" aria-hidden="true"><use href="#i-heart"/></svg>Mi cuidado</button>
+                </div>
+
+                <div class="st-panel" role="tabpanel" id="st-p-guia" aria-labelledby="st-t-guia" tabindex="0">
+                  <p class="st-hello">Hola,</p>
+                  <p class="st-date soft">hoy es <span data-today>miércoles</span></p>
+                  <p class="st-time" data-now>10:30</p>
+                  <div class="st-row">
+                    <p class="st-pill"><svg class="ico" aria-hidden="true"><use href="#i-pin"/></svg>Estás en la UCI del hospital.</p>
+                    <p class="st-pill"><svg class="ico" aria-hidden="true"><use href="#i-heart"/></svg>Estás recibiendo atención y cuidado.</p>
+                    <p class="st-pill"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg><span data-daypart>Es de día.</span></p>
+                  </div>
+                </div>
+
+                <div class="st-panel" role="tabpanel" id="st-p-gente" aria-labelledby="st-t-gente" tabindex="0" hidden>
+                  <p class="st-h">Tu gente está contigo</p>
+                  <div class="st-photo" role="img" aria-label="Espacio para una fotografía familiar"><span>Aquí aparece una fotografía que la familia comparte y el personal aprueba.</span></div>
+                  <div class="st-player" id="stMsg">
+                    <button class="st-play" id="stMsgBtn" type="button" aria-label="Reproducir el mensaje de tu familia"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg></button>
+                    <div>
+                      <b>Mensaje de tu familia</b>
+                      <small>Mensaje de voz · <span id="stMsgTime">0:00</span> / 0:42</small>
+                      <div class="st-wave" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="st-panel" role="tabpanel" id="st-p-mundo" aria-labelledby="st-t-mundo" tabindex="0" hidden>
+                  <p class="st-h">Sonidos y paisajes que te gustan</p>
+                  <ul class="st-list" id="stMundo">
+                    <li><button type="button" aria-pressed="false" data-track="Lluvia suave"><svg class="ico" aria-hidden="true"><use href="#i-leaf"/></svg><span>Lluvia suave<small>Sonido de naturaleza</small></span><span class="st-wave eqs" aria-hidden="true"></span></button></li>
+                    <li><button type="button" aria-pressed="false" data-track="Su música favorita"><svg class="ico" aria-hidden="true"><use href="#i-music"/></svg><span>Su música favorita<small>Elegida a partir de sus gustos</small></span><span class="st-wave eqs" aria-hidden="true"></span></button></li>
+                    <li><button type="button" aria-pressed="false" data-track="Olas del mar"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg><span>Olas del mar<small>Paisaje y sonido</small></span><span class="st-wave eqs" aria-hidden="true"></span></button></li>
+                  </ul>
+                  <p class="st-foot">No es igual para todos: se elige según los gustos de cada paciente.</p>
+                </div>
+
+                <div class="st-panel" role="tabpanel" id="st-p-cuidado" aria-labelledby="st-t-cuidado" tabindex="0" hidden>
+                  <p class="st-h">Tu cuidado hoy</p>
+                  <ul class="st-care">
+                    <li><b>Ahora</b><span>Tu equipo de enfermería está pendiente de ti.</span></li>
+                    <li><b>Más tarde</b><span>Te ayudarán a cambiar de postura y a sentarte un rato.</span></li>
+                    <li><b>Esta noche</b><span>Se bajará la luz y habrá menos ruido para que descanses.</span></li>
+                  </ul>
+                  <p class="st-foot">Ejemplo. La información real la escribiría y aprobaría el personal de salud.</p>
+                </div>
+              </div>
+            </div>
+            <div class="st-hw" role="group" aria-label="Botones físicos del dispositivo">
+              <button class="hw" type="button" data-hw="play"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg>Reproducir</button>
+              <button class="hw" type="button" data-hw="pause"><svg class="ico" aria-hidden="true"><use href="#i-pause"/></svg>Pausar</button>
+              <button class="hw help" type="button" data-hw="help"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>Llamar</button>
+            </div>
+            <p class="st-status" id="stStatus" role="status"></p>
+          </div>
+
+          <div>
+            <fieldset class="modes" id="stModes">
+              <legend>¿Quién la maneja?</legend>
+              <label class="mode"><input type="radio" name="stmode" value="autonomo" checked><b>Modo autónomo</b><span>El paciente navega y reproduce contenidos por sí mismo, cuando su condición lo permite.</span></label>
+              <label class="mode"><input type="radio" name="stmode" value="asistido"><b>Modo asistido</b><span>El personal o un familiar elige y reproduce los contenidos según la preferencia y el estado del paciente.</span></label>
+              <label class="mode"><input type="radio" name="stmode" value="programado"><b>Modo programado</b><span>Mensajes, música o recordatorios suenan a horas definidas, respetando los periodos de descanso.</span></label>
+            </fieldset>
+            <p class="fine hw-legend">El uso asistido no es una excepción: la capacidad de interactuar cambia durante la estancia, así que la Station tiene botones físicos y nunca depende solo de la pantalla táctil. En esta maqueta, el audio y el aviso al personal son simulados.</p>
+          </div>
+        </div>
+
+        <h3 class="sub-h">Una experiencia compartida por tres actores</h3>
+        <ul class="cards actors spread">
+          <li><h4><span class="kicker">Paciente</span>Mira, escucha y, si puede, pulsa</h4><p>Usa la Station: botones de reproducir, pausar y llamar.</p><p class="need"><b>Necesita:</b> información simple, estable y reconfortante.</p></li>
+          <li><h4><span class="kicker">Familia</span>Prepara lo que conecta</h4><p>Desde NEXO Care comparte fotos, voces, mensajes y cápsulas de orientación.</p><p class="need"><b>Necesita:</b> un camino claro para compartir contenido personal autorizado.</p></li>
+          <li><h4><span class="kicker">Personal de salud</span>Revisa, aprueba y controla</h4><p>Programa y puede detener cualquier contenido desde NEXO Care o la Station.</p><p class="need"><b>Necesita:</b> control rápido, sin carga de trabajo innecesaria.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ EVIDENCIA ============ -->
+    <section class="section" id="evidencia" data-obj="92 18 .45 440 .7" data-title="Evidencia" data-lines="est pro" aria-labelledby="evidencia-t">
+      <div class="container">
+        <header class="section-head">
+          <h2 id="evidencia-t">Lo que dice la evidencia</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
+          <p class="lead">Ocho estudios y guías de referencia, resumidos en dos líneas. Cada uno enlaza con la publicación original.</p>
         </header>
 
         <div class="toolbar">
-          <label class="visually-hidden" for="filtroEv">Filtrar estudios por tema</label>
+          <label for="filtroEv">Tema</label>
           <select id="filtroEv">
             <option value="todos">Todos los temas</option>
+            <option value="deteccion">Detección y subtipos</option>
             <option value="pronostico">Pronóstico</option>
             <option value="cognicion">Cognición a largo plazo</option>
             <option value="manejo">Manejo y prevención</option>
           </select>
-          <button class="btn btn-ghost small" id="toggleAll" type="button">Expandir todo</button>
+          <button class="btn btn-ghost small" id="toggleAll" type="button" aria-pressed="false">Abrir todos</button>
+          <p class="count" id="evCount" role="status">8 estudios</p>
         </div>
 
         <div class="studies" id="studies">
-          <details class="study" data-tag="pronostico">
-            <summary><span class="tag-pill">Pronóstico</span><span class="study-title">El delirio como predictor de mortalidad en pacientes ventilados</span><span class="study-meta">Ely et al., JAMA, 2004</span></summary>
+          <details class="study" id="ev-ely2001" data-tag="deteccion">
+            <summary><span class="tag">Detección</span><span class="study-title">Validación del CAM-ICU en pacientes ventilados</span><span class="study-meta">Ely et al., JAMA, 2001</span><svg class="ico"><use href="#i-plus"/></svg></summary>
             <div class="study-body">
-              <p><strong>Hallazgo clave:</strong> en pacientes con ventilación mecánica, la duración del delirio fue un predictor independiente de mayor mortalidad a 6 meses y de estancia hospitalaria más larga.</p>
-              <p><strong>Por qué importa:</strong> consolidó la idea de que el delirio no es un simple “efecto secundario” sino un marcador de pronóstico.</p>
-              <p class="ref">Ely EW, Shintani A, Truman B, et al. Delirium as a predictor of mortality in mechanically ventilated patients in the intensive care unit. <em>JAMA</em>. 2004;291(14):1753-1762.</p>
+              <p><strong>Hallazgo:</strong> el CAM-ICU detectó el delirio con una sensibilidad del 93 al 100 % y una especificidad del 98 al 100 % frente a la valoración de expertos. Más de 8 de cada 10 pacientes ventilados presentaron delirio.</p>
+              <p><strong>Por qué importa:</strong> dio a enfermería y medicina una prueba fiable que se hace en dos minutos y sin que el paciente hable.</p>
+              <p class="ref">Ely EW, Inouye SK, Bernard GR, et al. Delirium in mechanically ventilated patients: validity and reliability of the Confusion Assessment Method for the ICU (CAM-ICU). <em>JAMA</em>. 2001;286(21):2703-2710. <a href="https://doi.org/10.1001/jama.286.21.2703" target="_blank" rel="noopener">doi:10.1001/jama.286.21.2703<svg class="ico"><use href="#i-ext"/></svg></a></p>
             </div>
           </details>
-          <details class="study" data-tag="cognicion">
-            <summary><span class="tag-pill">Cognición</span><span class="study-title">Deterioro cognitivo a largo plazo tras enfermedad crítica</span><span class="study-meta">Pandharipande et al., NEJM, 2013</span></summary>
+          <details class="study" id="ev-peterson" data-tag="deteccion">
+            <summary><span class="tag">Detección</span><span class="study-title">Los subtipos motores del delirio en 614 pacientes críticos</span><span class="study-meta">Peterson et al., J Am Geriatr Soc, 2006</span><svg class="ico"><use href="#i-plus"/></svg></summary>
             <div class="study-body">
-              <p><strong>Hallazgo clave:</strong> una proporción importante de supervivientes de UCI presentó déficits cognitivos a 3 y 12 meses, comparables en algunos casos a un traumatismo craneoencefálico moderado o a una demencia leve. Una mayor duración del delirio se asoció con peor cognición.</p>
-              <p><strong>Por qué importa:</strong> muestra que las consecuencias pueden persistir mucho después del alta.</p>
-              <p class="ref">Pandharipande PP, Girard TD, Jackson JC, et al. Long-term cognitive impairment after critical illness. <em>N Engl J Med</em>. 2013;369(14):1306-1316.</p>
+              <p><strong>Hallazgo:</strong> entre los pacientes con delirio, el 54,1 % fue mixto, el 43,5 % hipoactivo y solo el 1,6 % puramente hiperactivo.</p>
+              <p><strong>Por qué importa:</strong> el delirio que todos imaginan, el agitado, es la excepción. Sin cribado se pierde casi todo.</p>
+              <p class="ref">Peterson JF, Pun BT, Dittus RS, et al. Delirium and its motoric subtypes: a study of 614 critically ill patients. <em>J Am Geriatr Soc</em>. 2006;54(3):479-484. <a href="https://doi.org/10.1111/j.1532-5415.2005.00621.x" target="_blank" rel="noopener">doi:10.1111/j.1532-5415.2005.00621.x<svg class="ico"><use href="#i-ext"/></svg></a></p>
             </div>
           </details>
-          <details class="study" data-tag="manejo">
-            <summary><span class="tag-pill">Manejo</span><span class="study-title">Guías PADIS: dolor, agitación, delirio, inmovilidad y sueño</span><span class="study-meta">Devlin et al., Crit Care Med, 2018</span></summary>
+          <details class="study" id="ev-ely2004" data-tag="pronostico">
+            <summary><span class="tag">Pronóstico</span><span class="study-title">El delirio como predictor de mortalidad en pacientes ventilados</span><span class="study-meta">Ely et al., JAMA, 2004</span><svg class="ico"><use href="#i-plus"/></svg></summary>
             <div class="study-body">
-              <p><strong>Hallazgo clave:</strong> recomienda monitorizar el delirio de forma rutinaria con herramientas validadas (CAM-ICU o ICDSC), priorizar la analgesia, evitar sedación profunda y fomentar la movilización precoz y la promoción del sueño.</p>
-              <p><strong>Por qué importa:</strong> es la referencia práctica para equipos de UCI.</p>
-              <p class="ref">Devlin JW, Skrobik Y, Gélinas C, et al. Clinical practice guidelines for the prevention and management of pain, agitation/sedation, delirium, immobility, and sleep disruption in adult patients in the ICU. <em>Crit Care Med</em>. 2018;46(9):e825-e873.</p>
+              <p><strong>Hallazgo:</strong> en pacientes con ventilación mecánica, el delirio fue un predictor independiente de mayor mortalidad a los 6 meses y de una estancia hospitalaria más larga.</p>
+              <p><strong>Por qué importa:</strong> consolidó la idea de que el delirio no es un efecto secundario sin importancia, sino un marcador de pronóstico.</p>
+              <p class="ref">Ely EW, Shintani A, Truman B, et al. Delirium as a predictor of mortality in mechanically ventilated patients in the intensive care unit. <em>JAMA</em>. 2004;291(14):1753-1762. <a href="https://doi.org/10.1001/jama.291.14.1753" target="_blank" rel="noopener">doi:10.1001/jama.291.14.1753<svg class="ico"><use href="#i-ext"/></svg></a></p>
             </div>
           </details>
-          <details class="study" data-tag="manejo">
-            <summary><span class="tag-pill">Manejo</span><span class="study-title">Haloperidol y ziprasidona en el delirio de UCI (MIND-USA)</span><span class="study-meta">Girard et al., NEJM, 2018</span></summary>
+          <details class="study" id="ev-pandharipande" data-tag="cognicion">
+            <summary><span class="tag">Cognición</span><span class="study-title">Deterioro cognitivo a largo plazo tras la enfermedad crítica</span><span class="study-meta">Pandharipande et al., NEJM, 2013</span><svg class="ico"><use href="#i-plus"/></svg></summary>
             <div class="study-body">
-              <p><strong>Hallazgo clave:</strong> en pacientes críticos con delirio, ni haloperidol ni ziprasidona acortaron la duración del delirio frente a placebo.</p>
-              <p><strong>Por qué importa:</strong> refuerza que el eje del manejo es tratar causas y aplicar medidas no farmacológicas, no depender de antipsicóticos.</p>
-              <p class="ref">Girard TD, Exline MC, Carson SS, et al. Haloperidol and ziprasidone for treatment of delirium in critical illness. <em>N Engl J Med</em>. 2018;379(26):2506-2516.</p>
+              <p><strong>Hallazgo:</strong> a los 12 meses, el 34 % de los supervivientes tenía un rendimiento cognitivo comparable al de un traumatismo craneoencefálico moderado, y el 24 % al de una demencia leve. Cuanto más duró el delirio, peor fue la cognición.</p>
+              <p><strong>Por qué importa:</strong> las consecuencias siguen mucho después del alta, también en personas jóvenes.</p>
+              <p class="ref">Pandharipande PP, Girard TD, Jackson JC, et al. Long-term cognitive impairment after critical illness. <em>N Engl J Med</em>. 2013;369(14):1306-1316. <a href="https://doi.org/10.1056/NEJMoa1301372" target="_blank" rel="noopener">doi:10.1056/NEJMoa1301372<svg class="ico"><use href="#i-ext"/></svg></a></p>
             </div>
           </details>
-          <details class="study" data-tag="manejo">
-            <summary><span class="tag-pill">Manejo</span><span class="study-title">El paquete ABCDEF y los resultados de los pacientes</span><span class="study-meta">Pun et al., Crit Care Med, 2019</span></summary>
+          <details class="study" id="ev-devlin" data-tag="manejo">
+            <summary><span class="tag">Manejo</span><span class="study-title">Guías PADIS: dolor, agitación, delirio, inmovilidad y sueño</span><span class="study-meta">Devlin et al., Crit Care Med, 2018</span><svg class="ico"><use href="#i-plus"/></svg></summary>
             <div class="study-body">
-              <p><strong>Hallazgo clave:</strong> en un estudio multicéntrico, una mayor adherencia al paquete ABCDEF (despertar y respirar, elección de analgesia/sedación, delirio, movilidad, familia) se asoció a mayor supervivencia y menos días de delirio y coma.</p>
-              <p><strong>Por qué importa:</strong> sitúa a la familia como parte del cuidado basado en evidencia.</p>
-              <p class="ref">Pun BT, Balas MC, Barnes-Daly MA, et al. Caring for critically ill patients with the ABCDEF bundle. <em>Crit Care Med</em>. 2019;47(1):3-14.</p>
+              <p><strong>Hallazgo:</strong> recomiendan vigilar el delirio de forma rutinaria con CAM-ICU o ICDSC, priorizar la analgesia, evitar la sedación profunda y fomentar la movilización precoz y el sueño.</p>
+              <p><strong>Por qué importa:</strong> es la referencia práctica para los equipos de UCI.</p>
+              <p class="ref">Devlin JW, Skrobik Y, Gélinas C, et al. Clinical practice guidelines for the prevention and management of pain, agitation/sedation, delirium, immobility, and sleep disruption in adult patients in the ICU. <em>Crit Care Med</em>. 2018;46(9):e825-e873. <a href="https://doi.org/10.1097/CCM.0000000000003299" target="_blank" rel="noopener">doi:10.1097/CCM.0000000000003299<svg class="ico"><use href="#i-ext"/></svg></a></p>
+            </div>
+          </details>
+          <details class="study" id="ev-girard" data-tag="manejo">
+            <summary><span class="tag">Manejo</span><span class="study-title">Haloperidol y ziprasidona en el delirio de la UCI (MIND-USA)</span><span class="study-meta">Girard et al., NEJM, 2018</span><svg class="ico"><use href="#i-plus"/></svg></summary>
+            <div class="study-body">
+              <p><strong>Hallazgo:</strong> en pacientes críticos con delirio, ni el haloperidol ni la ziprasidona acortaron su duración frente a placebo.</p>
+              <p><strong>Por qué importa:</strong> el eje del manejo es tratar las causas y aplicar medidas no farmacológicas, no depender de antipsicóticos.</p>
+              <p class="ref">Girard TD, Exline MC, Carson SS, et al. Haloperidol and ziprasidone for treatment of delirium in critical illness. <em>N Engl J Med</em>. 2018;379(26):2506-2516. <a href="https://doi.org/10.1056/NEJMoa1808217" target="_blank" rel="noopener">doi:10.1056/NEJMoa1808217<svg class="ico"><use href="#i-ext"/></svg></a></p>
+            </div>
+          </details>
+          <details class="study" id="ev-pun" data-tag="manejo">
+            <summary><span class="tag">Manejo</span><span class="study-title">El paquete ABCDEF en más de 15 000 pacientes</span><span class="study-meta">Pun et al., Crit Care Med, 2019</span><svg class="ico"><use href="#i-plus"/></svg></summary>
+            <div class="study-body">
+              <p><strong>Hallazgo:</strong> cuanto más completo fue el cumplimiento del paquete ABCDEF, mayor fue la supervivencia y menores los días de delirio y de coma.</p>
+              <p><strong>Por qué importa:</strong> sitúa a la familia dentro del cuidado basado en evidencia.</p>
+              <p class="ref">Pun BT, Balas MC, Barnes-Daly MA, et al. Caring for critically ill patients with the ABCDEF bundle: results of the ICU Liberation Collaborative in over 15,000 adults. <em>Crit Care Med</em>. 2019;47(1):3-14. <a href="https://doi.org/10.1097/CCM.0000000000003482" target="_blank" rel="noopener">doi:10.1097/CCM.0000000000003482<svg class="ico"><use href="#i-ext"/></svg></a></p>
+            </div>
+          </details>
+          <details class="study" id="ev-schweickert" data-tag="manejo">
+            <summary><span class="tag">Manejo</span><span class="study-title">Fisioterapia y terapia ocupacional precoces en pacientes ventilados</span><span class="study-meta">Schweickert et al., Lancet, 2009</span><svg class="ico"><use href="#i-plus"/></svg></summary>
+            <div class="study-body">
+              <p><strong>Hallazgo:</strong> movilizar desde los primeros días redujo la duración del delirio (2 días frente a 4) y aumentó los pacientes que recuperaron su independencia al alta.</p>
+              <p><strong>Por qué importa:</strong> moverse pronto es una intervención contra el delirio, no solo rehabilitación.</p>
+              <p class="ref">Schweickert WD, Pohlman MC, Pohlman AS, et al. Early physical and occupational therapy in mechanically ventilated, critically ill patients: a randomised controlled trial. <em>Lancet</em>. 2009;373(9678):1874-1882. <a href="https://doi.org/10.1016/S0140-6736(09)60658-9" target="_blank" rel="noopener">doi:10.1016/S0140-6736(09)60658-9<svg class="ico"><use href="#i-ext"/></svg></a></p>
             </div>
           </details>
         </div>
-        <p class="fine">Verifica siempre las referencias en PubMed antes de citarlas en trabajos académicos. Este contenido es educativo y no sustituye el consejo médico.</p>
+        <p class="fine">Los resúmenes simplifican. Consulta siempre la publicación original antes de citarla.</p>
       </div>
     </section>
 
-    <!-- ============ TESTIMONIOS ============ -->
-    <section class="section alt" id="testimonios" aria-labelledby="testi-title">
+    <!-- ============ HISTORIAS ============ -->
+    <section class="section alt" id="historias" data-obj="8 74 .6 480 .85" data-title="Historias" data-lines="fam" aria-labelledby="historias-t">
       <div class="container">
         <header class="section-head">
-          <h2 id="testi-title">Testimonios de pacientes y familias</h2>
-          <p class="lead">Experiencias que ayudan a otros a sentirse menos solos.</p>
+          <h2 id="historias-t">Historias</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li></ul>
+          <p class="lead">Saber que a otros les ha pasado ayuda a sentirse menos solo.</p>
         </header>
 
-        <p class="notice" role="note">Los relatos de abajo son <strong>ilustrativos (de ejemplo)</strong> y sirven de maqueta. Sustitúyelos por testimonios reales con consentimiento informado.</p>
+        <p class="notice" role="note"><strong>Relatos ilustrativos.</strong> Todavía no son testimonios reales: muestran el tipo de historia que recogerá esta sección, con consentimiento de quien la cuente.</p>
 
-        <div class="carousel" data-carousel aria-roledescription="carrusel" aria-label="Testimonios">
-          <div class="slides" aria-live="polite">
-            <figure class="slide is-active">
-              <blockquote>Mi padre no me reconocía y hablaba con gente que no estaba. Nadie me había dicho que podía pasar. Saber que tenía un nombre y que era temporal me devolvió la calma.</blockquote>
-              <figcaption>Familiar de paciente <small>(relato ilustrativo)</small></figcaption>
-            </figure>
-            <figure class="slide">
-              <blockquote>No recuerdo mucho, solo miedo y luces. Después me costaba concentrarme meses. Entender que había sido delirio me ayudó a no sentirme culpable.</blockquote>
-              <figcaption>Superviviente de UCI <small>(relato ilustrativo)</small></figcaption>
-            </figure>
-            <figure class="slide">
-              <blockquote>Cuando traje sus gafas y puse su música, se tranquilizó. Pequeñas cosas marcaron la diferencia.</blockquote>
-              <figcaption>Hija de paciente <small>(relato ilustrativo)</small></figcaption>
-            </figure>
-          </div>
-          <div class="carousel-controls">
-            <button class="icon-btn" data-prev aria-label="Testimonio anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <div class="dots" role="tablist" aria-label="Elegir testimonio"></div>
-            <button class="icon-btn" data-next aria-label="Testimonio siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          </div>
+        <div class="quotes spread">
+          <figure><blockquote>Mi padre no me reconocía y hablaba con gente que no estaba. Nadie me había dicho que podía pasar. Saber que tenía un nombre y que era temporal me devolvió la calma.</blockquote><figcaption>Hija de un paciente</figcaption></figure>
+          <figure><blockquote>Recuerdo miedo y luces, poco más. Después me costó concentrarme durante meses. Entender que había sido delirio me quitó la culpa.</blockquote><figcaption>Superviviente de UCI</figcaption></figure>
+          <figure><blockquote>Cuando le llevé sus gafas y le puse su música, se tranquilizó. Fueron cosas pequeñas.</blockquote><figcaption>Esposa de un paciente</figcaption></figure>
         </div>
 
         <div class="form-panel">
           <h3>Comparte tu historia</h3>
-          <p class="muted">Tu relato puede ayudar a otras familias. (Formulario simulado: no se envía a ningún servidor.)</p>
+          <p class="muted">Este formulario es una demostración: todavía no envía nada a ningún sitio.</p>
           <form id="storyForm" novalidate>
             <div class="field">
               <label for="nombre">Nombre o seudónimo <span class="opt">(opcional)</span></label>
               <input id="nombre" name="nombre" type="text" autocomplete="nickname" maxlength="60">
             </div>
             <div class="field">
-              <label for="rol">Soy…</label>
-              <select id="rol" name="rol" required>
+              <label for="rol">Soy</label>
+              <select id="rol" name="rol" required aria-describedby="err-rol">
                 <option value="">Selecciona una opción</option>
-                <option>Paciente / superviviente</option>
+                <option>Paciente o superviviente</option>
                 <option>Familiar</option>
                 <option>Profesional de la salud</option>
                 <option>Estudiante</option>
               </select>
-              <p class="error" id="err-rol" role="alert" hidden>Selecciona una opción.</p>
+              <p class="error" id="err-rol" role="alert" hidden>Elige quién eres para continuar.</p>
             </div>
             <div class="field">
-              <label for="historia">Tu historia o reflexión</label>
+              <label for="historia">Tu historia</label>
               <textarea id="historia" name="historia" rows="5" maxlength="1200" required aria-describedby="count err-historia"></textarea>
               <div class="field-foot"><p class="error" id="err-historia" role="alert" hidden>Escribe al menos 20 caracteres.</p><span class="count" id="count">0 / 1200</span></div>
             </div>
-            <label class="check"><input type="checkbox" id="consent" required> <span>Doy mi consentimiento para que mi relato se publique de forma anónima.</span></label>
-            <p class="error" id="err-consent" role="alert" hidden>Necesitamos tu consentimiento para continuar.</p>
+            <label class="check"><input type="checkbox" id="consent" required aria-describedby="err-consent"> <span>Doy mi consentimiento para que mi relato se publique de forma anónima.</span></label>
+            <p class="error" id="err-consent" role="alert" hidden>Marca la casilla de consentimiento para continuar.</p>
             <button class="btn btn-primary" type="submit">Enviar mi historia</button>
-            <p class="success" id="formOk" role="status" hidden>Gracias por compartir. Tu historia se ha recibido (simulación).</p>
+            <p class="success" id="formOk" role="status" hidden>Gracias. En la versión real, tu historia se habría enviado.</p>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- ============ BLOG ============ -->
-    <section class="section" id="blog" aria-labelledby="blog-title">
+    <!-- ============ RECURSOS ============ -->
+    <section class="section" id="recursos" data-obj="86 80 .55 520 .8" data-title="Recursos" data-lines="fam est pro" aria-labelledby="recursos-t">
       <div class="container">
         <header class="section-head">
-          <h2 id="blog-title">Novedades del proyecto</h2>
-          <p class="lead">Avances, eventos, notas clínicas y reflexiones del equipo. <small>(Entradas de ejemplo.)</small></p>
+          <h2 id="recursos-t">Recursos y glosario</h2>
+          <ul class="serves" aria-label="Sección pensada para"><li class="fam">Familias</li><li class="est">Estudiantes</li><li class="pro">Profesionales</li></ul>
         </header>
-        <ol class="posts">
-          <li>
-            <time datetime="2026-11-10">10 nov 2026</time>
-            <span class="tag-pill">Reflexión</span>
-            <div><h3><a href="#blog">El silencio también es un síntoma</a></h3><p>Sobre el delirio hipoactivo y por qué necesitamos mirar a quien no molesta.</p></div>
-          </li>
-          <li>
-            <time datetime="2026-11-05">5 nov 2026</time>
-            <span class="tag-pill">Evento</span>
-            <div><h3><a href="#blog">Taller para familias: acompañar sin miedo</a></h3><p>Resumen de la sesión abierta sobre qué hacer y qué evitar al visitar a un paciente con delirio.</p></div>
-          </li>
-          <li>
-            <time datetime="2026-10-28">28 oct 2026</time>
-            <span class="tag-pill">Nota clínica</span>
-            <div><h3><a href="#blog">Cómo usar CAM-ICU en 2 minutos</a></h3><p>Guía rápida de los cuatro rasgos que se evalúan y errores frecuentes al aplicarlo.</p></div>
-          </li>
-        </ol>
-        <form class="newsletter" id="newsForm" novalidate>
-          <label for="email">Recibe las novedades por correo</label>
-          <div class="news-row">
-            <input id="email" type="email" placeholder="tu@correo.com" autocomplete="email" required>
-            <button class="btn btn-primary" type="submit">Suscribirme</button>
+
+        <div class="two">
+          <div>
+            <h3>Glosario</h3>
+            <dl class="defs gloss">
+              <div><dt>CAM-ICU</dt><dd>Método de evaluación de la confusión para la UCI. Prueba de cuatro rasgos para detectar el delirio a pie de cama.</dd></div>
+              <div><dt>ICDSC</dt><dd>Lista de comprobación de ocho ítems para el cribado del delirio en cuidados intensivos.</dd></div>
+              <div><dt>RASS</dt><dd>Escala de agitación y sedación de Richmond, de +4 (combativo) a −5 (no despertable).</dd></div>
+              <div><dt>ABCDEF</dt><dd>Paquete de seis cuidados diarios que reduce el delirio y mejora la supervivencia.</dd></div>
+              <div><dt>PADIS</dt><dd>Guías clínicas de 2018 sobre dolor, agitación, delirio, inmovilidad y sueño.</dd></div>
+              <div><dt>PICS</dt><dd>Síndrome post-cuidados intensivos: secuelas físicas, cognitivas y emocionales tras la UCI.</dd></div>
+            </dl>
           </div>
-          <p class="error" id="err-email" role="alert" hidden>Introduce un correo válido.</p>
-          <p class="success" id="newsOk" role="status" hidden>Listo: te has suscrito (simulación).</p>
-        </form>
+          <div>
+            <h3>Para seguir leyendo</h3>
+            <ul class="links">
+              <li><a href="https://www.icudelirium.org/patients-and-families/overview" target="_blank" rel="noopener"><b>ICU Delirium, para pacientes y familias</b><small>Centro CIBS, Universidad de Vanderbilt. En inglés.</small><svg class="ico"><use href="#i-ext"/></svg></a></li>
+              <li><a href="https://www.icudelirium.org/medical-professionals/delirium/monitoring-delirium-in-the-icu" target="_blank" rel="noopener"><b>Manual y materiales del CAM-ICU</b><small>Incluye versiones traducidas de la prueba.</small><svg class="ico"><use href="#i-ext"/></svg></a></li>
+              <li><a href="https://www.sccm.org/clinical-resources/iculiberation-home" target="_blank" rel="noopener"><b>ICU Liberation</b><small>Society of Critical Care Medicine. El paquete ABCDEF explicado.</small><svg class="ico"><use href="#i-ext"/></svg></a></li>
+              <li><a href="https://proyectohuci.com/" target="_blank" rel="noopener"><b>Proyecto HU-CI</b><small>Humanizando los cuidados intensivos. En español.</small><svg class="ico"><use href="#i-ext"/></svg></a></li>
+            </ul>
+
+            <h3 class="about-t">Sobre este proyecto</h3>
+            <p>Nació de ver, turno tras turno, a pacientes «desorientados» cuyo estado se atribuía a la gravedad, sin buscarlo como lo que es: una disfunción cerebral aguda, detectable y en parte prevenible.</p>
+            <p>De ahí surge NEXO: un sistema que reúne dos cosas que suelen abordarse por separado, mantener las referencias de tiempo y lugar y acercar los vínculos personales con fotografías, voces y contenidos significativos.</p>
+            <h4>Ruta de trabajo</h4>
+            <ol class="roadmap">
+              <li>Investigación y definición</li>
+              <li>Exploración y selección del concepto</li>
+              <li>Modelado y construcción del prototipo físico</li>
+              <li>Diseño de interfaz y prototipo digital</li>
+              <li>Integración de la experiencia y función de IA</li>
+              <li>Pruebas e iteraciones</li>
+              <li>Documentación y presentación final</li>
+            </ol>
+            <p class="vision">Una UCI donde ningún delirio pase inadvertido y donde la familia sea parte del cuidado.</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -672,25 +861,22 @@
   <footer class="site-footer">
     <div class="container foot-grid">
       <div>
-        <p class="brand-foot">Delirio en Pacientes Críticos</p>
-        <p class="muted">Proyecto educativo. La información no sustituye la valoración de un profesional sanitario.</p>
+        <p class="brand-foot"><svg class="ico" aria-hidden="true"><use href="#i-nexo"/></svg>NEXO</p>
+        <p class="muted">Delirio en pacientes críticos. Proyecto educativo y prototipo académico: la información no sustituye la valoración de un profesional de la salud.</p>
       </div>
       <nav aria-label="Pie de página">
         <ul>
-          <li><a href="#proyecto">El proyecto</a></li>
-          <li><a href="#evidencia">Evidencia</a></li>
-          <li><a href="#testimonios">Testimonios</a></li>
-          <li><a href="#top">Volver arriba ↑</a></li>
+          <li><a href="#que-es">Qué es</a></li>
+          <li><a href="#deteccion">Detección</a></li>
+          <li><a href="#familia">Familia</a></li>
+          <li><a href="#nexo">NEXO</a></li>
+          <li><a href="#top" class="to-top">Volver al inicio<svg class="ico"><use href="#i-up"/></svg></a></li>
         </ul>
       </nav>
     </div>
   </footer>
 
-  <a class="fab" href="#testimonios" aria-label="Comparte tu historia">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.800 2.800 0 0 0-4-4L4 16v4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-    <span>Comparte tu historia</span>
-  </a>
-
   <script src="js/main.js"></script>
+  <script src="js/brain.js"></script>
 </body>
 </html>
