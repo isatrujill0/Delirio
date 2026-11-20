@@ -17,9 +17,20 @@
   // Fundido entre claro y oscuro: evita un salto brusco de brillo (si el navegador lo admite y no se pide menos movimiento)
   themeBtn.addEventListener('click', () => {
     const next = () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
-    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(next);
+    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) { const vt = document.startViewTransition(next); [vt.ready, vt.finished, vt.updateCallbackDone].forEach(p => p && p.catch(() => {})); } // un fundido saltado o cortado no es un error
     else next();
   });
+
+  /* ---------- Cabecera sobre la portada ---------- */
+  const stage = $('.hero-stage');
+  if (stage) {
+    const header = $('.site-header');
+    // Sobre la portada la cabecera toma los colores oscuros (.night) para leerse sobre la escena
+    const onHero = () => { const on = scrollY < stage.offsetHeight - header.offsetHeight - 40; root.classList.toggle('on-hero', on); header.classList.toggle('night', on); };
+    onHero();
+    addEventListener('scroll', onHero, { passive: true });
+    addEventListener('resize', onHero);
+  }
 
   /* ---------- Tamaño de texto ---------- */
   const sizes = ['100%', '112%', '125%'];
