@@ -86,7 +86,7 @@ export function sanitize(raw: unknown, defaults: AppData): AppData {
       ? { text: raw.careNote.text.slice(0, 280), updatedAt: num(raw.careNote.updatedAt, Date.now()), demo: bool(raw.careNote.demo, false) }
       : defaults.careNote,
     scores: isObj(raw.scores)
-      ? Object.fromEntries(Object.entries(raw.scores).filter(([, v]) => typeof v === 'number' && Number.isFinite(v) && v >= 0).map(([k, v]) => [k, Math.floor(v as number)]))
+      ? Object.fromEntries(Object.entries(raw.scores).filter(([, v]) => typeof v === 'number' && Number.isFinite(v) && v >= 0).map(([k, v]) => [k, Math.floor(v as number) || 0]))
       : {},
     dismissedNotifications: arr<unknown>(raw.dismissedNotifications, []).filter((x): x is string => typeof x === 'string').slice(-200),
   };

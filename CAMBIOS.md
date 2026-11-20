@@ -96,3 +96,12 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: package.json, vitest.config.ts, playwright.config.ts, tests/e2e/*, scripts/smoke.cjs, .claude/skills/verify/SKILL.md, RELIABILITY.md, src/styles/pages.css, src/pages/WorldPage.tsx, .gitignore.
 * Resultado: tsc sin errores; E2E 3/3 en verde; smoke en verde.
 * Estado: En progreso (faltan pruebas de propiedades y revisión independiente).
+
+16:24 — Pruebas basadas en propiedades y corrección de un bloqueo en «Completa el refrán»
+
+* Se agregaron 80 pruebas basadas en propiedades (fast-check, semillas fijas) sobre storage, time, care, games, wellbeing, notifications y playlist: round-trip, invariantes e idempotencia.
+* Bug encontrado por las pruebas: proverbOptions se quedaba en un ciclo infinito si el generador aleatorio devolvía siempre el mismo valor. Se corrigió con una selección Fisher–Yates parcial y se agregó la prueba de regresión.
+* Detalle: un puntaje -0 guardado ahora se normaliza a 0 (round-trip exacto con JSON).
+* Archivos afectados: tests/property/*.test.ts, src/services/games.ts, src/services/storage.ts.
+* Resultado: tsc PASS, build PASS, propiedades 80/80, E2E 3/3, smoke PASS.
+* Estado: Completado.

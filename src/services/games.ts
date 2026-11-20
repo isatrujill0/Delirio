@@ -19,12 +19,12 @@ export function proverbOptions(i: number, rand: () => number = Math.random): str
   const idx = ((i % n) + n) % n;
   const correct = PROVERBS[idx].end;
   const others = PROVERBS.map((p) => p.end).filter((e) => e !== correct);
-  const pick: string[] = [];
-  while (pick.length < 2) {
-    const c = others[Math.floor(rand() * others.length) % others.length];
-    if (!pick.includes(c)) pick.push(c);
+  // Partial Fisher–Yates: always two distinct picks in two steps, whatever `rand` returns.
+  for (let k = 0; k < 2; k++) {
+    const j = k + (Math.floor(rand() * (others.length - k)) % (others.length - k));
+    [others[k], others[j]] = [others[j], others[k]];
   }
-  const opts = [correct, ...pick];
+  const opts = [correct, others[0], others[1]];
   for (let k = opts.length - 1; k > 0; k--) {
     const j = Math.floor(rand() * (k + 1)) % (k + 1);
     [opts[k], opts[j]] = [opts[j], opts[k]];
