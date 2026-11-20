@@ -229,12 +229,12 @@ export function CarePage() {
   const next = nextDose(data.treatments, now);
   const proc = orderProcedures(data.procedures).pending[0];
   const demoShown: Record<ViewId, boolean> = {
-    tratamiento: next ? next.treatment.demo : data.treatments.some((t) => t.demo),
+    tratamiento: next ? next.treatments.some((t) => t.demo) : data.treatments.some((t) => t.demo),
     procedimientos: proc ? proc.demo : false,
     recomendaciones: data.recommendations.some((r) => r.demo),
   };
   const status: Record<ViewId, string> = {
-    tratamiento: next ? `${next.treatment.name} · ${hmToLabel(next.time)}` : `${data.treatments.length} registrados`,
+    tratamiento: next ? `${next.treatments.map((t) => t.name).join(' y ')} · ${hmToLabel(next.time)}` : `${data.treatments.length} registrados`,
     procedimientos: proc ? `${proc.name} · ${whenLabel(proc, now).toLowerCase()}` : 'Sin pendientes',
     recomendaciones: `${data.recommendations.length} consejos`,
   };

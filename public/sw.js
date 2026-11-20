@@ -25,7 +25,8 @@ self.addEventListener('install', (event) => {
     (async () => {
       const cache = await caches.open(CACHE);
       const files = await builtFiles((u) => fetch(u, { cache: 'no-store' }));
-      await cache.addAll([...SHELL, LIST, ...files]);
+      // Bypass the HTTP cache so a stale index.html never lands next to a newer file list.
+      await cache.addAll([...SHELL, LIST, ...files].map((u) => new Request(u, { cache: 'reload' })));
       await self.skipWaiting();
     })(),
   );
@@ -84,7 +85,7 @@ self.addEventListener('fetch', (event) => {
 
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-store' })
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put('./index.html', copy));

@@ -56,8 +56,8 @@ function NextUp() {
         <button className="chip" onClick={() => go('cuidado', 'tratamiento')}>
           <Pill strokeWidth={1.75} />
           <span>
-            <small>Tratamiento{dose.treatment.demo && ' · ejemplo'}</small>
-            {dose.treatment.name} · {hmToLabel(dose.time)}
+            <small>Tratamiento{dose.treatments.some((t) => t.demo) && ' · ejemplo'}</small>
+            {dose.treatments.map((t) => t.name).join(' y ')} · {hmToLabel(dose.time)}
           </span>
         </button>
       )}

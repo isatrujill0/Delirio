@@ -1,6 +1,5 @@
 import { Component, type ReactNode } from 'react';
 import { backupRaw, clearData } from '../services/storage';
-import { clearMedia } from '../services/mediaStore';
 
 interface State {
   failed: boolean;
@@ -9,7 +8,8 @@ interface State {
 
 /**
  * Last line of defence: if a screen throws while rendering, show a calm message with a way out
- * instead of a blank device. Stored data is copied to a backup key before it is cleared.
+ * instead of a blank device. Resetting copies the stored data to a backup key and never deletes
+ * photos, recordings or videos (they stay in IndexedDB and can be recovered with that backup).
  */
 export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
   state: State = { failed: false, confirming: false };
@@ -22,10 +22,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
     console.error('NEXO se detuvo por un error inesperado', error);
   }
 
-  private reset = async () => {
+  private reset = () => {
     backupRaw();
     clearData();
-    await clearMedia().catch(() => undefined);
     location.reload();
   };
 
@@ -34,7 +33,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
     return (
       <div className="crash" role="alert">
         <h1>Algo no salió bien</h1>
-        <p>NEXO tuvo un problema al mostrar esta pantalla. Pide ayuda a tu familia o a tu enfermera.</p>
+        <p>NEXO tuvo un problema al mostrar esta pantalla. Pide ayuda a tu familia o a tu enfermera. Si al volver a intentar aparece otra vez este aviso, la persona que te cuida puede restablecer los datos.</p>
         <div className="crash-actions">
           <button className="btn btn-primary" onClick={() => location.reload()}>
             Volver a intentar
@@ -54,7 +53,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
             </button>
           )}
         </div>
-        {this.state.confirming && <p className="fine-print">Se guarda una copia de los datos actuales en este dispositivo y se cargan los de demostración.</p>}
+        {this.state.confirming && <p className="fine-print">Se guarda una copia de los textos y ajustes actuales en este dispositivo y se cargan los de demostración. Las fotos, audios y videos no se borran.</p>}
       </div>
     );
   }

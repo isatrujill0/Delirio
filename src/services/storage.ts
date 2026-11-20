@@ -44,6 +44,18 @@ function list<T>(v: unknown, fallback: T[], fix: (x: Record<string, unknown>) =>
   return out;
 }
 
+/**
+ * Migration from data saved before the `demo` flag existed on care items and moods (≤ 3a1b536):
+ * a record without the flag is demo when its id is one of the built-in demo ids.
+ */
+const LEGACY_DEMO_IDS = (() => {
+  const d = createDemoData(new Date(0));
+  return new Set([...d.treatments, ...d.procedures, ...d.recommendations].map((x) => x.id));
+})();
+const demoFlag = (x: Record<string, unknown>) => (typeof x.demo === 'boolean' ? x.demo : LEGACY_DEMO_IDS.has(x.id as string));
+/** The demo care note of earlier versions read as a clinical assessment ("estable"); it is replaced on load. */
+const LEGACY_DEMO_NOTE = 'Te encuentras estable y recibiendo el cuidado que necesitas.';
+
 const fixContact = (x: Record<string, unknown>): Contact | null => {
   const name = reqStr(x.name);
   if (!name) return null;
@@ -84,7 +96,7 @@ const fixTreatment = (x: Record<string, unknown>): Treatment | null => {
     frequency: str(x.frequency, ''),
     times: arr<unknown>(x.times, []).filter((t): t is string => typeof t === 'string'),
     observations: str(x.observations, ''),
-    demo: bool(x.demo, false),
+    demo: demoFlag(x),
   };
 };
 
@@ -93,22 +105,23 @@ const fixProcedure = (x: Record<string, unknown>): Procedure | null => {
   const date = reqStr(x.date);
   if (!name || !date) return null;
   const status = STATUSES.includes(x.status as ProcedureStatus) ? (x.status as ProcedureStatus) : 'programado';
-  return { id: x.id as string, name, date, description: str(x.description, ''), status, demo: bool(x.demo, false) };
+  return { id: x.id as string, name, date, description: str(x.description, ''), status, demo: demoFlag(x) };
 };
 
 const fixRecommendation = (x: Record<string, unknown>): Recommendation | null => {
   const title = reqStr(x.title);
   if (!title || !CATEGORIES.includes(x.category as RecommendationCategory)) return null;
-  return { id: x.id as string, category: x.category as RecommendationCategory, title, summary: str(x.summary, ''), body: str(x.body, ''), demo: bool(x.demo, false) };
+  return { id: x.id as string, category: x.category as RecommendationCategory, title, summary: str(x.summary, ''), body: str(x.body, ''), demo: demoFlag(x) };
 };
 
-function sanitizeMoods(v: unknown, fallback: MoodEntry[]): MoodEntry[] {
+/** `legacyDemo`: what a mood without a `demo` flag is (true when the stored set is still the demo one). */
+function sanitizeMoods(v: unknown, fallback: MoodEntry[], legacyDemo = false): MoodEntry[] {
   if (!Array.isArray(v)) return fallback;
   const byDate = new Map<string, MoodEntry>();
   for (const m of v) {
     if (!isObj(m) || typeof m.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(m.date)) continue;
     const value = Math.round(num(m.value, 0));
-    if (value >= 1 && value <= 5) byDate.set(m.date, { date: m.date, value: value as MoodValue, demo: bool(m.demo, false) });
+    if (value >= 1 && value <= 5) byDate.set(m.date, { date: m.date, value: value as MoodValue, demo: bool(m.demo, legacyDemo) });
   }
   return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-60);
 }
@@ -164,11 +177,16 @@ export function sanitize(raw: unknown, defaults: AppData): AppData {
     procedures: list(raw.procedures, defaults.procedures, fixProcedure),
     recommendations: list(raw.recommendations, defaults.recommendations, fixRecommendation),
     favorites: arr<unknown>(raw.favorites, []).filter((x): x is string => typeof x === 'string'),
-    moods: sanitizeMoods(raw.moods, defaults.moods),
+    // Older saves have unflagged moods; while the care note is still the demo one, they are the demo history.
+    moods: sanitizeMoods(raw.moods, defaults.moods, isObj(raw.careNote) && raw.careNote.demo === true),
     vitals: raw.vitals === null ? null : sanitizeVitals(raw.vitals, defaults.vitals),
     careNote: isObj(raw.careNote) && typeof raw.careNote.text === 'string'
       ? // A note without a real date gets updatedAt 0, which the UI shows as "sin fecha" rather than "ahora".
-        { text: raw.careNote.text.slice(0, 280), updatedAt: num(raw.careNote.updatedAt, 0), demo: bool(raw.careNote.demo, false) }
+        {
+          text: raw.careNote.demo === true && raw.careNote.text === LEGACY_DEMO_NOTE ? defaults.careNote.text : raw.careNote.text.slice(0, 280),
+          updatedAt: num(raw.careNote.updatedAt, 0),
+          demo: bool(raw.careNote.demo, false),
+        }
       : defaults.careNote,
     scores: isObj(raw.scores)
       ? Object.fromEntries(Object.entries(raw.scores).filter(([, v]) => typeof v === 'number' && Number.isFinite(v) && v >= 0).map(([k, v]) => [k, Math.floor(v as number) || 0]))

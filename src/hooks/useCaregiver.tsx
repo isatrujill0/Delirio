@@ -5,6 +5,12 @@ import { Field } from '../components/Form';
 import { useAppData } from './useAppData';
 import { DEMO_PIN } from '../data/demo';
 
+/**
+ * The demo PIN is printed in the prompt only in the preview build (and in development), where people
+ * explore NEXO. On the installed device it would be shown to the patient; there it is documented in the README.
+ */
+const SHOW_DEMO_PIN = import.meta.env.DEV || import.meta.env.MODE === 'artifact';
+
 /** How long editing stays unlocked after the PIN is entered. */
 const UNLOCK_MS = 10 * 60_000;
 
@@ -91,7 +97,7 @@ export function CaregiverProvider({ children }: { children: ReactNode }) {
             <LockKeyhole size={32} strokeWidth={1.6} aria-hidden="true" />
             <p>Este cambio lo hace tu familia o el personal de salud. Escribe el PIN de cuidador.</p>
           </div>
-          <Field label="PIN de cuidador" error={error} hint={data.caregiverPin === DEMO_PIN ? `PIN de demostración: ${DEMO_PIN}. Cámbialo en Configuración.` : undefined}>
+          <Field label="PIN de cuidador" error={error} hint={SHOW_DEMO_PIN && data.caregiverPin === DEMO_PIN ? `PIN de demostración: ${DEMO_PIN}. Cámbialo en Configuración.` : undefined}>
             {(id, by) => (
               <input
                 id={id}

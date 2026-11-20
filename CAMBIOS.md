@@ -133,3 +133,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: tests/e2e/*.spec.ts, tests/property/*.test.ts, scripts/smoke.cjs, src/styles/components.css, src/styles/pages.css, src/services/care.ts, README.md.
 * Resultado: tsc PASS, build PASS, propiedades 118/118, E2E 13/13 (~14 s), smoke PASS con verificación de tamaño táctil.
 * Estado: Completado (queda la ronda 2 de revisión independiente).
+
+16:55 — Correcciones de la revisión independiente (ronda 2), pausado por el usuario
+
+* Datos guardados por la versión anterior: al cargarlos, los tratamientos, procedimientos, recomendaciones e historial de ánimo de ejemplo recuperan la etiqueta «Ejemplo», y la nota antigua que decía «estable» se reemplaza por la nueva.
+* La pantalla de error ya no borra fotos, audios ni videos al restablecer; el texto dice exactamente qué se conserva.
+* El PIN de demostración (1234) solo se muestra en la vista previa; en el dispositivo instalado ya no se le muestra al paciente (está en el README).
+* Dos tratamientos a la misma hora se muestran juntos en Inicio y en el plan.
+* El service worker ya no mezcla una página vieja de la caché del navegador con archivos nuevos.
+* Archivos afectados: src/services/storage.ts, src/components/ErrorBoundary.tsx, src/hooks/useCaregiver.tsx, src/pages/HomePage.tsx, src/pages/CarePage.tsx, public/sw.js, CAMBIOS.md.
+* Resultado: tsc PASS, build PASS, propiedades 118/118, E2E 13/13.
+* Estado: En progreso (pausado a pedido del usuario; faltan pruebas de migración y de la pantalla de error, y la ronda 3 de revisión).
