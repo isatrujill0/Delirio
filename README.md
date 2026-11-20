@@ -110,7 +110,7 @@ Pendiente de configurar (se hará al final). La app ya está preparada: Vite usa
 
 ### Qué funciona sin conexión
 
-Todo, después de la primera visita: el service worker guarda la app, la música, los sonidos, las fotos y el video. No hay funciones que dependan de internet.
+Todo, después de la primera visita: al instalarse, el service worker guarda la app completa (lista `precache.json` generada en cada compilación), la música, los sonidos, las fotos y el video, y responde desde la caché las peticiones por rangos del audio, así que la música suena y se puede adelantar sin red. No hay funciones que dependan de internet. Verificado en Chromium; falta probarlo en un iPad físico.
 
 ## Funcionalidades implementadas
 
@@ -122,10 +122,11 @@ Todo, después de la primera visita: el service worker guarda la app, la música
 - Mensajes: voz grabada en el dispositivo, video, texto; los de demostración se leen en voz alta y están marcados.
 - Tratamientos y procedimientos: crear, editar, eliminar con validaciones; recordatorios.
 - Recomendaciones por categoría con lectura en voz alta.
-- Registro de ánimo diario y gráfica de evolución; signos vitales y nota del equipo editables.
+- Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); signos vitales y nota del equipo editables por el personal.
 - Notificaciones dentro de la app con insignia, aviso sonoro y configuración por tipo.
+- Modo cuidador: agregar, editar o eliminar personas, mensajes, fotos, tratamientos, procedimientos, signos, la nota del equipo y restablecer datos piden un PIN (de demostración: **1234**; se cambia en Configuración → Contenido). Queda desbloqueado 10 minutos o hasta tocar «Bloquear». Es una barrera contra toques accidentales, no una medida de seguridad.
 - Configuración persistente; restablecer datos de demostración.
-- Manejo de errores: almacenamiento lleno o bloqueado, datos dañados, medios no disponibles, micrófono denegado.
+- Manejo de errores: almacenamiento lleno o bloqueado, datos dañados (se descartan los registros rotos y se guarda una copia de respaldo), medios no disponibles, micrófono denegado y una pantalla de error con «Volver a intentar».
 - Accesibilidad: áreas táctiles ≥ 56 px, iconos con texto, tres tamaños de texto, reducir movimiento, foco visible, etiquetas para lectores de pantalla.
 - PWA instalable con funcionamiento sin conexión.
 
@@ -140,4 +141,4 @@ Todo, después de la primera visita: el service worker guarda la app, la música
 
 ## Datos de demostración
 
-Todas las personas, mensajes, tratamientos, procedimientos, signos vitales y el clima iniciales son ficticios y aparecen marcados como “Demostración” o “Ejemplo”. Mi cuidado es informativo: no diagnostica ni cambia tratamientos.
+Todas las personas, mensajes, fotos, tratamientos, procedimientos, recomendaciones, el historial de ánimo, los signos vitales, la nota del equipo y el clima iniciales son ficticios y aparecen marcados como “Demostración” o “Ejemplo”. Mi cuidado es informativo: no diagnostica ni cambia tratamientos.
