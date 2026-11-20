@@ -1,0 +1,75 @@
+import type { AppData } from '../types';
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const isoDay = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const dayAt = (now: Date, offsetDays: number, hm: string) => {
+  const d = new Date(now);
+  d.setDate(d.getDate() + offsetDays);
+  return `${isoDay(d)}T${hm}`;
+};
+
+/**
+ * Demonstration content shown on first launch and after "Restablecer datos".
+ * Every person, message and clinical item here is fictitious and flagged as demo in the UI.
+ */
+export function createDemoData(now = new Date()): AppData {
+  const t = now.getTime();
+  const H = 3_600_000;
+  return {
+    version: 1,
+    userName: 'Andrés',
+    location: 'Estás en la UCI de la Clínica de Occidente.',
+    weather: { city: 'Cali', tempC: 26, condition: 'Parcialmente nublado' },
+    prefs: {
+      volume: 60,
+      muted: false,
+      textSize: 'normal',
+      reduceMotion: false,
+      notifications: { enabled: true, sound: true, treatments: true, procedures: true, messages: true },
+    },
+    contacts: [
+      { id: 'c-mama', name: 'Mamá', relation: 'Lucía · tu mamá', phone: '300 000 0001', about: 'Viene a visitarte todas las tardes. Le encanta contarte cómo están las matas del balcón.', photo: 'asset:mama', demo: true },
+      { id: 'c-papa', name: 'Papá', relation: 'Jorge · tu papá', phone: '300 000 0002', about: 'Habla con el equipo médico cada mañana y te cuenta las novedades.', photo: 'asset:papa', demo: true },
+      { id: 'c-daniela', name: 'Daniela', relation: 'Tu hermana', phone: '300 000 0003', about: 'Te prepara videos y fotos de la familia para que los veas aquí.', photo: 'asset:daniela', demo: true },
+      { id: 'c-carmen', name: 'Tía Carmen', relation: 'Tu tía', phone: '300 000 0004', about: 'Vive en Palmira y te manda bendiciones todos los días.', demo: true },
+    ],
+    messages: [
+      { id: 'm-1', contactId: 'c-mama', kind: 'audio', text: 'Hola, mi amor. Hoy amaneció bonito en Cali y pensamos mucho en ti. Esta tarde vamos a visitarte. Descansa, que aquí estamos contigo. Te queremos muchísimo.', createdAt: t - 2 * H, read: false, demo: true },
+      { id: 'm-2', contactId: 'c-papa', kind: 'audio', text: 'Hijo, esta mañana hablé con tu equipo médico. Dicen que vas paso a paso. Tú tranquilo, que nosotros estamos pendientes de todo.', createdAt: t - 5 * H, read: false, demo: true },
+      { id: 'm-3', contactId: 'c-daniela', kind: 'video', text: 'Te hice este video con nuestra foto favorita. ¡Ánimo, hermanito!', media: 'asset:video-recuerdos', duration: 14, createdAt: t - 26 * H, read: false, demo: true },
+      { id: 'm-4', contactId: 'c-carmen', kind: 'texto', text: 'Andrés, toda la familia te manda bendiciones. Muy pronto paso a saludarte.', createdAt: t - 30 * H, read: true, demo: true },
+    ],
+    photos: [
+      { id: 'p-1', src: 'asset:familia', caption: 'Toda la familia junta', demo: true },
+      { id: 'p-2', src: 'asset:mama', caption: 'Mamá en la casa', contactId: 'c-mama', demo: true },
+      { id: 'p-3', src: 'asset:papa', caption: 'Papá, siempre sonriendo', contactId: 'c-papa', demo: true },
+      { id: 'p-4', src: 'asset:daniela', caption: 'Daniela', contactId: 'c-daniela', demo: true },
+    ],
+    treatments: [
+      { id: 't-1', name: 'Analgésico', description: 'Ayuda a controlar el dolor y la fiebre.', startDate: isoDay(new Date(t - 72 * H)), frequency: 'Cada 8 horas', times: ['06:00', '14:00', '22:00'], observations: 'Lo administra tu enfermera. Cuéntale si sientes dolor.' },
+      { id: 't-2', name: 'Antibiótico intravenoso', description: 'Ayuda a tu cuerpo a combatir la infección.', startDate: isoDay(new Date(t - 48 * H)), frequency: 'Cada 12 horas', times: ['08:00', '20:00'], observations: 'Se aplica por el catéter del brazo.' },
+      { id: 't-3', name: 'Terapia respiratoria', description: 'Ejercicios para que tus pulmones trabajen mejor.', startDate: isoDay(new Date(t - 24 * H)), frequency: 'Dos veces al día', times: ['10:00', '16:00'], observations: 'Con tu terapeuta. Respira despacio y a tu ritmo.' },
+    ],
+    procedures: [
+      { id: 'pr-0', name: 'Ecografía abdominal', date: dayAt(now, -1, '11:00'), description: 'Imagen con ultrasonido. No duele; se usa un gel frío sobre la piel.', status: 'realizado' },
+      { id: 'pr-1', name: 'Radiografía de tórax', date: dayAt(now, 0, '16:00'), description: 'Una foto de tus pulmones. Se hace en la cama y toma pocos minutos.', status: 'confirmado' },
+      { id: 'pr-2', name: 'Toma de muestras de sangre', date: dayAt(now, 1, '07:30'), description: 'Exámenes de control. Puede sentirse un pinchazo pequeño.', status: 'programado' },
+      { id: 'pr-3', name: 'Valoración de fisioterapia', date: dayAt(now, 2, '10:00'), description: 'Tu fisioterapeuta revisará cómo mover brazos y piernas sin esfuerzo.', status: 'programado' },
+    ],
+    recommendations: [
+      { id: 'r-1', category: 'Emociones', title: 'Respira despacio', summary: 'Un ejercicio corto para calmarte.', body: 'Toma aire por la nariz contando hasta cuatro, sostenlo un momento y suéltalo despacio por la boca contando hasta seis. Repítelo cinco veces, a tu ritmo.' },
+      { id: 'r-2', category: 'Emociones', title: 'Está bien sentir miedo', summary: 'Habla de lo que sientes.', body: 'Estar en la UCI puede dar miedo o confusión. Es normal. Cuéntaselo a tu enfermera o a tu familia: ellos están para acompañarte.' },
+      { id: 'r-3', category: 'Descanso', title: 'Duerme a tu ritmo', summary: 'Descansar ayuda a recuperarte.', body: 'Cierra los ojos cuando lo necesites. Puedes escuchar los sonidos de Mi mundo para relajarte; se apagan solos al terminar.' },
+      { id: 'r-4', category: 'Descanso', title: 'Luz y ruido', summary: 'Pide ayuda para estar más cómodo.', body: 'Si la luz o los sonidos te molestan, pídele a tu enfermera que ajuste la luz de la habitación.' },
+      { id: 'r-5', category: 'Alimentación', title: 'Come y bebe según indicación', summary: 'Tu equipo decide qué puedes tomar.', body: 'No comas ni bebas nada que no te haya indicado tu equipo de salud. Si tienes sed o hambre, avísale a tu enfermera.' },
+      { id: 'r-6', category: 'Movimiento', title: 'Mueve manos y pies', summary: 'Pequeños movimientos, sin esfuerzo.', body: 'Abre y cierra las manos y mueve los tobillos en círculos unas cuantas veces, solo si tu equipo te lo permite y sin hacer fuerza.' },
+      { id: 'r-7', category: 'Visitas', title: 'Horario de visitas', summary: 'Tu familia puede acompañarte.', body: 'El horario de visitas lo define la clínica. Pregunta a tu enfermera los horarios de hoy.' },
+    ],
+    moods: ([3, 2, 3, 4, 3, 4] as const).map((value, i) => ({ date: isoDay(new Date(t - (6 - i) * 24 * H)), value })),
+    vitals: { heartRate: 72, respRate: 16, spo2: 97, recordedAt: t - 2 * H, demo: true },
+    careNote: { text: 'Te encuentras estable y recibiendo el cuidado que necesitas.', updatedAt: t - 3 * H, demo: true },
+    favorites: ['amanecer-sereno', 'bosque'],
+    scores: {},
+    dismissedNotifications: [],
+  };
+}

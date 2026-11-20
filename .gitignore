@@ -1,0 +1,18 @@
+# Dependencias y compilaciones
+node_modules
+dist
+dist-artifact
+test-results
+playwright-report
+*.log
+
+# Configuración local de Claude (solo se versiona la skill de verificación)
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/verify/
+
+# Material de trabajo de impeccable
+.impeccable/review
+.impeccable/questions
+.impeccable/mocks

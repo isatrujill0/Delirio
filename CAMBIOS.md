@@ -1,0 +1,86 @@
+# CAMBIOS — Bitácora de desarrollo de NEXO
+
+Zona horaria de todas las entradas: **Colombia (America/Bogota, UTC−5)**.
+Las horas corresponden a la finalización real de cada cambio (tomadas del reloj del sistema y de la fecha de modificación de los archivos).
+
+---
+
+20/11/2026
+
+15:48 — Análisis de referencias y definición del producto
+
+* Se analizaron las imágenes de referencia (Inicio, Mi gente, Mi mundo, Mi cuidado) y el brief.
+* Se documentaron usuario, propósito, restricciones y principios en PRODUCT.md.
+* Se definió la dirección visual (contrato de dirección) para la pantalla del dispositivo.
+* Archivos afectados: PRODUCT.md, .impeccable/surfaces/src-app-tsx.md.
+* Resultado: base de producto y diseño acordada; supuesto registrado: usuario principal = paciente hospitalizado en UCI.
+* Estado: Completado.
+
+15:52 — Estructura del proyecto
+
+* Se creó el proyecto con React 18, TypeScript, Vite y Lucide React.
+* Se organizó src/ en components, pages, layouts, hooks, services, data, types, styles y assets.
+* Se descargó la tipografía Lexend (alta legibilidad) para uso local, sin depender de servicios externos.
+* Archivos afectados: package.json, tsconfig.json, vite.config.ts, .gitignore, src/assets/fonts/*.
+* Resultado: proyecto compila.
+* Estado: Completado.
+
+15:53 — Instalación de la skill ui-ux-pro-max
+
+* Se descargó la skill desde github.com/nextlevelbuilder/ui-ux-pro-max-skill y se instaló en .claude/skills/ui-ux-pro-max.
+* Se usaron sus reglas de UX (táctil, carruseles con controles, rendimiento de React); su paleta sugerida se descartó porque contradice la identidad violeta de las referencias.
+* Archivos afectados: .claude/skills/ui-ux-pro-max/**.
+* Estado: Completado.
+
+15:54 — Recursos multimedia de demostración
+
+* Se compusieron y sintetizaron por código 3 piezas de música suave y 3 paisajes sonoros (bosque, lluvia, mar), 96 s cada uno, en AAC (.m4a). Son originales, sin licencias de terceros.
+* Se generó un video de demostración (14 s) con la foto familiar de ejemplo y música original.
+* Se recortaron retratos de Mamá, Papá y Daniela a partir de la imagen de referencia entregada por el usuario.
+* Archivos afectados: scripts/generate-media.mjs, src/assets/audio/*, src/assets/video/*, src/assets/img/*.
+* Resultado: audio real reproducible; no hay reproducciones simuladas.
+* Estado: Completado.
+
+16:02 — Lógica de negocio y persistencia
+
+* Tipos de datos y datos de demostración marcados como tales.
+* Almacenamiento en LocalStorage versionado, con saneamiento de datos y manejo de errores (espacio lleno, almacenamiento bloqueado, datos dañados).
+* Fotos, audios y videos agregados en el dispositivo se guardan en IndexedDB.
+* Motor de audio único con control de volumen real en iPad (Web Audio), lectura en voz alta y sonidos de aviso.
+* Notificaciones derivadas de mensajes, tratamientos y procedimientos.
+* Archivos afectados: src/types/index.ts, src/data/*.ts, src/services/*.ts, src/hooks/*.
+* Estado: Completado.
+
+16:06 — Interfaz del dispositivo y las cuatro secciones
+
+* Marco del dispositivo: barra superior (logo, sonido, configuración), menú lateral con opción activa iluminada, controles inferiores (−, reproducir/pausar, +, campana de notificaciones) y fondo de pétalos.
+* Inicio: saludo según la hora, fecha y reloj en vivo, mensaje familiar con reproducir/pausar/detener, ubicación, bienestar, clima de ejemplo y accesos rápidos.
+* Mi mundo: playlist con favoritos, música, naturaleza, paisajes, recuerdos, juegos cognitivos (El despertar del paisaje, Eco de luces, Completa el refrán) y relajación (respiración guiada, meditación, sonidos).
+* Configuración: nombre, volumen, tamaño de texto, reducir movimiento, notificaciones, contenido y restablecer datos.
+* Archivos afectados: src/layouts/*, src/components/*, src/pages/HomePage.tsx, src/pages/WorldPage.tsx, src/pages/world/*, src/pages/SettingsPanel.tsx.
+* Estado: Completado.
+
+16:14 — Mi gente y Mi cuidado
+
+* Mi gente: carrusel de personas, perfil, agregar/editar/eliminar contactos, mensajes de voz, video y texto, grabación de audio, álbum de fotos.
+* Mi cuidado: nota del equipo de salud, registro de ánimo diario, signos vitales registrados a mano, plan de cuidado, evolución del ánimo (gráfica) y vistas de tratamientos, procedimientos y recomendaciones con formularios y validaciones.
+* Archivos afectados: src/pages/PeoplePage.tsx, src/pages/people/*, src/pages/CarePage.tsx, src/pages/care/*, src/components/MoodChart.tsx, src/services/wellbeing.ts.
+* Resultado: sección informativa, sin diagnósticos; los datos de ejemplo están marcados.
+* Estado: Completado.
+
+16:15 — Ajuste visual para iPad Air 11" (1180 × 820)
+
+* Se revisaron capturas de las cuatro secciones a 1180 × 820 y 1180 × 760 (Safari con barra).
+* Se corrigió el desborde de Mi mundo y Mi cuidado, la intensidad del fondo y el logo.
+* Se agregó la versión vertical (menú inferior y contenido en una columna).
+* Archivos afectados: src/styles/*.css, src/pages/CarePage.tsx, src/pages/care/Wellbeing.tsx.
+* Resultado: sin desbordes ni barras de desplazamiento en 1180 × 820.
+* Estado: Completado.
+
+16:16 — PWA y vista previa
+
+* Manifest, íconos (192, 512, maskable, Apple) y service worker con caché para uso sin conexión.
+* Compilación de un solo archivo para la vista previa (artefacto de Claude).
+* Archivos afectados: public/manifest.webmanifest, public/sw.js, public/icons/*, scripts/generate-icons.cjs, scripts/artifact-fragment.mjs, vite.config.ts, index.html.
+* Resultado: vista previa publicada en https://claude.ai/artifact/JpmgYYNtLgyiwFb3FSWezo (privada).
+* Estado: Completado.
