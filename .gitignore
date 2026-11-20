@@ -4,6 +4,7 @@ dist
 dist-artifact
 test-results
 playwright-report
+verify-output
 *.log
 
 # Configuración local de Claude (solo se versiona la skill de verificación)

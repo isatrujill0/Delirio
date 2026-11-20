@@ -10,7 +10,10 @@
     "preview": "vite preview --host",
     "typecheck": "tsc -b",
     "media": "node scripts/generate-media.mjs",
-    "icons": "node scripts/generate-icons.cjs"
+    "icons": "node scripts/generate-icons.cjs",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test --trace off",
+    "test": "npm run test:unit && npm run test:e2e"
   },
   "dependencies": {
     "lucide-react": "^1.77.0",
@@ -18,11 +21,14 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.3.0",
+    "fast-check": "^4.10.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
-    "vite-plugin-singlefile": "^2.3.4"
+    "vite-plugin-singlefile": "^2.3.4",
+    "vitest": "^5.1.1"
   }
 }

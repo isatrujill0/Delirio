@@ -84,3 +84,15 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: public/manifest.webmanifest, public/sw.js, public/icons/*, scripts/generate-icons.cjs, scripts/artifact-fragment.mjs, vite.config.ts, index.html.
 * Resultado: vista previa publicada en https://claude.ai/artifact/JpmgYYNtLgyiwFb3FSWezo (privada).
 * Estado: Completado.
+
+16:22 — Capa de verificación (parte 1) y ajustes de accesibilidad
+
+* Se configuraron Vitest + fast-check (pruebas basadas en propiedades) y Playwright 1.63.0 (E2E a 1180 × 820).
+* Se agregaron 3 flujos E2E: navegación y persistencia del nombre; agregar/editar/eliminar personas; música real, volumen, ánimo y tratamiento con persistencia.
+* Se creó scripts/smoke.cjs: ejecuta la app real en horizontal, Safari con barra y vertical, y falla ante errores de consola, desbordes o audio que no suena.
+* Se creó la skill de verificación (.claude/skills/verify/SKILL.md) y el checklist RELIABILITY.md.
+* Corrección: con texto «Muy grande», Inicio se superponía; ahora la sección se desplaza.
+* Corrección: dos botones distintos se anunciaban como «Reproducir Mi playlist»; el de la columna ahora es «Escuchar Mi playlist».
+* Archivos afectados: package.json, vitest.config.ts, playwright.config.ts, tests/e2e/*, scripts/smoke.cjs, .claude/skills/verify/SKILL.md, RELIABILITY.md, src/styles/pages.css, src/pages/WorldPage.tsx, .gitignore.
+* Resultado: tsc sin errores; E2E 3/3 en verde; smoke en verde.
+* Estado: En progreso (faltan pruebas de propiedades y revisión independiente).

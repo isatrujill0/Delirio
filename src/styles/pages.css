@@ -1717,3 +1717,23 @@
     min-height: 100%;
   }
 }
+
+/* ── Larger text sizes: rows grow with their content and the stage scrolls ── */
+html:not([data-text='normal']) .stage {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+html:not([data-text='normal']) .stage > .page:not(.subpage) {
+  height: auto;
+  min-height: 100%;
+  grid-template-rows: none;
+  grid-auto-rows: auto;
+  overflow: visible;
+  padding-bottom: 8px;
+}
+html:not([data-text='normal']) .stage > .page:not(.subpage) > * {
+  min-height: auto;
+}
+html:not([data-text='normal']) .family-card {
+  min-height: 380px;
+}

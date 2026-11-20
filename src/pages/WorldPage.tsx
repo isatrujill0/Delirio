@@ -343,7 +343,7 @@ function ColItem({ art, icon, label, effort, level = 0, onOpen, onPlay }: { art?
           {effort && <small className={`effort ${EFFORT_CLS[level]}`}>Esfuerzo: {effort}</small>}
         </span>
       </button>
-      <button className="mini-play" onClick={onPlay ?? onOpen} aria-label={onPlay ? `Reproducir ${label}` : `Abrir ${label}`}>
+      <button className="mini-play" onClick={onPlay ?? onOpen} aria-label={onPlay ? `Escuchar ${label}` : `Abrir ${label}`}>
         <Play fill="currentColor" strokeWidth={0} />
       </button>
     </li>
