@@ -1,5 +1,7 @@
-/* Portada: silueta de cabeza humana hecha de partículas y filamentos que se encienden, se apagan,
-   se alejan y vuelven. Alude a la atención fluctuante del delirio. WebGL puro, sin dependencias.
+/* Portada: figura humana abstracta (busto de perfil mirando hacia arriba) hecha de partículas.
+   La piel es una nube tenue; dentro de la cabeza, una red densa de neuronas y filamentos que se
+   encienden, se apagan y se dispersan: la atención y la conciencia que fluctúan en el delirium.
+   Alrededor, partículas que orbitan y cintas de luz al fondo. WebGL puro, sin dependencias.
    No reacciona al ratón ni a los clics. Con movimiento reducido se dibuja un solo fotograma quieto. */
 (() => {
   'use strict';
@@ -11,51 +13,69 @@
   stage.classList.add('has-gl');
   const still = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* ---------- Forma: distancia firmada a una cabeza de perfil (mira hacia +x) ---------- */
+  /* ---------- Forma: distancia firmada a un busto de perfil (la cara mira hacia +x) ---------- */
   const ell = (x, y, z, cx, cy, cz, rx, ry, rz) => {
     const qx = (x - cx) / rx, qy = (y - cy) / ry, qz = (z - cz) / rz;
     return (Math.sqrt(qx * qx + qy * qy + qz * qz) - 1) * Math.min(rx, ry, rz);
   };
   const smin = (a, b, k) => { const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * .25; };
   const smax = (a, b, k) => -smin(-a, -b, k);
-  const head = (x, y, z) => {
+  // La cabeza gira hacia arriba sobre la base del cuello
+  const TILT = .42, PX = -.05, PY = -.62;
+  const toHead = (x, y) => { const c = Math.cos(-TILT), s = Math.sin(-TILT), dx = x - PX, dy = y - PY; return [PX + c * dx - s * dy, PY + s * dx + c * dy]; };
+  const toWorld = (x, y) => { const c = Math.cos(TILT), s = Math.sin(TILT), dx = x - PX, dy = y - PY; return [PX + c * dx - s * dy, PY + s * dx + c * dy]; };
+  const headShape = (x, y, z) => {
     let d = ell(x, y, z, -.08, .28, 0, .8, .8, .66);               // cráneo
     d = smin(d, ell(x, y, z, .24, -.28, 0, .52, .58, .46), .28);    // cara y mandíbula
     d = smin(d, ell(x, y, z, .52, .14, 0, .2, .14, .4), .12);       // frente y cejas
     d = smin(d, ell(x, y, z, .7, -.12, 0, .1, .19, .08), .1);       // nariz
     d = smin(d, ell(x, y, z, .54, -.4, 0, .1, .07, .2), .08);       // labios
     d = smin(d, ell(x, y, z, .42, -.7, 0, .22, .16, .26), .14);     // mentón
-    d = smin(d, ell(x, y, z, -.08, -1.1, 0, .36, .62, .34), .3);    // cuello
     d = smin(d, ell(x, y, z, -.1, -.05, .5, .1, .2, .1), .08);      // orejas
     d = smin(d, ell(x, y, z, -.1, -.05, -.5, .1, .2, .1), .08);
     d = smax(d, -ell(x, y, z, .62, .02, .24, .12, .08, .12), .06);  // cuencas de los ojos
-    d = smax(d, -ell(x, y, z, .62, .02, -.24, .12, .08, .12), .06);
-    return d;
+    return smax(d, -ell(x, y, z, .62, .02, -.24, .12, .08, .12), .06);
+  };
+  const bust = (x, y, z) => {
+    const [hx, hy] = toHead(x, y);
+    let d = headShape(hx, hy, z);
+    d = smin(d, ell(x, y, z, -.06, -1.05, 0, .33, .58, .31), .3);   // cuello
+    d = smin(d, ell(x, y, z, -.12, -1.95, 0, 1.3, .5, .52), .4);    // hombros
+    return smin(d, ell(x, y, z, -.05, -2.45, 0, .95, .7, .55), .3); // pecho
   };
 
-  /* ---------- Nube de puntos (semilla fija: siempre la misma figura) ---------- */
+  /* ---------- Nubes de puntos (semilla fija: siempre la misma figura) ---------- */
   let seed = 7;
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  const pts = [], inner = [];
-  for (let t = 0; t < 900000 && pts.length < 7000; t++) {
-    const x = -1 + rnd() * 1.95, y = -1.75 + rnd() * 2.9, z = -.75 + rnd() * 1.5;
-    if (Math.abs(head(x, y, z)) < .014) pts.push([x, y, z]);
+  const skin = [], brain = [], halo = [];
+  for (let t = 0; t < 2500000 && skin.length < 9500; t++) {
+    const x = -1.6 + rnd() * 2.9, y = -2.9 + rnd() * 4.4, z = -.8 + rnd() * 1.6;
+    if (y < -.95 && rnd() > .3) continue; // el cuerpo, más tenue que la cabeza
+    if (Math.abs(bust(x, y, z)) < .014) skin.push([x, y, z]);
   }
-  for (let t = 0; t < 200000 && inner.length < 1100; t++) {
+  // Red interior del cerebro: se muestrea en el marco de la cabeza y se gira a su sitio
+  for (let t = 0; t < 400000 && brain.length < 1800; t++) {
     const x = -.85 + rnd() * 1.5, y = -.25 + rnd() * 1.3, z = -.6 + rnd() * 1.2;
-    if (ell(x, y, z, -.08, .3, 0, .7, .68, .56) < -.02) inner.push([x, y, z]); // red interior, en el cráneo
+    if (ell(x, y, z, -.08, .3, 0, .72, .7, .58) < -.015) { const [wx, wy] = toWorld(x, y); brain.push([wx, wy, z]); }
+  }
+  // Partículas que orbitan alrededor de la cabeza en dos anillos inclinados
+  const [hcx, hcy] = toWorld(-.05, .25);
+  for (let i = 0; i < 760; i++) {
+    const a = rnd() * Math.PI * 2, r = 1.05 + rnd() * .55, tilt = i % 2 ? .5 : -.35, y0 = (rnd() - .5) * .12;
+    const x = Math.cos(a) * r, z = Math.sin(a) * r * .85;
+    halo.push([hcx + x, hcy + y0 + x * Math.sin(tilt) * .6, z]);
   }
 
-  // Filamentos: une cada punto con vecinos cercanos (rejilla espacial para no comparar todos con todos)
+  // Filamentos: une cada punto con sus vecinos cercanos (rejilla espacial para no comparar todos con todos)
   const links = (list, max, per) => {
-    const cell = max, grid = new Map(), key = (a, b, c) => a + ',' + b + ',' + c, out = [];
+    const grid = new Map(), key = (a, b, c) => a + ',' + b + ',' + c, out = [];
     list.forEach((p, i) => {
-      const k = key(Math.floor(p[0] / cell), Math.floor(p[1] / cell), Math.floor(p[2] / cell));
+      const k = key(Math.floor(p[0] / max), Math.floor(p[1] / max), Math.floor(p[2] / max));
       (grid.get(k) || grid.set(k, []).get(k)).push(i);
     });
     list.forEach((p, i) => {
       if (rnd() > per) return;
-      const cx = Math.floor(p[0] / cell), cy = Math.floor(p[1] / cell), cz = Math.floor(p[2] / cell), near = [];
+      const cx = Math.floor(p[0] / max), cy = Math.floor(p[1] / max), cz = Math.floor(p[2] / max), near = [];
       for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) for (let c = -1; c <= 1; c++)
         (grid.get(key(cx + a, cy + b, cz + c)) || []).forEach(j => {
           if (j <= i) return;
@@ -67,17 +87,24 @@
     return out;
   };
 
-  // Vértices: posición (3), semilla de la partícula (1), semilla del pulso (1), tipo (1: 0 piel, 1 red interior)
-  const all = pts.map(p => [...p, rnd(), 0, 0]).concat(inner.map(p => [...p, rnd(), 0, 1]));
-  all.forEach(v => v[4] = v[3]);
-  const off = pts.length;
-  const lineIdx = links(pts, .085, .5).concat(links(inner, .2, 1).map(([a, b]) => [a + off, b + off]));
-  const pointData = new Float32Array(all.flat());
-  const lineData = new Float32Array(lineIdx.length * 12);
-  lineIdx.forEach(([a, b], n) => {
-    const pulse = rnd();
-    [all[a], all[b]].forEach((v, e) => lineData.set([v[0], v[1], v[2], v[3], pulse, v[5]], n * 12 + e * 6));
+  // Vértice: posición (3), semilla (1), pulso (1), tipo (1): 0 piel, 1 cerebro, 2 órbita, 3 cinta de luz
+  const all = [];
+  [[skin, 0], [brain, 1], [halo, 2]].forEach(([list, kind]) => list.forEach(p => { const s = rnd(); all.push([p[0], p[1], p[2], s, s, kind]); }));
+  const lines = [];
+  const addLinks = (list, start, max, per) => links(list, max, per).forEach(([a, b]) => {
+    const pulse = rnd(); lines.push([...all[start + a].slice(0, 4), pulse, all[start + a][5]], [...all[start + b].slice(0, 4), pulse, all[start + b][5]]);
   });
+  addLinks(skin, 0, .085, .45);
+  addLinks(brain, skin.length, .16, 1);
+  // Cintas de luz al fondo: haces de hebras finas que ondulan despacio
+  [-1.9, -1.15, .35, 1.2].forEach((base, r) => {
+    const rs = (r + 1) / 5;
+    for (let k = 0; k < 22; k++) for (let i = 0; i < 70; i++) {
+      const x0 = -6 + i * 12 / 70, x1 = -6 + (i + 1) * 12 / 70, f = k / 21;
+      lines.push([x0, base, 1.4, rs, f, 3], [x1, base, 1.4, rs, f, 3]);
+    }
+  });
+  const pointData = new Float32Array(all.flat()), lineData = new Float32Array(lines.flat());
 
   /* ---------- Sombreadores ---------- */
   const VS = `
@@ -88,32 +115,53 @@
     float h(float n) { return fract(sin(n * 91.345) * 47453.123); }
     void main() {
       vec3 p = aPos;
-      // Deformación lenta y orgánica: la figura respira y se ondula
-      p += .028 * vec3(sin(uT * .5 + p.y * 3. + aSeed * 6.), sin(uT * .41 + p.z * 3. + aSeed * 5.), sin(uT * .46 + p.x * 3.));
-      // Algunas partículas se alejan y vuelven; al bajar, todas se dispersan
-      vec3 dir = normalize(p - vec3(-.05, .1, 0.) + (vec3(h(aSeed), h(aSeed + 1.), h(aSeed + 2.)) - .5) * .9);
-      float cyc = pow(.5 - .5 * cos(uT * .11 * (.5 + aSeed) + aSeed * 40.), 3.);
-      // Los filamentos no se alejan: si un extremo se fuera solo, quedaría una raya larga
-      float away = (1. - uLine) * step(.74, aSeed) * cyc * (.3 + h(aSeed + 3.)) + uScroll * uScroll * (.5 + 1.8 * h(aSeed + 4.));
-      p += dir * away;
-      // Giro lento de tres cuartos a perfil, sin depender del puntero
-      float yaw = -.62 + .38 * sin(uT * .06), c = cos(yaw), s = sin(yaw);
-      p = vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
-      p.y += .28;
-      // Onda de luz que atraviesa la figura en diagonal
-      float wave = exp(-pow((dot(aPos, normalize(vec3(.55, 1., .25))) - (mod(uT * .16, 4.2) - 2.1)) * 3.5, 2.));
-      // Parpadeo: cada filamento o punto se enciende y se apaga a su propio ritmo
+      float brain = step(.5, aKind) * step(aKind, 1.5), orbit = step(1.5, aKind) * step(aKind, 2.5), ribbon = step(2.5, aKind);
       float fl = smoothstep(.2, .95, .5 + .5 * sin(uT * (.35 + aPulse * 1.1) + aPulse * 31.));
+      float away = 0.;
+      if (ribbon > .5) {
+        // Cinta: onda lenta y hebras que se abren y se cierran; no gira con la figura
+        float r = aSeed;
+        p.y += (.3 + .3 * h(r)) * sin(aPos.x * (.4 + .3 * h(r + 1.)) + uT * (.05 + .05 * h(r + 2.)) + r * 20.)
+             + aPos.x * (h(r + 3.) * .36 - .18)
+             + (aPulse - .5) * (.3 + .22 * sin(aPos.x * .8 + uT * .07 + r * 9.));
+      } else {
+        // Respiración lenta y orgánica de toda la figura
+        p += .026 * vec3(sin(uT * .5 + p.y * 3. + aSeed * 6.), sin(uT * .41 + p.z * 3. + aSeed * 5.), sin(uT * .46 + p.x * 3.));
+        if (orbit > .5) {
+          // Órbita lenta alrededor de la cabeza
+          vec2 c = vec2(-.4, 0.), q = p.xz - c; // centro de la cabeza ya inclinada (x, z)
+          float a = uT * (.03 + .05 * h(aSeed + 8.)), ca = cos(a), sa = sin(a);
+          p.xz = c + vec2(ca * q.x - sa * q.y, sa * q.x + ca * q.y);
+        }
+        // Algunas partículas se alejan y vuelven (más en el cerebro); al bajar, todas se dispersan
+        vec3 dir = normalize(p - vec3(-.05, .2, 0.) + (vec3(h(aSeed), h(aSeed + 1.), h(aSeed + 2.)) - .5) * .9);
+        float cyc = pow(.5 - .5 * cos(uT * .11 * (.5 + aSeed) + aSeed * 40.), 3.);
+        away = (1. - uLine) * step(.72 - brain * .12, aSeed) * cyc * (.25 + h(aSeed + 3.) * (1. + brain)) + uScroll * uScroll * (.5 + 1.8 * h(aSeed + 4.));
+        p += dir * away;
+        // Giro lento entre perfil y tres cuartos, sin depender del puntero
+        float yaw = 2.85 + .22 * sin(uT * .05), c = cos(yaw), s = sin(yaw); // casi de perfil, mirando a la izquierda
+        p = vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
+      }
+      p.y += .38 + (1. - min(uAspect, 1.)) * .9; p.x -= ribbon > .5 ? 0. : .3; // centra la cabeza inclinada en pantalla
       float z = p.z + 3.4;
       vec2 xy = p.xy * uScale * 3.4 / z;
       gl_Position = vec4(xy.x / uAspect, xy.y, 0., 1.);
-      float depth = .4 + .6 * smoothstep(.9, -.9, p.z);
-      float neck = smoothstep(-1.7, -1.05, aPos.y);
-      float a = uLine > .5 ? (.05 + .42 * fl) * (1. - min(1., uScroll * 2.5)) : (.28 + .72 * fl) * mix(1., 1.35, aKind);
-      vA = a * depth * neck * (.6 + 1.1 * wave) * (1. - smoothstep(.6, 1.8, away)) * (1. - uScroll * .5);
-      vec3 blue = vec3(.42, .6, 1.), violet = vec3(.66, .5, 1.), lilac = vec3(.88, .78, 1.);
-      vC = mix(mix(blue, violet, h(aSeed + 6.)), lilac, aKind * .6 + wave * .5);
-      gl_PointSize = uPx * (1.1 + 2.4 * h(aSeed + 5.) + aKind * 1.2) * (1. + .8 * wave) * 3.4 / z;
+      // Onda de luz que atraviesa la figura en diagonal
+      float wave = exp(-pow((dot(aPos, normalize(vec3(.55, 1., .25))) - (mod(uT * .16, 5.) - 2.6)) * 3.5, 2.));
+      float spark = brain * step(.9, h(aSeed + 7.));
+      float depth = .45 + .55 * smoothstep(.9, -.9, p.z);
+      float body = smoothstep(-2.75, -1.75, aPos.y);
+      float a;
+      if (uLine > .5) a = mix(.07 + .3 * fl, .07 + .38 * fl, brain);
+      else a = mix(.42 + .7 * fl, .45 + .75 * fl, brain) * mix(1., .55, orbit);
+      a *= depth * (.6 + 1.1 * wave) * (1. - smoothstep(.6, 1.8, away)) * (1. - uScroll * .5);
+      a *= mix(body, 1., orbit);
+      if (ribbon > .5) a = .05 * (.5 + .5 * fl) * (1. - smoothstep(3.5, 6., abs(aPos.x))) * (1. - uScroll);
+      vA = a;
+      vec3 blue = vec3(.42, .6, 1.), violet = vec3(.66, .5, 1.), lilac = vec3(.88, .78, 1.), warm = vec3(1., .8, .92);
+      vC = mix(mix(blue, violet, h(aSeed + 6.)), lilac, brain * .55 + wave * .45);
+      vC = mix(vC, warm, spark);
+      gl_PointSize = uPx * (1. + 2.2 * h(aSeed + 5.) + brain * 1.3 + spark * 3.) * (1. + .8 * wave) * 3.4 / z;
     }`;
   const FS = `
     precision mediump float;
@@ -148,18 +196,18 @@
     gl.viewport(0, 0, w, h);
   };
   const draw = t => {
-    const aspect = w / Math.max(h, 1);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform1f(uT, t);
     gl.uniform1f(uScroll, Math.min(1, scrollY / Math.max(innerHeight, 1)));
-    gl.uniform1f(uAspect, aspect);
-    gl.uniform1f(uScale, Math.min(.62, .7 * aspect + .1)); // en pantallas estrechas la figura cabe a lo ancho
+    gl.uniform1f(uAspect, w / Math.max(h, 1));
+    gl.uniform1f(uScale, Math.min(.62, .85 * w / Math.max(h, 1) + .06)); // en pantallas estrechas la figura cabe a lo ancho
     gl.uniform1f(uPx, dpr * Math.min(1.25, Math.max(.8, h / dpr / 800)));
-    bind(lBuf); gl.uniform1f(uLine, 1); gl.drawArrays(gl.LINES, 0, lineIdx.length * 2);
+    bind(lBuf); gl.uniform1f(uLine, 1); gl.drawArrays(gl.LINES, 0, lines.length);
     bind(pBuf); gl.uniform1f(uLine, 0); gl.drawArrays(gl.POINTS, 0, all.length);
   };
-  let raf = 0, visible = true, t0 = performance.now();
+  let raf = 0, visible = true;
+  const t0 = performance.now();
   const loop = now => { raf = 0; draw((now - t0) / 1000 + 20); if (visible && !still.matches && !document.hidden) raf = requestAnimationFrame(loop); };
   const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
   resize();

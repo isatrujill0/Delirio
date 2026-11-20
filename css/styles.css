@@ -6,11 +6,13 @@
 
 /* Claro: lavanda pálida con tinta azul noche. Oscuro (por defecto): el azul de NEXO. */
 :root {
-  --bg: #f1f1fd; --bg-2: #e7e8fb;
-  --b1: #dcd8fc; --b2: #d6e4fd; --b3: #f2e4f4;
+  --bg: #f7f7fb; --bg-2: #f3f4f9;
+  --b1: #eeecfb; --b2: #ebf0fc; --b3: #f6f0f7;
+  --surface: #fff; --alt-bg: #eef0f6;
   --ink: #1d2160; --muted: #4d5288; --soft: #4f48c6;
-  --glass: rgba(255, 255, 255, .62); --glass-2: rgba(255, 255, 255, .88); --stroke: rgba(255, 255, 255, .95); --rule: rgba(29, 33, 96, .1);
-  --lift: 0 24px 60px -36px rgba(29, 33, 96, .35);
+  --glass: rgba(255, 255, 255, .94); --glass-2: #fff; --stroke: rgba(29, 33, 96, .09); --rule: rgba(29, 33, 96, .1);
+  --lift: 0 1px 2px rgba(20, 22, 60, .05), 0 14px 34px -22px rgba(20, 22, 60, .22);
+  --blur: none; /* el vidrio solo se enciende en .feature, .night y el tema oscuro */
   --accent: #4b42c2; --on-accent: #fff;
   --fam: #086a50; --est: #2456c8; --pro: #9c4513; --off: rgba(24, 27, 74, .25);
   --on-fam: #fff; --on-est: #fff; --on-pro: #fff; --err: #b3261e;
@@ -22,6 +24,7 @@
   color-scheme: light;
 }
 :root[data-theme="dark"], .night {
+  --blur: blur(18px) saturate(140%); --alt-bg: #1d2170;
   --bg: #20257a; --bg-2: #2c2a8a;
   /* Pétalos contenidos: con el texto claro encima (también sobre --glass-2) el contraste no baja de 4.5:1 */
   --b1: #3c327f; --b2: #22397f; --b3: #483272;
@@ -77,8 +80,18 @@ input, textarea, select { caret-color: var(--ink); accent-color: var(--accent); 
 .cards > li, .flow-panel, .notice, .modes, .chip-card, .bundle li, .pre, .cam-rule, .success {
   background: var(--glass); border: 1px solid var(--stroke); border-radius: var(--r);
   box-shadow: var(--lift);
-  -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
 }
+/* Ritmo entre secciones: claras, neutras y solo algunas con la atmósfera de NEXO */
+.section.alt { background: var(--alt-bg); }
+.feature { --glass: rgba(255, 255, 255, .62); --glass-2: rgba(255, 255, 255, .88); --stroke: rgba(255, 255, 255, .95); --blur: blur(18px) saturate(140%);
+  background:
+    radial-gradient(50% 45% at 85% 10%, rgba(196, 188, 252, .55), transparent 70%),
+    radial-gradient(45% 40% at 5% 60%, rgba(190, 210, 253, .55), transparent 70%),
+    radial-gradient(40% 40% at 90% 95%, rgba(240, 214, 242, .5), transparent 70%),
+    linear-gradient(170deg, #eeedfd, #e6e9fb); }
+:root[data-theme="dark"] .feature { --glass: rgba(255, 255, 255, .09); --glass-2: rgba(255, 255, 255, .17); --stroke: rgba(255, 255, 255, .22);
+  background: radial-gradient(50% 45% at 85% 10%, rgba(120, 100, 230, .35), transparent 70%), radial-gradient(45% 40% at 5% 60%, rgba(60, 100, 220, .3), transparent 70%), linear-gradient(170deg, #1d2276, #262487); }
 
 /* ---------- Cabecera ---------- */
 .site-header { position: sticky; top: 0; z-index: 100; background: var(--head-bg); -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%); font-family: var(--font-head); }
@@ -134,7 +147,7 @@ main { position: relative; }
    y el texto mínimo abajo. Pasa por debajo de la cabecera, que aquí se vuelve transparente. */
 :root { --page-bg: var(--bg); }
 .hero { position: relative; padding: 0 0 4rem; }
-.hero-stage { position: relative; isolation: isolate; display: grid; grid-template-rows: 1fr auto; margin-top: calc(-1 * var(--head)); min-height: max(560px, 100svh); padding: calc(var(--head) + 1.5rem) max(1.25rem, 4vw) 9.5rem; overflow: hidden; color: var(--ink);
+.hero-stage { position: relative; isolation: isolate; display: grid; grid-template-rows: 1fr auto; margin-top: calc(-1 * var(--head)); min-height: max(560px, 100svh); padding: calc(var(--head) + 1.5rem) max(1.25rem, 4vw) 8.5rem; overflow: hidden; color: var(--ink);
   background:
     radial-gradient(42% 46% at 50% 44%, rgba(124, 104, 236, .5), transparent 72%),
     radial-gradient(34% 40% at 16% 22%, rgba(74, 112, 236, .45), transparent 70%),
@@ -151,13 +164,18 @@ main { position: relative; }
 .hero-canvas { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; display: block; }
 /* Sin WebGL: un núcleo de luz suave en lugar de la figura */
 .hero-stage:not(.has-gl) .hero-canvas { background: radial-gradient(18% 26% at 50% 46%, rgba(214, 200, 255, .45), transparent 70%); }
-.hero-copy { position: relative; z-index: 2; grid-row: 2; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-items: end; gap: 1.2rem 3rem; max-width: 1360px; width: 100%; margin: 0 auto; }
-.hero h1 { margin: 0; font-size: clamp(2.3rem, 4.6vw, 4.4rem); font-weight: 200; line-height: 1.04; letter-spacing: -.04em; max-width: 14ch; text-wrap: balance; text-shadow: 0 2px 24px rgba(16, 18, 70, .55); }
-.hero-sub { margin: 0 0 .4rem; max-width: 34ch; font-size: 1.15rem; line-height: 1.55; color: var(--muted); text-shadow: 0 1px 16px rgba(16, 18, 70, .7); }
+.hero-copy { position: relative; z-index: 2; grid-row: 2; display: grid; justify-items: center; gap: .9rem; max-width: 46rem; width: 100%; margin: 0 auto; text-align: center; }
+/* Velo oscuro suave detrás del texto: las partículas pasan por detrás sin restar contraste */
+.hero-copy::before { content: ""; position: absolute; inset: -18% -22%; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, rgba(18, 20, 78, .6), rgba(18, 20, 78, .3) 60%, transparent); }
+.hero-tagline { margin: 0; font: italic 400 clamp(1.3rem, 2.4vw, 2rem)/1.25 var(--font-body); color: var(--soft); }
+.hero-btn { margin-top: .9rem; background: rgba(255, 255, 255, .14); border: 1.5px solid rgba(255, 255, 255, .55); color: #fff; }
+.hero-btn:hover { background: rgba(255, 255, 255, .24); }
+.hero h1 { margin: 0; font-size: clamp(3.4rem, 8vw, 7rem); font-weight: 300; line-height: 1; letter-spacing: -.035em; max-width: none; }
+.hero-sub { margin: 0; max-width: 46ch; font-size: 1.15rem; line-height: 1.6; color: var(--ink); }
 /* Indicador de scroll discreto: una línea que cae despacio */
-.hero-scroll { position: absolute; z-index: 2; left: 50%; bottom: 5.4rem; translate: -50% 0; display: grid; justify-items: center; gap: .55rem; min-width: 44px; padding: .4rem; color: var(--muted); font: 600 .78rem var(--font-head); letter-spacing: .3em; text-transform: uppercase; text-decoration: none; }
-.hero-scroll i { position: relative; width: 1px; height: 46px; overflow: hidden; background: rgba(255, 255, 255, .2); }
-.hero-scroll i::after { content: ""; position: absolute; left: 0; top: -40%; width: 100%; height: 40%; background: #fff; animation: drop 2.6s var(--ease) infinite; }
+.hero-scroll { position: absolute; z-index: 2; left: 50%; bottom: 4.6rem; translate: -50% 0; display: grid; justify-items: center; gap: .55rem; min-width: 44px; padding: .4rem; color: var(--muted); font: 600 .78rem var(--font-head); letter-spacing: .04em; text-decoration: none; }
+.hero-scroll i { position: relative; width: 22px; height: 34px; overflow: hidden; border: 1.5px solid rgba(255, 255, 255, .6); border-radius: 999px; }
+.hero-scroll i::after { content: ""; position: absolute; left: 50%; top: -30%; width: 2px; margin-left: -1px; height: 30%; border-radius: 2px; background: #fff; animation: drop 2.6s var(--ease) infinite; }
 .hero-scroll:hover, .hero-scroll:focus-visible { color: var(--ink); }
 @keyframes drop { to { top: 100%; } }
 
@@ -171,7 +189,8 @@ main { position: relative; }
 .on-hero .routebar { border-color: transparent; }
 @media (min-width: 900px) {
   .on-hero .nav-links, .on-hero .nav-toggle { opacity: 0; visibility: hidden; }
-  .on-hero .nav-hero { position: absolute; left: 50%; translate: -50% 0; display: flex; gap: .4rem; list-style: none; margin: 0; padding: 0; }
+  .on-hero .nav-hero { position: absolute; left: 50%; translate: -50% 0; display: flex; gap: .2rem; list-style: none; margin: 0; padding: .3rem; border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; background: rgba(255, 255, 255, .07); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .nav-hero a[aria-current="page"] { background: rgba(255, 255, 255, .2); opacity: 1; font-weight: 600; }
   .nav-hero a { display: block; padding: .5rem 1rem; border-radius: 999px; font-size: .95rem; font-weight: 500; letter-spacing: .02em; color: var(--ink); text-decoration: none; opacity: .85; transition: background .2s, opacity .2s; }
   .nav-hero a:hover { background: var(--glass); opacity: 1; }
 }
@@ -542,8 +561,8 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { outline-offs
   .route-pick button { padding: 0 .6rem; font-size: .85rem; }
   .section { padding: 4rem 0; }
   .hero { padding: 0 0 3.5rem; }
-  .hero-copy { grid-template-columns: 1fr; gap: 1rem; padding-bottom: 3rem; }
-  .hero-sub { font-size: 1.08rem; }
+  .hero-copy { gap: .7rem; padding-bottom: 2.5rem; }
+  .hero-sub { font-size: 1.05rem; }
   .lead { font-size: 1.15rem; }
   .facts, .cam, .steps { grid-template-columns: 1fr; }
   .two { margin-top: 3rem; }
@@ -660,7 +679,7 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { outline-offs
   background: radial-gradient(60% 60% at 72% 28%, #5b4cc0, transparent 70%), radial-gradient(60% 60% at 18% 82%, #3550c0, transparent 70%), #20257a;
   -webkit-mask: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));
   mask: radial-gradient(circle at 50% 50%, transparent var(--hole), #000 calc(var(--hole) + 1px));
-  animation: open 1.2s cubic-bezier(.7, 0, .2, 1) 2.2s forwards; }
+  animation: open .9s cubic-bezier(.7, 0, .2, 1) 2.1s forwards; }
 .intro-word { display: flex; margin: 0 0 0 .14em; font: 200 clamp(4.5rem, 17vw, 12rem)/1 var(--font-head); letter-spacing: .14em; }
 .intro-word span { display: inline-block; opacity: 0; transform: translateY(35%); filter: blur(14px); animation: letter 1s var(--ease) forwards; }
 .intro-word span:nth-child(2) { animation-delay: .14s; }
