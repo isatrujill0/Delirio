@@ -14,7 +14,12 @@
     safe(() => localStorage.setItem('theme', t));
   };
   setTheme(root.dataset.theme === 'dark' ? 'dark' : 'light');
-  themeBtn.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+  // Fundido entre claro y oscuro: evita un salto brusco de brillo (si el navegador lo admite y no se pide menos movimiento)
+  themeBtn.addEventListener('click', () => {
+    const next = () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(next);
+    else next();
+  });
 
   /* ---------- Tamaño de texto ---------- */
   const sizes = ['100%', '112%', '125%'];
