@@ -46,7 +46,7 @@ export function TreatmentForm({ initial, onSave, onClose }: { initial?: Treatmen
     const t = { ...v, name: v.name.trim(), description: v.description.trim(), frequency: v.frequency.trim(), observations: v.observations.trim(), times: splitTimes(v.times) };
     const e = validateTreatment(t);
     setErrors(e);
-    if (!Object.keys(e).length) onSave(t);
+    if (!Object.keys(e).length) onSave({ ...t, demo: false }); // edited by staff: no longer sample data
   };
 
   return (
@@ -91,7 +91,7 @@ export function ProcedureForm({ initial, onSave, onClose }: { initial?: Procedur
     const p = { ...v, name: v.name.trim(), description: v.description.trim() };
     const e = validateProcedure(p);
     setErrors(e);
-    if (!Object.keys(e).length) onSave(p);
+    if (!Object.keys(e).length) onSave({ ...p, demo: false });
   };
 
   return (

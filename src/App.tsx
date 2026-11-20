@@ -1,5 +1,7 @@
 import { AppDataProvider } from './hooks/useAppData';
 import { UIProvider, useUI } from './hooks/useUI';
+import { CaregiverProvider } from './hooks/useCaregiver';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { DeviceLayout } from './layouts/DeviceLayout';
 import { HomePage } from './pages/HomePage';
 import { PeoplePage } from './pages/PeoplePage';
@@ -22,12 +24,16 @@ function CurrentSection() {
 
 export default function App() {
   return (
-    <AppDataProvider>
-      <UIProvider>
-        <DeviceLayout>
-          <CurrentSection />
-        </DeviceLayout>
-      </UIProvider>
-    </AppDataProvider>
+    <ErrorBoundary>
+      <AppDataProvider>
+        <UIProvider>
+          <CaregiverProvider>
+            <DeviceLayout>
+              <CurrentSection />
+            </DeviceLayout>
+          </CaregiverProvider>
+        </UIProvider>
+      </AppDataProvider>
+    </ErrorBoundary>
   );
 }

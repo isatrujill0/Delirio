@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import type { Contact, FamilyMessage } from '../types';
 import { Sheet } from './Sheet';
-import { Avatar, DemoTag } from './Media';
+import { Avatar, DemoTag, Video } from './Media';
 import { PlayButton, Progress, StopButton, Waveform } from './PlayerControls';
 import { useMediaUrl } from '../hooks/useMediaUrl';
 import { usePlayer, audioEngine } from '../hooks/usePlayer';
@@ -26,7 +26,7 @@ export async function playMessage(m: FamilyMessage, from: string): Promise<void>
     if (!url) throw new Error('missing');
     audioEngine.playMedia({ id: m.id, title: 'Mensaje de voz', subtitle, src: url }, url.startsWith('blob:'));
   } else {
-    audioEngine.playSpeech({ id: m.id, title: m.kind === 'audio' ? 'Mensaje de voz' : 'Mensaje escrito', subtitle, text: m.text });
+    audioEngine.playSpeech({ id: m.id, title: m.kind === 'audio' ? 'Mensaje leído por NEXO' : 'Mensaje escrito', subtitle, text: m.text });
   }
 }
 
@@ -79,13 +79,12 @@ export function MessageViewer({ message: m, contact, onClose, onDelete, onError 
 
         {m.kind === 'video' ? (
           video.url ? (
-            <video
+            <Video
               className="msg-video"
               src={video.url}
               controls
               playsInline
               preload="metadata"
-              onPlay={() => audioEngine.stop()}
               onError={() => onError('No se pudo reproducir el video.')}
             />
           ) : (

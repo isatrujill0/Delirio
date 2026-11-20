@@ -4,6 +4,8 @@ import type { Procedure, Recommendation, RecommendationCategory, Treatment } fro
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { useNow } from '../hooks/useNow';
+import { useCaregiver } from '../hooks/useCaregiver';
+import { DemoTag } from '../components/Media';
 import { STATUS_LABEL, nextDose, orderProcedures } from '../services/care';
 import { hmToLabel, relativeDay } from '../services/time';
 import { uid } from '../services/id';
@@ -11,7 +13,7 @@ import { audioEngine } from '../services/audioEngine';
 import { Confirm, Sheet } from '../components/Sheet';
 import { Segmented } from '../components/Form';
 import { TreatmentForm, ProcedureForm } from './care/CareForms';
-import { CareNoteCard, EvolutionCard, MoodCard, VitalsCard } from './care/Wellbeing';
+import { CareNoteCard, MoodHistoryCard, MoodCard, VitalsCard } from './care/Wellbeing';
 
 const DISCLAIMER = 'Información de consulta. NEXO no diagnostica ni cambia tratamientos: sigue siempre las indicaciones de tu equipo de salud.';
 
@@ -27,6 +29,7 @@ const whenLabel = (p: Procedure, now: Date) => {
 function Treatments() {
   const { data, update } = useAppData();
   const { toast } = useUI();
+  const { guard } = useCaregiver();
   const now = useNow();
   const [form, setForm] = useState<Treatment | 'new' | null>(null);
   const [del, setDel] = useState<Treatment | null>(null);
@@ -37,10 +40,10 @@ function Treatments() {
       <div className="sub-actions">
         {next && (
           <p className="next-dose">
-            <Clock size={20} /> Próxima toma: <strong>{next.treatment.name}</strong> {next.tomorrow ? 'mañana' : 'hoy'} a las {hmToLabel(next.time)}
+            <Clock size={20} /> Próxima toma: <strong>{next.treatments.map((t) => t.name).join(' y ')}</strong> {next.tomorrow ? 'mañana' : 'hoy'} a las {hmToLabel(next.time)}
           </p>
         )}
-        <button className="pill-btn" onClick={() => setForm('new')}>
+        <button className="pill-btn" onClick={() => guard(() => setForm('new'))}>
           <Plus size={20} /> Registrar
         </button>
       </div>
@@ -52,11 +55,11 @@ function Treatments() {
       ) : (
         <ul className="care-cards">
           {data.treatments.map((t) => (
-            <li key={t.id} className={`care-card ${next?.treatment.id === t.id ? 'is-next' : ''}`}>
+            <li key={t.id} className={`care-card ${next?.treatments.includes(t) ? 'is-next' : ''}`}>
               <header>
                 <span className="care-card-icon"><Pill strokeWidth={1.6} /></span>
                 <div>
-                  <h3>{t.name}</h3>
+                  <h3>{t.name} {t.demo && <DemoTag label="Ejemplo" />}</h3>
                   <p className="muted">{t.description}</p>
                 </div>
               </header>
@@ -67,8 +70,8 @@ function Treatments() {
               </dl>
               {t.observations && <p className="care-note"><Info size={18} /> {t.observations}</p>}
               <div className="care-card-actions">
-                <button className="btn btn-ghost btn-sm" onClick={() => setForm(t)}><Pencil size={18} /> Editar</button>
-                <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => setDel(t)}><Trash2 size={18} /> Eliminar</button>
+                <button className="btn btn-ghost btn-sm" onClick={() => guard(() => setForm(t))} aria-label={`Editar ${t.name}`}><Pencil size={18} /> Editar</button>
+                <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => guard(() => setDel(t))} aria-label={`Eliminar ${t.name}`}><Trash2 size={18} /> Eliminar</button>
               </div>
             </li>
           ))}
@@ -96,6 +99,7 @@ function Treatments() {
 function Procedures() {
   const { data, update } = useAppData();
   const { toast } = useUI();
+  const { guard } = useCaregiver();
   const now = useNow();
   const [form, setForm] = useState<Procedure | 'new' | null>(null);
   const [del, setDel] = useState<Procedure | null>(null);
@@ -106,15 +110,15 @@ function Procedures() {
       <header>
         <span className="care-card-icon"><CalendarClock strokeWidth={1.6} /></span>
         <div>
-          <h3>{p.name}</h3>
+          <h3>{p.name} {p.demo && <DemoTag label="Ejemplo" />}</h3>
           <p className="proc-when num">{whenLabel(p, now)}</p>
         </div>
         <span className={`status status-${p.status}`}>{STATUS_LABEL[p.status]}</span>
       </header>
       {p.description && <p className="muted">{p.description}</p>}
       <div className="care-card-actions">
-        <button className="btn btn-ghost btn-sm" onClick={() => setForm(p)}><Pencil size={18} /> Editar</button>
-        <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => setDel(p)}><Trash2 size={18} /> Eliminar</button>
+        <button className="btn btn-ghost btn-sm" onClick={() => guard(() => setForm(p))} aria-label={`Editar ${p.name}`}><Pencil size={18} /> Editar</button>
+        <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => guard(() => setDel(p))} aria-label={`Eliminar ${p.name}`}><Trash2 size={18} /> Eliminar</button>
       </div>
     </li>
   );
@@ -123,7 +127,7 @@ function Procedures() {
     <>
       <div className="sub-actions">
         <p className="muted">{pending.length ? `${pending.length} programados` : 'No hay procedimientos pendientes.'}</p>
-        <button className="pill-btn" onClick={() => setForm('new')}>
+        <button className="pill-btn" onClick={() => guard(() => setForm('new'))}>
           <Plus size={20} /> Agregar
         </button>
       </div>
@@ -167,7 +171,7 @@ function Recommendations() {
         {list.map((r) => (
           <li key={r.id}>
             <button className="reco" onClick={() => setOpen(r)}>
-              <span className="reco-cat">{r.category}</span>
+              <span className="reco-cat">{r.category}{r.demo && ' · Ejemplo'}</span>
               <strong>{r.title}</strong>
               <small>{r.summary}</small>
               <ArrowRight className="reco-arrow" />
@@ -224,6 +228,11 @@ export function CarePage() {
 
   const next = nextDose(data.treatments, now);
   const proc = orderProcedures(data.procedures).pending[0];
+  const demoShown: Record<ViewId, boolean> = {
+    tratamiento: next ? next.treatment.demo : data.treatments.some((t) => t.demo),
+    procedimientos: proc ? proc.demo : false,
+    recomendaciones: data.recommendations.some((r) => r.demo),
+  };
   const status: Record<ViewId, string> = {
     tratamiento: next ? `${next.treatment.name} · ${hmToLabel(next.time)}` : `${data.treatments.length} registrados`,
     procedimientos: proc ? `${proc.name} · ${whenLabel(proc, now).toLowerCase()}` : 'Sin pendientes',
@@ -255,7 +264,7 @@ export function CarePage() {
                 <button className="plan-row" onClick={() => go('cuidado', id)}>
                   <Icon strokeWidth={1.6} />
                   <span className="plan-row-text">
-                    <strong>{title}</strong>
+                    <strong>{title} {demoShown[id] && <DemoTag label="Ejemplo" />}</strong>
                     <small>{status[id]}</small>
                   </span>
                   <ArrowRight className="plan-arrow" />
@@ -265,7 +274,7 @@ export function CarePage() {
           })}
         </ul>
       </article>
-      <EvolutionCard />
+      <MoodHistoryCard />
     </div>
   );
 }

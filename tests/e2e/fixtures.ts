@@ -29,3 +29,11 @@ export async function reload(page: Page) {
   await page.reload();
   await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important}' });
 }
+
+/** Answers the caregiver PIN prompt (demo PIN). Editing stays unlocked until a reload or 10 minutes. */
+export async function enterPin(page: Page, pin = '1234') {
+  const dialog = page.getByRole('dialog', { name: 'Modo cuidador' });
+  await dialog.getByLabel('PIN de cuidador').fill(pin);
+  await dialog.getByRole('button', { name: 'Continuar' }).click();
+  await expect(dialog).toBeHidden();
+}

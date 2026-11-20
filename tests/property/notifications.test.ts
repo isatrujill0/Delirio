@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import { deriveNotifications } from '../../src/services/notifications';
 import { createDemoData } from '../../src/data/demo';
-import type { AppData, Message, Treatment } from '../../src/types';
+import type { AppData, FamilyMessage, Treatment } from '../../src/types';
 
 const cfg = (seed: number, numRuns = 300) => ({ seed, numRuns });
 const base = createDemoData(new Date(2026, 10, 18, 10, 30));
@@ -10,13 +10,13 @@ const p2 = (n: number) => String(n).padStart(2, '0');
 const now = fc.integer({ min: 0, max: 3 * 1440 }).map((n) => new Date(2026, 10, 17, 0, n));
 const hm = fc.tuple(fc.integer({ min: 0, max: 23 }), fc.integer({ min: 0, max: 59 })).map(([h, m]) => `${p2(h)}:${p2(m)}`);
 
-const message: fc.Arbitrary<Message> = fc.record({
-  id: fc.uuid(), contactId: fc.constantFrom('c-mama', 'c-papa', 'nobody'), kind: fc.constantFrom('texto', 'audio', 'video') as fc.Arbitrary<Message['kind']>,
+const message: fc.Arbitrary<FamilyMessage> = fc.record({
+  id: fc.uuid(), contactId: fc.constantFrom('c-mama', 'c-papa', 'nobody'), kind: fc.constantFrom('texto', 'audio', 'video') as fc.Arbitrary<FamilyMessage['kind']>,
   text: fc.string({ maxLength: 200 }), createdAt: fc.constant(0), read: fc.boolean(),
-}) as fc.Arbitrary<Message>;
+}) as fc.Arbitrary<FamilyMessage>;
 const treatment: fc.Arbitrary<Treatment> = fc.record({
   id: fc.uuid(), name: fc.string({ minLength: 1 }), description: fc.constant(''), startDate: fc.constant('2026-01-01'),
-  frequency: fc.constant('x'), observations: fc.constant(''), times: fc.array(hm, { maxLength: 4 }),
+  frequency: fc.constant('x'), observations: fc.constant(''), times: fc.array(hm, { maxLength: 4 }), demo: fc.boolean(),
 });
 const flags = fc.record({ enabled: fc.boolean(), sound: fc.boolean(), treatments: fc.boolean(), procedures: fc.boolean(), messages: fc.boolean() });
 

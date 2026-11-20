@@ -8,7 +8,7 @@ import { usePlayer, audioEngine } from '../hooks/usePlayer';
 import { playQueue, step } from '../services/playlist';
 import { LandscapeArt } from '../components/Landscape';
 import { Progress, Waveform } from '../components/PlayerControls';
-import { MediaImage, DemoTag } from '../components/Media';
+import { MediaImage, DemoTag, Video } from '../components/Media';
 import { Sheet } from '../components/Sheet';
 import { Game, type GameId } from './world/Games';
 import { Breathing, Meditation } from './world/Relax';
@@ -62,7 +62,7 @@ function PlaylistCard() {
           <button className="icon-btn" onClick={() => skip(-1)} aria-label="Anterior">
             <SkipBack fill="currentColor" />
           </button>
-          <button className="play-btn play-lg" onClick={main} aria-label={playing ? 'Pausar' : 'Reproducir Mi playlist'}>
+          <button className="play-btn play-lg" onClick={main} aria-label={playing ? 'Pausar Mi playlist' : 'Reproducir Mi playlist'}>
             {player.status === 'loading' ? <LoaderCircle className="spin" /> : playing ? <Pause fill="currentColor" strokeWidth={0} /> : <Play fill="currentColor" strokeWidth={0} className="play-icon" />}
           </button>
           <button className="icon-btn" onClick={() => skip(1)} aria-label="Siguiente">
@@ -185,7 +185,7 @@ function Memories() {
       )}
       {video && (
         <Sheet title="Recuerdos en familia" onClose={() => setVideo(false)} size="lg">
-          <video className="msg-video" src={ASSETS['video-recuerdos']} controls playsInline autoPlay preload="metadata" />
+          <Video className="msg-video" src={ASSETS['video-recuerdos']} controls playsInline autoPlay preload="metadata" />
           <p className="fine-print">Video de demostración creado con la foto de ejemplo y música original de NEXO.</p>
         </Sheet>
       )}

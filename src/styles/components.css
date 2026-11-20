@@ -88,7 +88,7 @@
   color: #ffc4d4;
 }
 .btn-sm {
-  min-height: 48px;
+  min-height: var(--touch);
   padding: 0 18px;
   font-size: 0.95rem;
 }
@@ -97,7 +97,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 52px;
+  min-height: var(--touch);
   padding: 0 20px;
   border-radius: var(--r-pill);
   background: rgb(214 205 255 / 0.18);
@@ -198,8 +198,8 @@
   margin-left: 4px;
 }
 .mini-play {
-  width: 52px;
-  height: 52px;
+  width: var(--touch);
+  height: var(--touch);
   flex: none;
   display: grid;
   place-items: center;
@@ -391,7 +391,7 @@
   flex: 1;
   -webkit-appearance: none;
   appearance: none;
-  height: 44px;
+  height: var(--touch);
   background: transparent;
   touch-action: none;
 }
@@ -665,7 +665,7 @@ input[type='datetime-local'] {
   max-width: 100%;
 }
 .segmented button {
-  min-height: 48px;
+  min-height: var(--touch);
   padding: 0 20px;
   border-radius: var(--r-pill);
   color: var(--ink-2);
@@ -920,4 +920,53 @@ input[type='datetime-local'] {
   flex: 1;
   font-size: 1.1rem;
   min-width: 0;
+}
+
+/* Caregiver mode (PIN) */
+.caregiver-chip {
+  background: rgb(255 214 140 / 0.16);
+  border-color: rgb(255 214 140 / 0.45);
+  color: #ffe6b8;
+}
+.pin-intro {
+  display: flex;
+  gap: var(--s3);
+  align-items: flex-start;
+  margin-bottom: var(--s4);
+  color: var(--ink-2);
+}
+.pin-intro p {
+  margin: 0;
+}
+.pin-input {
+  max-width: 220px;
+  font-size: 1.6rem;
+  letter-spacing: 0.4em;
+  text-align: center;
+}
+
+/* Render error fallback (ErrorBoundary) */
+.crash {
+  min-height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--s4);
+  padding: var(--s6);
+  text-align: center;
+}
+.crash h1 {
+  margin: 0;
+  font-weight: 500;
+}
+.crash p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--ink-2);
+}
+.crash-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s4);
 }

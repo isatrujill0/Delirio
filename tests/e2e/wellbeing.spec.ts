@@ -1,4 +1,4 @@
-import { test, expect, readData, reload } from './fixtures';
+import { test, expect, readData, reload, enterPin } from './fixtures';
 
 test.use({ launchOptions: { args: ['--autoplay-policy=no-user-gesture-required'] } });
 
@@ -55,6 +55,7 @@ test('música real en Mi mundo, volumen del dock, estado de ánimo y tratamiento
   await page.getByRole('button', { name: /Mi tratamiento/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mi tratamiento' })).toBeVisible();
   await page.getByRole('button', { name: 'Registrar' }).click();
+  await enterPin(page);
   const form = page.getByRole('dialog', { name: 'Registrar tratamiento' });
   await form.getByRole('button', { name: 'Guardar' }).click();
   await expect(form.getByRole('alert').filter({ hasText: 'Escribe el nombre del tratamiento.' })).toBeVisible();

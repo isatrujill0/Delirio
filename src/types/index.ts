@@ -46,6 +46,7 @@ export interface Treatment {
   /** Optional reminder times "HH:MM". */
   times: string[];
   observations: string;
+  demo: boolean;
 }
 
 export type ProcedureStatus = 'programado' | 'confirmado' | 'realizado' | 'reprogramado' | 'cancelado';
@@ -56,6 +57,7 @@ export interface Procedure {
   date: string; // local "YYYY-MM-DDTHH:MM"
   description: string;
   status: ProcedureStatus;
+  demo: boolean;
 }
 
 export type RecommendationCategory = 'Descanso' | 'Alimentación' | 'Movimiento' | 'Emociones' | 'Visitas';
@@ -66,6 +68,7 @@ export interface Recommendation {
   title: string;
   summary: string;
   body: string;
+  demo: boolean;
 }
 
 /** 1 = bajo … 5 = bien */
@@ -74,6 +77,8 @@ export type MoodValue = 1 | 2 | 3 | 4 | 5;
 export interface MoodEntry {
   date: string; // YYYY-MM-DD
   value: MoodValue;
+  /** Sample history shown on first launch. */
+  demo?: boolean;
 }
 
 /** Vital signs typed in by the care team (NEXO is not connected to monitors). */
@@ -132,6 +137,8 @@ export interface AppData {
   /** Best score per cognitive game. */
   scores: Record<string, number>;
   dismissedNotifications: string[];
+  /** 4–6 digit PIN that unlocks editing for family and staff (a deterrent, not security). */
+  caregiverPin: string;
 }
 
 export type TrackCategory = 'musica' | 'naturaleza';

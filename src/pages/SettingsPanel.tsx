@@ -5,6 +5,7 @@ import { Sheet, Confirm } from '../components/Sheet';
 import { Field, Segmented, Toggle } from '../components/Form';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
+import { useCaregiver } from '../hooks/useCaregiver';
 import { audioEngine } from '../services/audioEngine';
 import { NexoLogo } from '../components/Brand';
 
@@ -20,6 +21,9 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
   const [weather, setWeather] = useState({ city: data.weather.city, tempC: String(data.weather.tempC), condition: data.weather.condition });
   const [weatherError, setWeatherError] = useState('');
   const [confirmReset, setConfirmReset] = useState(false);
+  const { guard } = useCaregiver();
+  const [newPin, setNewPin] = useState('');
+  const [pinError, setPinError] = useState('');
 
   const setPrefs = (p: Partial<Preferences>) => update((d) => ({ ...d, prefs: { ...d.prefs, ...p } }));
   const setNotif = (k: keyof Preferences['notifications'], v: boolean) => update((d) => ({ ...d, prefs: { ...d.prefs, notifications: { ...d.prefs.notifications, [k]: v } } }));
@@ -41,6 +45,16 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
     setWeatherError('');
     update((d) => ({ ...d, location: place.trim(), weather: { city: weather.city.trim(), tempC: Math.round(temp), condition: weather.condition.trim() || 'Despejado' } }));
     toast('Información guardada', 'ok');
+  };
+
+  const savePin = () => {
+    if (!/^\d{4,6}$/.test(newPin)) return setPinError('Usa de 4 a 6 números.');
+    setPinError('');
+    guard(() => {
+      update((d) => ({ ...d, caregiverPin: newPin }));
+      setNewPin('');
+      toast('PIN de cuidador actualizado', 'ok');
+    });
   };
 
   return (
@@ -108,11 +122,11 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
       {tab === 'avisos' && (
         <div className="settings-group">
           <Toggle label="Notificaciones" hint="Avisos dentro de NEXO (campana de la barra inferior)." checked={n.enabled} onChange={(v) => setNotif('enabled', v)} />
-          <div className={n.enabled ? '' : 'is-disabled'} aria-disabled={!n.enabled}>
-            <Toggle label="Mensajes nuevos de la familia" checked={n.messages} onChange={(v) => n.enabled && setNotif('messages', v)} />
-            <Toggle label="Recordatorios de tratamiento" hint="Una hora antes de cada toma registrada." checked={n.treatments} onChange={(v) => n.enabled && setNotif('treatments', v)} />
-            <Toggle label="Procedimientos del día" hint="Desde 24 horas antes." checked={n.procedures} onChange={(v) => n.enabled && setNotif('procedures', v)} />
-            <Toggle label="Sonido de aviso" checked={n.sound} onChange={(v) => n.enabled && setNotif('sound', v)} />
+          <div className={n.enabled ? '' : 'is-disabled'}>
+            <Toggle label="Mensajes nuevos de la familia" disabled={!n.enabled} checked={n.messages} onChange={(v) => setNotif('messages', v)} />
+            <Toggle label="Recordatorios de tratamiento" disabled={!n.enabled} hint="Una hora antes de cada toma registrada." checked={n.treatments} onChange={(v) => setNotif('treatments', v)} />
+            <Toggle label="Procedimientos del día" disabled={!n.enabled} hint="Desde 24 horas antes." checked={n.procedures} onChange={(v) => setNotif('procedures', v)} />
+            <Toggle label="Sonido de aviso" disabled={!n.enabled} checked={n.sound} onChange={(v) => setNotif('sound', v)} />
           </div>
           <button className="btn btn-ghost" onClick={() => update((d) => ({ ...d, dismissedNotifications: [] }))}>
             Volver a mostrar avisos descartados
@@ -133,9 +147,18 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
             <Field label="Estado">{(id) => <input id={id} value={weather.condition} onChange={(e) => setWeather({ ...weather, condition: e.target.value })} maxLength={30} />}</Field>
           </div>
           {weatherError && <p className="field-error" role="alert">{weatherError}</p>}
-          <button className="btn btn-primary" onClick={saveContent}>Guardar información</button>
+          <button className="btn btn-primary" onClick={() => guard(saveContent)}>Guardar información</button>
           <hr className="sep" />
-          <button className="btn btn-ghost btn-danger-text" onClick={() => setConfirmReset(true)}>
+          <Field label="PIN de cuidador" error={pinError} hint="Protege los cambios de contactos, mensajes, fotos y Mi cuidado. De 4 a 6 números.">
+            {(id, by) => (
+              <div className="inline-field">
+                <input id={id} aria-describedby={by} type="password" inputMode="numeric" autoComplete="off" maxLength={6} value={newPin} onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))} />
+                <button className="btn btn-primary" onClick={savePin}>Cambiar PIN</button>
+              </div>
+            )}
+          </Field>
+          <hr className="sep" />
+          <button className="btn btn-ghost btn-danger-text" onClick={() => guard(() => setConfirmReset(true))}>
             <RotateCcw size={20} /> Restablecer datos de demostración
           </button>
         </div>
@@ -148,7 +171,8 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
           <p>Versión 1.0.0 · Diseñado para iPad Air de 11 pulgadas en horizontal.</p>
           <ul className="about-list">
             <li>Los datos se guardan solo en este dispositivo (LocalStorage; fotos, audios y videos en IndexedDB).</li>
-            <li>Las personas, mensajes, tratamientos y procedimientos iniciales son de demostración.</li>
+            <li>Las personas, mensajes, tratamientos, procedimientos, recomendaciones y el historial de ánimo iniciales son de demostración y están marcados.</li>
+            <li>Los cambios de contactos, mensajes, fotos y Mi cuidado piden el PIN de cuidador.</li>
             <li>El clima es un dato de ejemplo; no hay conexión con un servicio meteorológico.</li>
             <li>Los mensajes de demostración se leen con la voz del sistema; no son grabaciones reales.</li>
             <li>La música y los sonidos son piezas originales sintetizadas para NEXO.</li>

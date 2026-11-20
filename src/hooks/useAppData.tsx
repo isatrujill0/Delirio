@@ -10,6 +10,8 @@ interface Ctx {
   update: (fn: (d: AppData) => AppData) => void;
   resetDemo: () => Promise<void>;
   storageError: StorageError | null;
+  /** Increments on every failed save, so repeated failures can be reported again. */
+  storageErrorCount: number;
 }
 
 const AppDataContext = createContext<Ctx | null>(null);
@@ -18,6 +20,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const initial = useRef(loadData());
   const [data, setData] = useState<AppData>(initial.current.data);
   const [storageError, setStorageError] = useState<StorageError | null>(initial.current.error ?? null);
+  const [storageErrorCount, setStorageErrorCount] = useState(initial.current.error ? 1 : 0);
   const first = useRef(true);
 
   useEffect(() => {
@@ -25,7 +28,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       first.current = false;
       if (initial.current.error) return;
     }
-    setStorageError(saveData(data));
+    const err = saveData(data);
+    setStorageError(err);
+    if (err) setStorageErrorCount((n) => n + 1);
   }, [data]);
 
   const update = useCallback((fn: (d: AppData) => AppData) => setData((d) => fn(d)), []);
@@ -36,7 +41,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setData(createDemoData());
   }, []);
 
-  const value = useMemo(() => ({ data, update, resetDemo, storageError }), [data, update, resetDemo, storageError]);
+  const value = useMemo(() => ({ data, update, resetDemo, storageError, storageErrorCount }), [data, update, resetDemo, storageError, storageErrorCount]);
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 }
 

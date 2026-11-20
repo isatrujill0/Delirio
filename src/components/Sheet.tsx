@@ -11,7 +11,13 @@ interface Props {
   bare?: boolean;
 }
 
-/** Modal sheet that keeps focus inside while open and closes on Escape or backdrop tap. */
+/** Open sheets, innermost last: only the top one reacts to Escape. */
+const stack: symbol[] = [];
+
+/**
+ * Modal sheet that keeps focus inside while open and closes on Escape or backdrop tap.
+ * A sheet with text fields ignores backdrop taps, so a stray touch never throws away a draft.
+ */
 export function Sheet({ title, onClose, children, footer, size = 'md', bare }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
@@ -20,9 +26,12 @@ export function Sheet({ title, onClose, children, footer, size = 'md', bare }: P
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     const node = ref.current;
-    node?.querySelector<HTMLElement>('[data-autofocus], .sheet-head button')?.focus({ preventScroll: true });
+    const me = Symbol('sheet');
+    stack.push(me);
+    (node?.querySelector<HTMLElement>('[data-autofocus]') ?? node?.querySelector<HTMLElement>('.sheet-head button'))?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeRef.current();
+      if (stack[stack.length - 1] !== me) return;
+      if (e.key === 'Escape') return closeRef.current();
       if (e.key !== 'Tab' || !node) return;
       const items = node.querySelectorAll<HTMLElement>('button:not(:disabled), input, textarea, select, [tabindex="0"], video[controls]');
       if (!items.length) return;
@@ -39,12 +48,20 @@ export function Sheet({ title, onClose, children, footer, size = 'md', bare }: P
     document.addEventListener('keydown', onKey);
     return () => {
       document.removeEventListener('keydown', onKey);
+      stack.splice(stack.indexOf(me), 1);
       prev?.focus?.({ preventScroll: true });
     };
   }, []);
 
   return (
-    <div className="sheet-backdrop" onPointerDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="sheet-backdrop"
+      onPointerDown={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (ref.current?.querySelector('input:not([type="range"]):not([type="file"]), textarea, select')) return;
+        onClose();
+      }}
+    >
       <div ref={ref} className={`sheet sheet-${size}`} role="dialog" aria-modal="true" aria-label={title}>
         <header className={`sheet-head ${bare ? 'sheet-head-bare' : ''}`}>
           {!bare && <h2>{title}</h2>}

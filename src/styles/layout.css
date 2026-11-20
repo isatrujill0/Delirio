@@ -373,8 +373,9 @@
   color: var(--danger);
 }
 .toast-x {
-  width: 40px;
-  height: 40px;
+  width: var(--touch);
+  height: var(--touch);
+  margin: -8px -10px -8px 0;
   display: grid;
   place-items: center;
   border-radius: 50%;

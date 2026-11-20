@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Images, Mail, Message
 import type { Contact, FamilyMessage } from '../types';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
+import { useCaregiver } from '../hooks/useCaregiver';
 import { Avatar, DemoTag } from '../components/Media';
 import { PlayButton, Waveform } from '../components/PlayerControls';
 import { MessageViewer, kindLabel, messageDuration, useMessageControl } from '../components/MessageViewer';
@@ -14,7 +15,7 @@ import { deleteMedia } from '../services/mediaStore';
 import { mmss, timeAgo } from '../services/time';
 import { uid } from '../services/id';
 
-function MessageRow({ m, contact, onOpen }: { m: FamilyMessage; contact?: Contact; onOpen: () => void }) {
+function MessageRow({ m, contact, showName = false, onOpen }: { m: FamilyMessage; contact?: Contact; showName?: boolean; onOpen: () => void }) {
   const { toast } = useUI();
   const from = contact?.name ?? 'Tu familia';
   const { player, isThis, playing, toggle } = useMessageControl(m, from, (e) => toast(e, 'error'));
@@ -26,13 +27,13 @@ function MessageRow({ m, contact, onOpen }: { m: FamilyMessage; contact?: Contac
           <Video />
         </button>
       ) : (
-        <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`mensaje de ${from}`} />
+        <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`mensaje de ${from}, ${timeAgo(m.createdAt, Date.now()).toLowerCase()}`} />
       )}
       <button className="msg-row-main" onClick={onOpen}>
         {m.kind === 'video' ? <span className="msg-row-kind"><Icon size={18} /> {kindLabel(m)}</span> : <Waveform active={playing} bars={12} />}
-        <span className="num msg-row-dur">{isThis && player.status !== 'idle' ? mmss(player.position) : mmss(messageDuration(m))}</span>
+        <span className="num msg-row-dur">{isThis && player.status !== 'idle' ? mmss(player.position) : m.kind === 'video' && m.duration === undefined ? '' : mmss(messageDuration(m))}</span>
         <span className="msg-row-when">
-          {contact && <strong>{from} · </strong>}
+          {showName && <strong>{from} · </strong>}
           {timeAgo(m.createdAt, Date.now())}
         </span>
         {!m.read && <span className="new-dot" aria-label="Nuevo" />}
@@ -62,9 +63,10 @@ function Carousel({ contacts, index, setIndex, onAdd }: { contacts: Contact[]; i
         <button className="round-btn" onClick={() => setIndex((index - 1 + n) % n)} aria-label="Persona anterior" disabled={n < 2}>
           <ChevronLeft />
         </button>
-        <span className="dots" aria-label={`${index + 1} de ${n}`}>
+        {/* Position indicator only: the arrows and the portraits themselves are the (large) touch targets. */}
+        <span className="dots" role="img" aria-label={`Persona ${index + 1} de ${n}`}>
           {contacts.map((c, i) => (
-            <button key={c.id} className={i === index ? 'on' : ''} onClick={() => setIndex(i)} aria-label={`Ir a ${c.name}`} />
+            <i key={c.id} className={i === index ? 'on' : ''} />
           ))}
         </span>
         <button className="round-btn" onClick={() => setIndex((index + 1) % n)} aria-label="Persona siguiente" disabled={n < 2}>
@@ -79,6 +81,7 @@ function Carousel({ contacts, index, setIndex, onAdd }: { contacts: Contact[]; i
 }
 
 export function PeoplePage() {
+  const { guard } = useCaregiver();
   const { data, update } = useAppData();
   const { sub, go, toast } = useUI();
   const [index, setIndex] = useState(() => {
@@ -153,7 +156,7 @@ export function PeoplePage() {
           }}
         />
       )}
-      {viewing && <MessageViewer message={viewing} contact={byId(viewing.contactId)} onClose={() => setViewing(null)} onDelete={() => setDelMsg(viewing)} onError={(e) => toast(e, 'error')} />}
+      {viewing && <MessageViewer message={viewing} contact={byId(viewing.contactId)} onClose={() => setViewing(null)} onDelete={() => guard(() => setDelMsg(viewing))} onError={(e) => toast(e, 'error')} />}
       {delMsg && <Confirm title="¿Eliminar este mensaje?" message="Se borrará de este dispositivo." confirmLabel="Eliminar" danger onConfirm={() => removeMessage(delMsg)} onCancel={() => setDelMsg(null)} />}
     </>
   );
@@ -192,7 +195,7 @@ export function PeoplePage() {
             <ul className="msg-list">
               {msgs.map((m) => (
                 <li key={m.id}>
-                  <MessageRow m={m} contact={person ? undefined : byId(m.contactId)} onOpen={() => setViewing(m)} />
+                  <MessageRow m={m} contact={byId(m.contactId)} showName={!person} onOpen={() => setViewing(m)} />
                   {m.text && <p className="msg-list-text">{m.text}</p>}
                   {m.demo && <DemoTag />}
                 </li>
@@ -222,13 +225,13 @@ export function PeoplePage() {
         <div className="empty people-empty">
           <Users size={48} strokeWidth={1.4} />
           <p>Aún no hay personas en Mi gente.</p>
-          <button className="btn btn-primary" onClick={() => setForm('new')}>
+          <button className="btn btn-primary" onClick={() => guard(() => setForm('new'))}>
             <Plus size={20} /> Agregar a alguien
           </button>
         </div>
       ) : (
         <>
-          <Carousel contacts={contacts} index={Math.min(index, contacts.length - 1)} setIndex={setIndex} onAdd={() => setForm('new')} />
+          <Carousel contacts={contacts} index={Math.min(index, contacts.length - 1)} setIndex={setIndex} onAdd={() => guard(() => setForm('new'))} />
           {selected && (
             <aside className="person-panel" aria-label={`Panel de ${selected.name}`}>
               <div className="person-panel-head">
@@ -264,7 +267,7 @@ export function PeoplePage() {
                 <ArrowRight />
               </button>
               <p className="panel-label">Último mensaje</p>
-              {last ? <MessageRow m={last} onOpen={() => setViewing(last)} /> : <p className="muted">{selected.name} aún no ha dejado mensajes.</p>}
+              {last ? <MessageRow m={last} contact={selected} onOpen={() => setViewing(last)} /> : <p className="muted">{selected.name} aún no ha dejado mensajes.</p>}
               {selected.about && <p className="panel-about">{selected.about}</p>}
             </aside>
           )}
@@ -277,10 +280,10 @@ export function PeoplePage() {
           onClose={() => setProfile(false)}
           footer={
             <>
-              <button className="btn btn-ghost btn-danger-text" onClick={() => setConfirmDel(selected)}>
+              <button className="btn btn-ghost btn-danger-text" onClick={() => guard(() => setConfirmDel(selected))}>
                 <Trash2 size={20} /> Eliminar
               </button>
-              <button className="btn btn-primary" onClick={() => { setProfile(false); setForm(selected); }}>
+              <button className="btn btn-primary" onClick={() => guard(() => { setProfile(false); setForm(selected); })}>
                 <Pencil size={20} /> Editar perfil
               </button>
             </>

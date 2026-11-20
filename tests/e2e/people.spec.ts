@@ -1,13 +1,18 @@
-import { test, expect, readData, reload } from './fixtures';
+import { test, expect, readData, reload, enterPin } from './fixtures';
 
 test('agregar, editar y eliminar una persona en Mi gente con persistencia', async ({ page }) => {
   await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi gente' }).click();
   const carousel = page.locator('[aria-label="Tus personas"]');
-  for (const n of ['Mamá', 'Papá', 'Daniela', 'Tía Carmen']) {
-    await expect(carousel.getByRole('button', { name: new RegExp(n) }).first()).toBeAttached();
+  // Every demo person is reachable with the arrows (the dots are only a position indicator).
+  const seen: string[] = [];
+  for (let i = 0; i < 4; i++) {
+    seen.push((await carousel.locator('.person.is-center').getAttribute('aria-label'))!.replace(', seleccionado', ''));
+    await carousel.getByRole('button', { name: 'Persona siguiente' }).click();
   }
+  expect(seen.sort()).toEqual(['Daniela', 'Mamá', 'Papá', 'Tía Carmen']);
 
   await carousel.getByRole('button', { name: 'Agregar' }).click();
+  await enterPin(page); // adding people is a caregiver action
   const form = page.getByRole('dialog', { name: 'Agregar a alguien' });
   await form.getByRole('button', { name: 'Guardar' }).click();
   await expect(form.getByRole('alert')).toHaveText('Escribe cómo se llama.');
@@ -38,6 +43,7 @@ test('agregar, editar y eliminar una persona en Mi gente con persistencia', asyn
   const profile = page.getByRole('dialog', { name: 'Tío Jorge' });
   await expect(profile).toContainText('300 123 4567');
   await profile.getByRole('button', { name: 'Editar perfil' }).click();
+  await enterPin(page); // locked again after the reload
   const edit = page.getByRole('dialog', { name: 'Editar a Tío Jorge' });
   await edit.getByLabel('Nombre').fill('Tío Jorge M.');
   await edit.getByRole('button', { name: 'Guardar' }).click();

@@ -17,3 +17,4 @@ verify-output
 .impeccable/review
 .impeccable/questions
 .impeccable/mocks
+*.tsbuildinfo

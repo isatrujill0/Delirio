@@ -5,6 +5,7 @@ import { MediaImage, DemoTag } from '../../components/Media';
 import { Sheet, Confirm } from '../../components/Sheet';
 import { useAppData } from '../../hooks/useAppData';
 import { useUI } from '../../hooks/useUI';
+import { useCaregiver } from '../../hooks/useCaregiver';
 import { putMedia, shrinkImage, deleteMedia } from '../../services/mediaStore';
 import { uid } from '../../services/id';
 
@@ -12,6 +13,7 @@ import { uid } from '../../services/id';
 export function PhotoAlbum({ contactId }: { contactId?: string }) {
   const { data, update } = useAppData();
   const { toast } = useUI();
+  const { guard } = useCaregiver();
   const photos = contactId ? data.photos.filter((p) => p.contactId === contactId) : data.photos;
   const [index, setIndex] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
@@ -20,8 +22,8 @@ export function PhotoAlbum({ contactId }: { contactId?: string }) {
   const add = async (files: FileList | null) => {
     if (!files?.length) return;
     setBusy(true);
+    const added: Photo[] = [];
     try {
-      const added: Photo[] = [];
       for (const f of Array.from(files).slice(0, 10)) {
         const src = await putMedia(await shrinkImage(f));
         added.push({ id: uid('p'), src, caption: '', contactId, demo: false });
@@ -29,7 +31,9 @@ export function PhotoAlbum({ contactId }: { contactId?: string }) {
       update((d) => ({ ...d, photos: [...added, ...d.photos] }));
       toast(added.length === 1 ? 'Foto agregada' : `${added.length} fotos agregadas`, 'ok');
     } catch {
-      toast('No se pudo agregar la foto. Puede que no haya espacio.', 'error');
+      // Remove the blobs stored before the failure: nothing references them.
+      await Promise.all(added.map((p) => deleteMedia(p.src).catch(() => undefined)));
+      toast('No se pudo agregar la foto. Puede que no haya espacio en el dispositivo.', 'error');
     } finally {
       setBusy(false);
     }
@@ -79,7 +83,7 @@ export function PhotoAlbum({ contactId }: { contactId?: string }) {
               <button className="round-btn" onClick={() => setIndex((index + 1) % photos.length)} aria-label="Foto siguiente">
                 <ChevronRight />
               </button>
-              <button className="icon-btn" onClick={() => setConfirm(current)} aria-label="Eliminar foto">
+              <button className="icon-btn" onClick={() => guard(() => setConfirm(current))} aria-label="Eliminar foto">
                 <Trash2 />
               </button>
             </div>

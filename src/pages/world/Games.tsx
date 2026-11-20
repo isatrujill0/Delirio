@@ -97,6 +97,9 @@ function EchoLights({ onClose }: { onClose: () => void }) {
     } else if (res === 'round-complete') {
       const s = extendSequence(seq);
       setSeq(s);
+      // Lock input right away: a quick extra tap during the pause is not a mistake.
+      setPhase('showing');
+      setTaps([]);
       timers.current.push(window.setTimeout(() => show(s), 500));
     } else setTaps(next);
   };

@@ -327,23 +327,17 @@
 }
 .dots {
   display: flex;
-  gap: 4px;
+  gap: 10px;
 }
-.dots button {
-  width: 32px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-}
-.dots button::before {
-  content: '';
+.dots i {
+  display: block;
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: rgb(216 209 255 / 0.4);
   transition: background var(--t-fast), transform var(--t-fast);
 }
-.dots button.on::before {
+.dots i.on {
   background: #fff;
   transform: scale(1.15);
 }
@@ -1437,8 +1431,8 @@
 }
 .mood-pt {
   position: absolute;
-  width: 44px;
-  height: 44px;
+  width: var(--touch);
+  height: var(--touch);
   transform: translate(-50%, -50%);
   display: grid;
   place-items: center;

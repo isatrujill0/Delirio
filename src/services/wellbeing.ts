@@ -43,10 +43,11 @@ export function moodTrend(values: (number | null)[]): Trend {
 }
 
 export const TREND_TEXT: Record<Trend, { title: string; body: string }> = {
-  mejora: { title: '¡Vas muy bien!', body: 'Estos días te has sentido mejor.' },
-  estable: { title: 'Sigue así', body: 'Tu ánimo se ha mantenido parejo.' },
-  baja: { title: 'Te acompañamos', body: 'Estos días han sido más difíciles. Cuéntale a tu enfermera o a tu familia.' },
-  'pocos-datos': { title: 'Empecemos', body: 'Registra cómo te sientes cada día para ver tu evolución.' },
+  // Self-reported mood only: never phrased as a clinical assessment.
+  mejora: { title: 'Te sientes mejor', body: 'Según lo que registraste, estos días te has sentido mejor que antes.' },
+  estable: { title: 'Ánimo parejo', body: 'Según lo que registraste, tu ánimo se ha mantenido parecido.' },
+  baja: { title: 'Te acompañamos', body: 'Registraste días más difíciles. Cuéntale a tu enfermera o a tu familia cómo te sientes.' },
+  'pocos-datos': { title: 'Empecemos', body: 'Registra cada día cómo te sientes para ver aquí tu ánimo.' },
 };
 
 export const VITAL_RANGES = {

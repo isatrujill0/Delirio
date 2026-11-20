@@ -105,3 +105,19 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: tests/property/*.test.ts, src/services/games.ts, src/services/storage.ts.
 * Resultado: tsc PASS, build PASS, propiedades 80/80, E2E 3/3, smoke PASS.
 * Estado: Completado.
+
+16:42 — Correcciones de la revisión independiente (ronda 1)
+
+* Un revisor independiente (sin acceso a cómo se escribieron las pruebas) encontró 10 hallazgos importantes y 16 menores; se avisó al usuario antes de tocar código de producción.
+* Sin conexión: el service worker ahora guarda toda la app en la primera visita (lista generada en la compilación) y responde las peticiones por rangos de audio y video desde la caché. Verificado: recarga sin red, música sonando y adelantando sin red.
+* Honestidad: tratamientos, procedimientos, recomendaciones e historial de ánimo de ejemplo ahora muestran «Ejemplo» (también en Inicio y en las notificaciones). La nota de ejemplo ya no dice «estable»; «Tu evolución / ¡Vas muy bien!» pasó a «Tu ánimo», redactado como lo que la persona registró.
+* Modo cuidador: agregar, editar o eliminar personas, mensajes, fotos, tratamientos, procedimientos, signos, la nota del equipo y «Restablecer» piden un PIN (demostración: 1234, se cambia en Configuración). Se desbloquea 10 minutos y se puede bloquear desde la barra superior.
+* Sonido: silenciar detiene la lectura en voz alta; los videos respetan el silencio y el volumen de NEXO.
+* Recordatorios: un tratamiento que empieza en el futuro ya no avisa hoy; dos tratamientos a la misma hora generan dos avisos.
+* Borrar los signos vitales pide confirmación.
+* Botones de al menos 56 px (puntos del carrusel ahora son solo indicador).
+* Datos dañados: cada registro se valida campo por campo; un registro roto se descarta en vez de dejar la pantalla en blanco. Se agregó una pantalla de error con «Volver a intentar» y «Restablecer», y una copia de respaldo de los datos dañados.
+* Menores: avisos descartados ya no reaparecen; el grabador no guarda audio como video; fotos a medio guardar se limpian; nombres accesibles únicos; Eco de luces no cuenta un toque extra como error; los errores de guardado se avisan cada vez; Escape cierra solo la ventana superior y tocar fuera no borra un formulario; fechas faltantes no parecen recientes; el botón ▶ del dock sigue con las favoritas; las pruebas ahora pasan por tsc.
+* Archivos afectados: public/sw.js, vite.config.ts, src/services/*.ts, src/types/index.ts, src/data/demo.ts, src/hooks/useCaregiver.tsx, src/hooks/useAppData.tsx, src/components/*.tsx, src/layouts/*.tsx, src/pages/**/*.tsx, src/styles/*.css, src/App.tsx, tests/**, tsconfig.json, .gitignore.
+* Resultado: tsc PASS (incluye pruebas), build PASS, propiedades 80/80, E2E 3/3 (con PIN), smoke PASS.
+* Estado: En progreso (faltan las pruebas nuevas de la ronda y la ronda 2 de revisión).

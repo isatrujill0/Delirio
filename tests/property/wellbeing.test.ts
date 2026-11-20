@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES } from '../../src/services/wellbeing';
-import type { MoodEntry, MoodValue } from '../../src/types';
+import type { MoodValue } from '../../src/types';
 
 const cfg = (seed: number, numRuns = 300) => ({ seed, numRuns });
 const value = fc.constantFrom<MoodValue>(1, 2, 3, 4, 5);

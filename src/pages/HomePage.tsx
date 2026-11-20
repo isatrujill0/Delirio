@@ -47,7 +47,7 @@ function NextUp() {
         <button className="chip" onClick={() => go('cuidado', 'procedimientos')}>
           <CalendarClock strokeWidth={1.75} />
           <span>
-            <small>Próximo</small>
+            <small>Próximo{proc.demo && ' · ejemplo'}</small>
             {proc.name} · {relativeDay(new Date(proc.date), now).toLowerCase()} {hmToLabel(proc.date.slice(11, 16))}
           </span>
         </button>
@@ -56,7 +56,7 @@ function NextUp() {
         <button className="chip" onClick={() => go('cuidado', 'tratamiento')}>
           <Pill strokeWidth={1.75} />
           <span>
-            <small>Tratamiento</small>
+            <small>Tratamiento{dose.treatment.demo && ' · ejemplo'}</small>
             {dose.treatment.name} · {hmToLabel(dose.time)}
           </span>
         </button>

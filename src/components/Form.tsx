@@ -20,9 +20,9 @@ export function Field({ label, error, hint, children }: { label: string; error?:
   );
 }
 
-export function Toggle({ label, checked, onChange, hint }: { label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string }) {
+export function Toggle({ label, checked, onChange, hint, disabled }: { label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string; disabled?: boolean }) {
   return (
-    <button className="toggle-row" role="switch" aria-checked={checked} onClick={() => onChange(!checked)}>
+    <button className="toggle-row" role="switch" aria-checked={checked} disabled={disabled} onClick={() => onChange(!checked)}>
       <span className="toggle-text">
         <span>{label}</span>
         {hint && <small>{hint}</small>}

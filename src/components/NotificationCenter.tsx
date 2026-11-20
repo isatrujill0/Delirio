@@ -3,6 +3,7 @@ import type { AppNotification } from '../types';
 import { Sheet } from './Sheet';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
+import { pruneDismissed } from '../services/notifications';
 
 const ICON = { mensaje: MessageCircleHeart, tratamiento: Pill, procedimiento: CalendarClock };
 
@@ -10,7 +11,7 @@ export function NotificationCenter({ items, onClose }: { items: AppNotification[
   const { data, update } = useAppData();
   const { go, openPanel } = useUI();
 
-  const dismiss = (ids: string[]) => update((d) => ({ ...d, dismissedNotifications: [...d.dismissedNotifications, ...ids].slice(-200) }));
+  const dismiss = (ids: string[]) => update((d) => ({ ...d, dismissedNotifications: pruneDismissed(d, new Date(), ids) }));
 
   const open = (n: AppNotification) => {
     dismiss([n.id]);

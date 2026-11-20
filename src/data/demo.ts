@@ -1,5 +1,8 @@
 import type { AppData } from '../types';
 
+/** Shown in the PIN prompt while unchanged, so a demo can be explored; caregivers change it in Configuración. */
+export const DEMO_PIN = '1234';
+
 const pad = (n: number) => String(n).padStart(2, '0');
 const isoDay = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const dayAt = (now: Date, offsetDays: number, hm: string) => {
@@ -46,30 +49,31 @@ export function createDemoData(now = new Date()): AppData {
       { id: 'p-4', src: 'asset:daniela', caption: 'Daniela', contactId: 'c-daniela', demo: true },
     ],
     treatments: [
-      { id: 't-1', name: 'Analgésico', description: 'Ayuda a controlar el dolor y la fiebre.', startDate: isoDay(new Date(t - 72 * H)), frequency: 'Cada 8 horas', times: ['06:00', '14:00', '22:00'], observations: 'Lo administra tu enfermera. Cuéntale si sientes dolor.' },
-      { id: 't-2', name: 'Antibiótico intravenoso', description: 'Ayuda a tu cuerpo a combatir la infección.', startDate: isoDay(new Date(t - 48 * H)), frequency: 'Cada 12 horas', times: ['08:00', '20:00'], observations: 'Se aplica por el catéter del brazo.' },
-      { id: 't-3', name: 'Terapia respiratoria', description: 'Ejercicios para que tus pulmones trabajen mejor.', startDate: isoDay(new Date(t - 24 * H)), frequency: 'Dos veces al día', times: ['10:00', '16:00'], observations: 'Con tu terapeuta. Respira despacio y a tu ritmo.' },
+      { id: 't-1', name: 'Analgésico', description: 'Ayuda a controlar el dolor y la fiebre.', startDate: isoDay(new Date(t - 72 * H)), frequency: 'Cada 8 horas', times: ['06:00', '14:00', '22:00'], observations: 'Lo administra tu enfermera. Cuéntale si sientes dolor.', demo: true },
+      { id: 't-2', name: 'Antibiótico intravenoso', description: 'Ayuda a tu cuerpo a combatir la infección.', startDate: isoDay(new Date(t - 48 * H)), frequency: 'Cada 12 horas', times: ['08:00', '20:00'], observations: 'Se aplica por el catéter del brazo.', demo: true },
+      { id: 't-3', name: 'Terapia respiratoria', description: 'Ejercicios para que tus pulmones trabajen mejor.', startDate: isoDay(new Date(t - 24 * H)), frequency: 'Dos veces al día', times: ['10:00', '16:00'], observations: 'Con tu terapeuta. Respira despacio y a tu ritmo.', demo: true },
     ],
     procedures: [
-      { id: 'pr-0', name: 'Ecografía abdominal', date: dayAt(now, -1, '11:00'), description: 'Imagen con ultrasonido. No duele; se usa un gel frío sobre la piel.', status: 'realizado' },
-      { id: 'pr-1', name: 'Radiografía de tórax', date: dayAt(now, 0, '16:00'), description: 'Una foto de tus pulmones. Se hace en la cama y toma pocos minutos.', status: 'confirmado' },
-      { id: 'pr-2', name: 'Toma de muestras de sangre', date: dayAt(now, 1, '07:30'), description: 'Exámenes de control. Puede sentirse un pinchazo pequeño.', status: 'programado' },
-      { id: 'pr-3', name: 'Valoración de fisioterapia', date: dayAt(now, 2, '10:00'), description: 'Tu fisioterapeuta revisará cómo mover brazos y piernas sin esfuerzo.', status: 'programado' },
+      { id: 'pr-0', name: 'Ecografía abdominal', date: dayAt(now, -1, '11:00'), description: 'Imagen con ultrasonido. No duele; se usa un gel frío sobre la piel.', status: 'realizado', demo: true },
+      { id: 'pr-1', name: 'Radiografía de tórax', date: dayAt(now, 0, '16:00'), description: 'Una foto de tus pulmones. Se hace en la cama y toma pocos minutos.', status: 'confirmado', demo: true },
+      { id: 'pr-2', name: 'Toma de muestras de sangre', date: dayAt(now, 1, '07:30'), description: 'Exámenes de control. Puede sentirse un pinchazo pequeño.', status: 'programado', demo: true },
+      { id: 'pr-3', name: 'Valoración de fisioterapia', date: dayAt(now, 2, '10:00'), description: 'Tu fisioterapeuta revisará cómo mover brazos y piernas sin esfuerzo.', status: 'programado', demo: true },
     ],
     recommendations: [
-      { id: 'r-1', category: 'Emociones', title: 'Respira despacio', summary: 'Un ejercicio corto para calmarte.', body: 'Toma aire por la nariz contando hasta cuatro, sostenlo un momento y suéltalo despacio por la boca contando hasta seis. Repítelo cinco veces, a tu ritmo.' },
-      { id: 'r-2', category: 'Emociones', title: 'Está bien sentir miedo', summary: 'Habla de lo que sientes.', body: 'Estar en la UCI puede dar miedo o confusión. Es normal. Cuéntaselo a tu enfermera o a tu familia: ellos están para acompañarte.' },
-      { id: 'r-3', category: 'Descanso', title: 'Duerme a tu ritmo', summary: 'Descansar ayuda a recuperarte.', body: 'Cierra los ojos cuando lo necesites. Puedes escuchar los sonidos de Mi mundo para relajarte; se apagan solos al terminar.' },
-      { id: 'r-4', category: 'Descanso', title: 'Luz y ruido', summary: 'Pide ayuda para estar más cómodo.', body: 'Si la luz o los sonidos te molestan, pídele a tu enfermera que ajuste la luz de la habitación.' },
-      { id: 'r-5', category: 'Alimentación', title: 'Come y bebe según indicación', summary: 'Tu equipo decide qué puedes tomar.', body: 'No comas ni bebas nada que no te haya indicado tu equipo de salud. Si tienes sed o hambre, avísale a tu enfermera.' },
-      { id: 'r-6', category: 'Movimiento', title: 'Mueve manos y pies', summary: 'Pequeños movimientos, sin esfuerzo.', body: 'Abre y cierra las manos y mueve los tobillos en círculos unas cuantas veces, solo si tu equipo te lo permite y sin hacer fuerza.' },
-      { id: 'r-7', category: 'Visitas', title: 'Horario de visitas', summary: 'Tu familia puede acompañarte.', body: 'El horario de visitas lo define la clínica. Pregunta a tu enfermera los horarios de hoy.' },
+      { id: 'r-1', category: 'Emociones', title: 'Respira despacio', summary: 'Un ejercicio corto para calmarte.', body: 'Toma aire por la nariz contando hasta cuatro, sostenlo un momento y suéltalo despacio por la boca contando hasta seis. Repítelo cinco veces, a tu ritmo.', demo: true },
+      { id: 'r-2', category: 'Emociones', title: 'Está bien sentir miedo', summary: 'Habla de lo que sientes.', body: 'Estar en la UCI puede dar miedo o confusión. Es normal. Cuéntaselo a tu enfermera o a tu familia: ellos están para acompañarte.', demo: true },
+      { id: 'r-3', category: 'Descanso', title: 'Duerme a tu ritmo', summary: 'Descansar ayuda a recuperarte.', body: 'Cierra los ojos cuando lo necesites. Puedes escuchar los sonidos de Mi mundo para relajarte; se apagan solos al terminar.', demo: true },
+      { id: 'r-4', category: 'Descanso', title: 'Luz y ruido', summary: 'Pide ayuda para estar más cómodo.', body: 'Si la luz o los sonidos te molestan, pídele a tu enfermera que ajuste la luz de la habitación.', demo: true },
+      { id: 'r-5', category: 'Alimentación', title: 'Come y bebe según indicación', summary: 'Tu equipo decide qué puedes tomar.', body: 'No comas ni bebas nada que no te haya indicado tu equipo de salud. Si tienes sed o hambre, avísale a tu enfermera.', demo: true },
+      { id: 'r-6', category: 'Movimiento', title: 'Mueve manos y pies', summary: 'Pequeños movimientos, sin esfuerzo.', body: 'Abre y cierra las manos y mueve los tobillos en círculos unas cuantas veces, solo si tu equipo te lo permite y sin hacer fuerza.', demo: true },
+      { id: 'r-7', category: 'Visitas', title: 'Horario de visitas', summary: 'Tu familia puede acompañarte.', body: 'El horario de visitas lo define la clínica. Pregunta a tu enfermera los horarios de hoy.', demo: true },
     ],
-    moods: ([3, 2, 3, 4, 3, 4] as const).map((value, i) => ({ date: isoDay(new Date(t - (6 - i) * 24 * H)), value })),
+    moods: ([3, 2, 3, 4, 3, 4] as const).map((value, i) => ({ date: isoDay(new Date(t - (6 - i) * 24 * H)), value, demo: true })),
     vitals: { heartRate: 72, respRate: 16, spo2: 97, recordedAt: t - 2 * H, demo: true },
-    careNote: { text: 'Te encuentras estable y recibiendo el cuidado que necesitas.', updatedAt: t - 3 * H, demo: true },
+    careNote: { text: 'Tu equipo de salud está pendiente de ti. Si algo te molesta o tienes una pregunta, díselo a tu enfermera.', updatedAt: t - 3 * H, demo: true },
     favorites: ['amanecer-sereno', 'bosque'],
     scores: {},
     dismissedNotifications: [],
+    caregiverPin: DEMO_PIN,
   };
 }

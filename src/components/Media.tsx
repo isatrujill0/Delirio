@@ -1,4 +1,7 @@
+import { useEffect, useRef, type VideoHTMLAttributes } from 'react';
 import { useMediaUrl } from '../hooks/useMediaUrl';
+import { useAppData } from '../hooks/useAppData';
+import { audioEngine, volumeToGain } from '../services/audioEngine';
 import type { Contact } from '../types';
 
 /** Image from a MediaRef with a soft placeholder while it loads or if it is missing. */
@@ -23,6 +26,30 @@ export function Avatar({ contact, className = '' }: { contact: Pick<Contact, 'na
     <span className={`avatar ${className}`}>
       {url ? <img src={url} alt="" draggable={false} decoding="async" /> : <span className="avatar-initials" aria-hidden="true">{initials(contact.name)}</span>}
     </span>
+  );
+}
+
+/**
+ * <video> that follows NEXO's sound settings: muted when the device is muted, at the app volume
+ * otherwise (iPadOS ignores element volume, but honours `muted`). Starting it stops other audio.
+ */
+export function Video(props: VideoHTMLAttributes<HTMLVideoElement>) {
+  const { prefs } = useAppData().data;
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.volume = Math.min(1, volumeToGain(prefs.volume, false));
+  }, [prefs.volume]);
+  const { onPlay, ...rest } = props;
+  return (
+    <video
+      ref={ref}
+      {...rest}
+      muted={prefs.muted}
+      onPlay={(e) => {
+        audioEngine.stop();
+        onPlay?.(e);
+      }}
+    />
   );
 }
 

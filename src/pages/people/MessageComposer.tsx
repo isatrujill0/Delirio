@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Mic, Square, Video, Type, Trash2 } from 'lucide-react';
 import type { FamilyMessage, MessageKind } from '../../types';
 import { Sheet } from '../../components/Sheet';
+import { Video as NexoVideo } from '../../components/Media';
 import { Field, Segmented } from '../../components/Form';
 import { putMedia } from '../../services/mediaStore';
 import { mmss } from '../../services/time';
@@ -57,6 +58,7 @@ export function MessageComposer({ contactId, contactName, onSave, onClose }: Pro
       r.ondataavailable = (e) => e.data.size && chunks.push(e.data);
       r.onstop = () => {
         stream.getTracks().forEach((t) => t.stop());
+        if (rec.current !== r) return; // discarded (type changed while recording)
         const b = new Blob(chunks, { type: r.mimeType || 'audio/mp4' });
         setBlob(b);
         setPreview(URL.createObjectURL(b));
@@ -125,6 +127,7 @@ export function MessageComposer({ contactId, contactName, onSave, onClose }: Pro
         value={kind}
         onChange={(k) => {
           stop();
+          rec.current = null;
           reset();
           setKind(k);
         }}
@@ -166,7 +169,7 @@ export function MessageComposer({ contactId, contactName, onSave, onClose }: Pro
             <Video /> {blob ? 'Elegir otro video' : 'Grabar o elegir un video'}
             <input type="file" accept="video/*" capture="user" className="sr-only" onChange={(e) => pickVideo(e.target.files?.[0])} />
           </label>
-          {preview && <video className="composer-video" src={preview} controls playsInline />}
+          {preview && <NexoVideo className="composer-video" src={preview} controls playsInline />}
         </div>
       )}
 

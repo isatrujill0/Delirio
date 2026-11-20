@@ -11,13 +11,13 @@ import { audioEngine } from '../services/audioEngine';
 import { deriveNotifications } from '../services/notifications';
 
 const STORAGE_MSG = {
-  quota: 'No hay espacio para guardar más datos. Elimina algunas fotos o videos.',
+  quota: 'No hay espacio para guardar los cambios en este dispositivo. Pide ayuda para liberar espacio.',
   unavailable: 'No se pueden guardar los cambios en este navegador (¿modo privado?).',
-  corrupt: 'Los datos guardados estaban dañados; se cargaron los datos de demostración.',
+  corrupt: 'Los datos guardados estaban dañados: se guardó una copia y se cargaron los datos de demostración.',
 };
 
 export function DeviceLayout({ children }: { children: ReactNode }) {
-  const { data, storageError } = useAppData();
+  const { data, storageError, storageErrorCount } = useAppData();
   const { section, sub, panel, openPanel, toasts, dismissToast, toast } = useUI();
   const now = useNow();
   const { prefs } = data;
@@ -47,8 +47,9 @@ export function DeviceLayout({ children }: { children: ReactNode }) {
   }, [notifications, toast, prefs.notifications.sound]);
 
   useEffect(() => {
+    // Every failed save is announced, not only the first one of each kind.
     if (storageError) toast(STORAGE_MSG[storageError], 'error');
-  }, [storageError, toast]);
+  }, [storageError, storageErrorCount, toast]);
 
   return (
     <div className="device">

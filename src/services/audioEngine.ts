@@ -114,6 +114,8 @@ class AudioEngine {
     this.level = volumeToGain(volume, muted);
     if (this.gain && this.ctx) this.gain.gain.setTargetAtTime(this.level, this.ctx.currentTime, 0.05);
     else if (this.el) this.el.volume = this.level;
+    // An utterance's volume is fixed once it starts: muting has to stop the voice itself.
+    if (this.level === 0 && this.state.kind === 'speech') this.pause();
   }
 
   playMedia(item: MediaItem, ownedUrl = false) {

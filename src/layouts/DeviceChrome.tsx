@@ -1,10 +1,12 @@
-import { Bell, Heart, House, Minus, Music2, Plus, Settings, Users, Volume2, VolumeX, Pause, Play, LoaderCircle } from 'lucide-react';
+import { Bell, Heart, House, Minus, Music2, Plus, Settings, Users, Volume2, VolumeX, Pause, Play, LoaderCircle, LockKeyholeOpen } from 'lucide-react';
 import type { SectionId } from '../types';
 import { NexoLogo } from '../components/Brand';
 import { useUI } from '../hooks/useUI';
+import { useCaregiver } from '../hooks/useCaregiver';
 import { useAppData } from '../hooks/useAppData';
 import { usePlayer, audioEngine } from '../hooks/usePlayer';
-import { TRACKS, trackById } from '../data/media';
+import { trackById } from '../data/media';
+import { playQueue } from '../services/playlist';
 
 export const SECTIONS: { id: SectionId; label: string; Icon: typeof House }[] = [
   { id: 'inicio', label: 'Inicio', Icon: House },
@@ -16,6 +18,7 @@ export const SECTIONS: { id: SectionId; label: string; Icon: typeof House }[] = 
 export function TopBar() {
   const { data, update } = useAppData();
   const { openPanel, toast } = useUI();
+  const { unlocked, lock } = useCaregiver();
   const muted = data.prefs.muted;
   return (
     <header className="topbar">
@@ -29,6 +32,11 @@ export function TopBar() {
         </p>
       </div>
       <div className="topbar-actions">
+        {unlocked && (
+          <button className="pill-btn caregiver-chip" onClick={() => { lock(); toast('Modo cuidador bloqueado'); }}>
+            <LockKeyholeOpen size={20} /> Modo cuidador · Bloquear
+          </button>
+        )}
         <button
           className="round-btn"
           aria-label={muted ? 'Activar sonido' : 'Silenciar'}
@@ -84,10 +92,11 @@ export function ControlDock({ unread }: { unread: number }) {
 
   const playPause = () => {
     if (player.kind !== 'none') return audioEngine.toggle();
-    // Nothing loaded: start the first favourite, or the forest sounds.
-    const t = trackById(data.favorites.find((f) => trackById(f)) ?? '') ?? TRACKS.find((x) => x.id === 'bosque')!;
-    audioEngine.playMedia({ id: t.id, title: t.title, subtitle: t.subtitle, src: t.src, loop: t.loop });
-    toast(`Reproduciendo: ${t.title}`);
+    // Nothing loaded: play the favourites in order (like Mi playlist), or the forest sounds.
+    const favs = data.favorites.filter((f) => trackById(f));
+    const ids = favs.length ? favs : ['bosque'];
+    playQueue(ids);
+    toast(`Reproduciendo: ${trackById(ids[0])!.title}`);
   };
 
   return (

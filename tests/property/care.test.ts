@@ -9,7 +9,7 @@ const p2 = (n: number) => String(n).padStart(2, '0');
 const hm = fc.tuple(fc.integer({ min: 0, max: 23 }), fc.integer({ min: 0, max: 59 })).map(([h, m]) => `${p2(h)}:${p2(m)}`);
 const anyTime = fc.oneof(hm, hm, fc.string(), fc.constantFrom('24:00', '8:5', '12:60', ''));
 const treatment = fc.record({
-  id: fc.uuid(), name: fc.string(), description: fc.string(), startDate: fc.constant('2026-11-01'),
+  id: fc.uuid(), name: fc.string(), description: fc.string(), startDate: fc.constant('2000-01-01'), // always started: start-date behaviour has its own properties
   frequency: fc.string(), observations: fc.string(), times: fc.array(anyTime, { maxLength: 6 }),
 }) as fc.Arbitrary<Treatment>;
 const now = fc.date({ min: new Date(2020, 0, 1), max: new Date(2040, 0, 1), noInvalidDate: true });
@@ -48,7 +48,7 @@ describe('care: nextDose', () => {
   });
   it('a dose exactly now is "today" with inMinutes 0', () => {
     fc.assert(fc.property(now, (n) => {
-      const t = { id: 'a', name: 'x', description: '', startDate: '2026-01-01', frequency: 'x', observations: '', times: [`${p2(n.getHours())}:${p2(n.getMinutes())}`] };
+      const t = { id: 'a', name: 'x', description: '', startDate: '2000-01-01', frequency: 'x', observations: '', demo: false, times: [`${p2(n.getHours())}:${p2(n.getMinutes())}`] };
       const r = nextDose([t], n)!;
       expect(r.inMinutes).toBe(0);
       expect(r.tomorrow).toBe(false);
@@ -134,10 +134,10 @@ describe('care: validateTreatment / validateProcedure', () => {
   });
   it('an invalid time always flags `times`; blank frequency flags `frequency`', () => {
     fc.assert(fc.property(fc.array(hm, { maxLength: 3 }), fc.constantFrom('24:00', '12:60', 'x', '1230', '8:5'), (times, bad) => {
-      expect(validateTreatment({ name: 'a', startDate: '2026-01-01', frequency: 'x', times: [...times, bad] }).times).toBeTruthy();
+      expect(validateTreatment({ name: 'a', startDate: '2000-01-01', frequency: 'x', times: [...times, bad] }).times).toBeTruthy();
     }), cfg(315));
     fc.assert(fc.property(ws, (f) => {
-      expect(validateTreatment({ name: 'a', startDate: '2026-01-01', frequency: f, times: [] }).frequency).toBeTruthy();
+      expect(validateTreatment({ name: 'a', startDate: '2000-01-01', frequency: f, times: [] }).frequency).toBeTruthy();
     }), cfg(316));
   });
   it('an empty/garbled procedure date errors', () => {
