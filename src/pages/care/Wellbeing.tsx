@@ -4,7 +4,7 @@ import type { MoodValue } from '../../types';
 import { useAppData } from '../../hooks/useAppData';
 import { useUI } from '../../hooks/useUI';
 import { useNow } from '../../hooks/useNow';
-import { MOODS, isoDay, lastDays, moodTrend, upsertMood, validateVitals, TREND_TEXT, moodLabel, simulateVitalsStep } from '../../services/wellbeing';
+import { MOODS, isoDay, lastDays, moodTrend, upsertMood, validateVitals, TREND_TEXT, moodLabel, simulateVitalsStep, SIM_RANGES, REFERENCE_RANGES, STATUS_TEXT, TREND_TOLERANCE, VITAL_RANGES, VITAL_TREND_TEXT, vitalStatus, vitalTrend, type VitalKey } from '../../services/wellbeing';
 import type { Vitals } from '../../types';
 import { timeAgo, clock } from '../../services/time';
 import { MoodChart } from '../../components/MoodChart';
@@ -117,20 +117,58 @@ export function MoodCard() {
   );
 }
 
-/** Every few seconds, demo vitals take one small plausible step. Real (staff-entered) vitals never change. */
-function useSimulatedVitals(v: Vitals | null): Vitals | null {
-  const [live, setLive] = useState(v);
+const VITAL_KEYS: VitalKey[] = ['heartRate', 'respRate', 'spo2'];
+const HISTORY = 30; // readings kept for the mini charts (2 minutes at one every 4 s)
+type History = Record<VitalKey, number[]>;
+
+/**
+ * Feed of the integrated monitor. In this demo it is simulated: every 4 s each value takes one small,
+ * plausible step. Values typed by the care team (`demo: false`) are shown as they are and never move.
+ */
+function useMonitorFeed(v: Vitals | null): { shown: Vitals | null; history: History | null } {
+  const [state, setState] = useState<{ shown: Vitals | null; history: History | null }>({ shown: v, history: null });
   useEffect(() => {
-    setLive(v);
-    if (!v?.demo) return;
+    if (!v?.demo) {
+      setState({ shown: v, history: null });
+      return;
+    }
+    // Warm up so the charts have the last couple of minutes from the start.
+    let cur: Vitals = v;
+    const history: History = { heartRate: [], respRate: [], spo2: [] };
+    for (let i = 0; i < HISTORY; i++) {
+      cur = { ...cur, ...simulateVitalsStep(cur) };
+      VITAL_KEYS.forEach((k) => history[k].push(cur[k]));
+    }
+    setState({ shown: cur, history });
     const id = window.setInterval(() => {
       if (document.visibilityState === 'hidden') return;
-      setLive((cur) => (cur ? { ...cur, ...simulateVitalsStep(cur) } : cur));
+      setState((st) => {
+        if (!st.shown || !st.history) return st;
+        const next = { ...st.shown, ...simulateVitalsStep(st.shown) };
+        const h = {} as History;
+        VITAL_KEYS.forEach((k) => (h[k] = [...st.history![k], next[k]].slice(-HISTORY)));
+        return { shown: next, history: h };
+      });
     }, 4000);
     return () => window.clearInterval(id);
   }, [v]);
-  return live;
+  return state;
 }
+
+/** Tiny line of the recent readings, drawn behind the value. */
+function Spark({ values, min, max }: { values: number[]; min: number; max: number }) {
+  if (values.length < 2) return null;
+  const span = Math.max(1, max - min);
+  const pts = values.map((x, i) => `${((i / (values.length - 1)) * 100).toFixed(1)},${(28 - ((x - min) / span) * 24).toFixed(1)}`).join(' ');
+  return (
+    <svg className="vital-spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points={pts} />
+    </svg>
+  );
+}
+
+const TREND_ICON = { estable: '→', sube: '↗', baja: '↘' } as const;
+const UNIT: Record<VitalKey, string> = { heartRate: 'lpm', respRate: 'rpm', spo2: '%' };
 
 export function VitalsCard() {
   const { data, update } = useAppData();
@@ -139,8 +177,9 @@ export function VitalsCard() {
   const [edit, setEdit] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
   const v = data.vitals;
-  const shown = useSimulatedVitals(v);
-  const simulated = !!v?.demo;
+  const { shown, history } = useMonitorFeed(v);
+  const live = !!v?.demo;
+  const outOfRange = shown ? VITAL_KEYS.filter((k) => vitalStatus(k, shown[k]) !== 'en-rango') : [];
   const [form, setForm] = useState({ heartRate: '', respRate: '', spo2: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const at = v ? clock(new Date(v.recordedAt)) : null;
@@ -165,18 +204,26 @@ export function VitalsCard() {
       <button className="vitals-head" onClick={open} aria-label="Registrar signos vitales">
         <Activity className="vitals-icon" strokeWidth={1.6} />
         <span>
-          <h2>Tu salud</h2>
+          <h2>Tu salud {live && <DemoTag label="Demo: datos simulados" />}</h2>
           <small className="muted vitals-meta">
-            {simulated
-              ? 'Valores simulados: no vienen de un monitor'
-              : v
-                ? `Registrado ${timeAgo(v.recordedAt, Date.now()).toLowerCase()} · ${at!.time} ${at!.period}`
-                : 'Aún no hay signos registrados'}
-            {simulated && <DemoTag label="Simulación" />}
+            {live ? (
+              <span className="monitor-live">
+                <i aria-hidden="true" /> Monitor integrado · en vivo
+              </span>
+            ) : v ? (
+              `Registrado por el personal ${timeAgo(v.recordedAt, Date.now()).toLowerCase()} · ${at!.time} ${at!.period}`
+            ) : (
+              'Aún no hay signos registrados'
+            )}
+            {shown && (
+              <span className={`vitals-summary ${outOfRange.length ? 'is-out' : ''}`}>
+                {outOfRange.length === 0 ? 'Todo en rango' : `Revisa: ${outOfRange.map((k) => VITAL_RANGES[k].label.toLowerCase()).join(', ')}`}
+              </span>
+            )}
           </small>
         </span>
         <span
-          className={`vitals-heart ${simulated ? 'is-live' : ''}`}
+          className={`vitals-heart ${live ? 'is-live' : ''}`}
           style={shown ? ({ ['--beat' as string]: `${(60 / shown.heartRate).toFixed(2)}s` } as CSSProperties) : undefined}
           aria-hidden="true"
         >
@@ -184,11 +231,37 @@ export function VitalsCard() {
         </span>
       </button>
       {shown ? (
-        <ul className="vitals">
-          <li><Heart strokeWidth={1.6} /><span><small>Ritmo cardíaco</small><strong className="num">{shown.heartRate} <em>lpm</em></strong></span></li>
-          <li><Wind strokeWidth={1.6} /><span><small>Respiración</small><strong className="num">{shown.respRate} <em>rpm</em></strong></span></li>
-          <li><span className="o2" aria-hidden="true">O<sub>2</sub></span><span><small>Oxigenación</small><strong className="num">{shown.spo2} <em>%</em></strong></span></li>
-        </ul>
+        <>
+          <ul className="vitals">
+            {VITAL_KEYS.map((k) => {
+              const status = vitalStatus(k, shown[k]);
+              const trend = history ? vitalTrend(history[k], TREND_TOLERANCE[k]) : null;
+              const r = SIM_RANGES[k];
+              return (
+                <li key={k} className={`vital s-${status}`}>
+                  {history && <Spark values={history[k]} min={Math.min(r.min, REFERENCE_RANGES[k].min)} max={r.max} />}
+                  {k === 'heartRate' ? <Heart strokeWidth={1.6} /> : k === 'respRate' ? <Wind strokeWidth={1.6} /> : <span className="o2" aria-hidden="true">O<sub>2</sub></span>}
+                  <span>
+                    <small>{VITAL_RANGES[k].label}</small>
+                    <strong className="num">
+                      {shown[k]} <em>{UNIT[k]}</em>
+                      {trend && (
+                        <span className="vital-trend" title={VITAL_TREND_TEXT[trend]}>
+                          <span aria-hidden="true">{TREND_ICON[trend]}</span>
+                          <span className="sr-only">{VITAL_TREND_TEXT[trend]}</span>
+                        </span>
+                      )}
+                    </strong>
+                    <span className="vital-state">
+                      <i aria-hidden="true" /> <span className="vital-state-text">{STATUS_TEXT[status]}</span>
+                    </span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          {outOfRange.length > 0 && <p className="vitals-note">Fuera del rango de referencia. Si te sientes mal, avisa a tu enfermera.</p>}
+        </>
       ) : (
         <button className="btn btn-ghost" onClick={open}>Registrar signos</button>
       )}
@@ -198,7 +271,7 @@ export function VitalsCard() {
           onClose={() => setEdit(false)}
           footer={<><button className="btn btn-ghost" onClick={() => setEdit(false)}>Cancelar</button><button className="btn btn-primary" onClick={save}>Guardar</button></>}
         >
-          <p className="muted">Para el personal de salud. NEXO no está conectado a los monitores: los valores se escriben a mano y se muestran tal cual, sin interpretarlos.</p>
+          <p className="muted">Para el personal de salud, cuando el monitor integrado no está disponible. Los valores escritos a mano se muestran tal cual y reemplazan la lectura del monitor; NEXO solo indica si están dentro del rango de referencia.</p>
           <div className="form-row three">
             <Field label="Ritmo cardíaco (lpm)" error={errors.heartRate}>{(id, by) => <input id={id} aria-describedby={by} inputMode="numeric" value={form.heartRate} onChange={(e) => setForm({ ...form, heartRate: e.target.value })} />}</Field>
             <Field label="Respiración (rpm)" error={errors.respRate}>{(id, by) => <input id={id} aria-describedby={by} inputMode="numeric" value={form.respRate} onChange={(e) => setForm({ ...form, respRate: e.target.value })} />}</Field>

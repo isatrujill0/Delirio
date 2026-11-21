@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES, simulateVitalsStep, SIM_RANGES } from '../../src/services/wellbeing';
+import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES, simulateVitalsStep, SIM_RANGES, REFERENCE_RANGES, vitalStatus, vitalTrend, type VitalKey } from '../../src/services/wellbeing';
 import type { MoodValue } from '../../src/types';
 
 const cfg = (seed: number, numRuns = 300) => ({ seed, numRuns });
@@ -173,5 +173,40 @@ describe('wellbeing: simulateVitalsStep (labelled demo simulation)', () => {
       for (let i = 0; i < 200; i++) { v = simulateVitalsStep(v, r); seen.add(v.heartRate); }
       expect(seen.size).toBeGreaterThan(1);
     }), cfg(622, 100));
+  });
+});
+
+describe('wellbeing: monitor analysis (status and trend, never a diagnosis)', () => {
+  const key = fc.constantFrom<VitalKey>('heartRate', 'respRate', 'spo2');
+  it('vitalStatus matches the reference range exactly (boundaries are in range)', () => {
+    fc.assert(fc.property(key, fc.integer({ min: -50, max: 300 }), (k, x) => {
+      const r = REFERENCE_RANGES[k];
+      expect(vitalStatus(k, x)).toBe(x < r.min ? 'bajo' : x > r.max ? 'alto' : 'en-rango');
+    }), cfg(623, 500));
+  });
+  it('every simulated reading of the demo monitor is in range', () => {
+    fc.assert(fc.property(fc.double({ min: 0, max: 1, maxExcluded: true, noNaN: true }), (r) => {
+      let v = { heartRate: 72, respRate: 16, spo2: 97 };
+      for (let i = 0; i < 50; i++) {
+        v = simulateVitalsStep(v, () => r);
+        for (const k of ['heartRate', 'respRate', 'spo2'] as VitalKey[]) expect(vitalStatus(k, v[k])).toBe('en-rango');
+      }
+    }), cfg(624, 200));
+  });
+  it('vitalTrend: flat series are stable; rising/falling beyond tolerance are detected; reversing flips it', () => {
+    fc.assert(fc.property(fc.integer({ min: 6, max: 40 }), fc.integer({ min: 40, max: 120 }), fc.integer({ min: 2, max: 5 }), (n, base, slope) => {
+      expect(vitalTrend(Array(n).fill(base), 1)).toBe('estable');
+      const up = Array.from({ length: n }, (_, i) => base + i * slope);
+      expect(vitalTrend(up, 1)).toBe('sube');
+      expect(vitalTrend([...up].reverse(), 1)).toBe('baja');
+    }), cfg(625));
+  });
+  it('vitalTrend: fewer than 6 readings is always stable; jitter within tolerance is stable', () => {
+    fc.assert(fc.property(fc.array(fc.integer({ min: 0, max: 200 }), { maxLength: 5 }), (v) => {
+      expect(vitalTrend(v, 1)).toBe('estable');
+    }), cfg(626));
+    fc.assert(fc.property(fc.array(fc.integer({ min: 70, max: 72 }), { minLength: 6, maxLength: 40 }), (v) => {
+      expect(vitalTrend(v, 2)).toBe('estable');
+    }), cfg(627));
   });
 });

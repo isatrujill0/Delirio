@@ -68,8 +68,8 @@ export function validateVitals(v: Pick<Vitals, 'heartRate' | 'respRate' | 'spo2'
 }
 
 /**
- * Plausible ranges for the simulated demo vitals of a person resting in bed. They only drive the
- * labelled "Simulación" on demo data; NEXO never reads a monitor and never interprets these values.
+ * Plausible ranges for the simulated feed of the integrated monitor (demo): a person resting in bed,
+ * fairly stable. The real device would read these values from its monitor instead.
  */
 export const SIM_RANGES = {
   heartRate: { min: 68, max: 92, step: 2 },
@@ -95,3 +95,47 @@ export function simulateVitalsStep(cur: SimVitals, rand: () => number = Math.ran
   }
   return next;
 }
+
+export type VitalKey = keyof typeof SIM_RANGES;
+
+/**
+ * Reference ranges the monitor view compares against (adult at rest). In a real deployment the
+ * care team sets them; NEXO only says "inside / outside the reference range" — it never diagnoses.
+ */
+export const REFERENCE_RANGES: Record<VitalKey, { min: number; max: number }> = {
+  heartRate: { min: 60, max: 100 },
+  respRate: { min: 12, max: 20 },
+  spo2: { min: 94, max: 100 },
+};
+
+export type VitalStatus = 'en-rango' | 'bajo' | 'alto';
+
+export function vitalStatus(key: VitalKey, value: number): VitalStatus {
+  const r = REFERENCE_RANGES[key];
+  return value < r.min ? 'bajo' : value > r.max ? 'alto' : 'en-rango';
+}
+
+export const STATUS_TEXT: Record<VitalStatus, string> = {
+  'en-rango': 'En rango',
+  bajo: 'Por debajo del rango',
+  alto: 'Por encima del rango',
+};
+
+export type VitalTrend = 'estable' | 'sube' | 'baja';
+
+/**
+ * Direction of the recent readings: compares the mean of the newest third with the oldest third.
+ * Changes smaller than `tolerance` (per vital) count as stable, so normal jitter reads as "estable".
+ */
+export function vitalTrend(samples: number[], tolerance: number): VitalTrend {
+  const v = samples.filter((x) => Number.isFinite(x));
+  if (v.length < 6) return 'estable';
+  const third = Math.floor(v.length / 3);
+  const avg = (a: number[]) => a.reduce((s, x) => s + x, 0) / a.length;
+  const diff = avg(v.slice(-third)) - avg(v.slice(0, third));
+  return diff > tolerance ? 'sube' : diff < -tolerance ? 'baja' : 'estable';
+}
+
+export const TREND_TOLERANCE: Record<VitalKey, number> = { heartRate: 4, respRate: 1.5, spo2: 1 };
+// "Sin cambios", not "Estable": a direction of change, never a statement about the person's health.
+export const VITAL_TREND_TEXT: Record<VitalTrend, string> = { estable: 'Sin cambios', sube: 'Subiendo', baja: 'Bajando' };

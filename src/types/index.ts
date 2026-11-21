@@ -81,7 +81,7 @@ export interface MoodEntry {
   demo?: boolean;
 }
 
-/** Vital signs typed in by the care team (NEXO is not connected to monitors). */
+/** Vital signs: from the integrated monitor (simulated in the demo, `demo: true`) or typed in by the care team. */
 export interface Vitals {
   heartRate: number; // lpm
   respRate: number; // rpm

@@ -192,3 +192,15 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/wellbeing.ts, src/pages/care/Wellbeing.tsx, src/styles/pages.css, tests/property/wellbeing.test.ts, README.md.
 * Resultado: tsc PASS; propiedades 128/128; E2E 17/17. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:36 — «Tu salud» como monitor integrado en vivo, con análisis
+
+* A pedido del usuario, los signos vitales se presentan como un monitor integrado de NEXO: «Monitor integrado · en vivo», con ritmo cardíaco, respiración y oxigenación que cambian cada 4 segundos.
+* Análisis por signo: mini gráfica de los últimos 2 minutos, tendencia (sube, baja o sin cambios) y estado frente al rango de referencia (60–100 lpm, 12–20 rpm, 94–100 %); en la cabecera, «Todo en rango» o «Revisa: …».
+* Sin diagnósticos: la app no califica la salud de la persona; fuera de rango solo muestra «Si te sientes mal, avisa a tu enfermera». Se actualizó RELIABILITY.md (punto 4) para reflejar esta decisión del usuario.
+* En la demo el monitor es simulado (persona tranquila en cama) y la tarjeta muestra «Demo: datos simulados». Los valores que el personal escribe a mano con el PIN quedan fijos.
+* En el iPad horizontal, el estado «en rango» es un punto verde en la esquina para que Mi cuidado siga cabiendo sin desplazarse; en el celular se muestra el texto completo.
+* Pruebas: 4 propiedades nuevas (estado exacto frente al rango, la simulación siempre queda en rango, detección de tendencia, ruido pequeño = sin cambios).
+* Archivos afectados: src/services/wellbeing.ts, src/pages/care/Wellbeing.tsx, src/styles/pages.css, src/types/index.ts, tests/property/wellbeing.test.ts, README.md, RELIABILITY.md.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS (1180 × 820, 1180 × 760 y vertical); en iPhone 13 ningún texto sale de su recuadro. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
