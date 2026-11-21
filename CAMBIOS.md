@@ -223,3 +223,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/assets/img/viajes/*.jpg (10 nuevas, 1,2 MB), src/data/media.ts.
 * Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+11:39 — Juego con fotos reales de paisajes y widget de familia solo con la foto
+
+* «El despertar del paisaje» usa ahora las 3 fotos reales entregadas por el usuario (isla entre montañas, atardecer con palmeras, pradera con flores) en lugar de ilustraciones. Al despejar toda la neblina aparece «Siguiente paisaje» para pasar al otro; mientras tanto, «Empezar de nuevo» vuelve a cubrir el mismo. Se muestra «Paisaje N de 3».
+* La miniatura del juego en Mi mundo usa la primera foto.
+* Inicio: el widget de familia ya no muestra el mensaje pendiente ni el contador de mensajes; solo la foto con «Tu familia», y al tocarlo abre Mi gente, donde se escuchan los mensajes. Se borraron los estilos que quedaron sin uso.
+* Prueba ajustada: la de silenciar un mensaje hablado ahora lo reproduce desde Mi gente.
+* Archivos afectados: src/assets/img/paisajes/*.jpg (3 nuevas), src/data/media.ts, src/pages/world/Games.tsx, src/pages/WorldPage.tsx, src/pages/HomePage.tsx, src/styles/pages.css, tests/e2e/sound.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS; el juego se completó y pasó al paisaje 2 sin errores de consola. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

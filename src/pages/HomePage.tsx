@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { ArrowRight, Heart, MapPin, MoreHorizontal, Music2, CalendarClock, Pill } from 'lucide-react';
+import { Heart, MapPin, Music2, CalendarClock, Pill } from 'lucide-react';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { useNow } from '../hooks/useNow';
-import { clock, longDate, partOfDay, timeAgo, mmss, hmToLabel, relativeDay } from '../services/time';
+import { clock, longDate, partOfDay, hmToLabel, relativeDay } from '../services/time';
 import { nextDose, orderProcedures } from '../services/care';
 import { MediaImage, DemoTag } from '../components/Media';
-import { PlayButton, StopButton, Waveform } from '../components/PlayerControls';
-import { MessageViewer, messageDuration, useMessageControl } from '../components/MessageViewer';
 import { Sheet } from '../components/Sheet';
 import { WeatherArt } from '../components/WeatherArt';
 
@@ -74,50 +72,16 @@ function NextUp() {
 
 function FamilyCard() {
   const { data } = useAppData();
-  const { go, toast } = useUI();
-  const [open, setOpen] = useState(false);
-  const latest = [...data.messages].filter((m) => m.kind !== 'video').sort((a, b) => b.createdAt - a.createdAt)[0];
-  const contact = data.contacts.find((c) => c.id === latest?.contactId);
-  const from = contact?.name ?? 'Tu familia';
-  const { player, isThis, playing, toggle } = useMessageControl(latest, from, (m) => toast(m, 'error'));
+  const { go } = useUI();
   const cover = data.photos[0]?.src;
-  const unread = data.messages.filter((m) => !m.read).length;
-
+  // Only the family photo and its name: messages live in Mi gente, not on the home screen.
   return (
-    <article className={`family-card ${playing ? 'is-playing' : ''}`}>
-      <MediaImage src={cover} alt="Foto de tu familia" className="family-photo" />
-      <button className="pill-btn family-more" onClick={() => go('gente', 'mensajes')}>
-        Ver mensajes{unread > 0 && <span className="badge-inline num">{unread}</span>} <ArrowRight size={20} />
-      </button>
-      {latest ? (
-        <div className="family-bar">
-          <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`mensaje de ${from}`} size="lg" />
-          <Waveform active={playing} />
-          <div className="family-bar-text">
-            <strong>Mensaje de tu familia</strong>
-            <small className="num">
-              {from} · {timeAgo(latest.createdAt, Date.now())} · {isThis && player.status !== 'idle' ? `${mmss(player.position)} / ${mmss(player.duration)}` : mmss(messageDuration(latest))}
-            </small>
-          </div>
-          {isThis && player.status !== 'idle' ? (
-            <StopButton label="mensaje" />
-          ) : (
-            <button className="icon-btn icon-btn-soft" onClick={() => setOpen(true)} aria-label="Ver el mensaje completo">
-              <MoreHorizontal />
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="family-bar">
-          <div className="family-bar-text">
-            <strong>Aún no hay mensajes</strong>
-            <small>Tu familia puede dejarte mensajes en Mi gente.</small>
-          </div>
-        </div>
-      )}
-      {latest?.demo && <DemoTag />}
-      {open && latest && <MessageViewer message={latest} contact={contact} onClose={() => setOpen(false)} onError={(m) => toast(m, 'error')} />}
-    </article>
+    <button className="family-card" onClick={() => go('gente')} aria-label="Tu familia. Abrir Mi gente">
+      <MediaImage src={cover} alt="" className="family-photo" />
+      <span className="family-label">
+        <Heart size={26} strokeWidth={1.8} aria-hidden="true" /> Tu familia
+      </span>
+    </button>
   );
 }
 

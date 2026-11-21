@@ -13,6 +13,9 @@ import bosque from '../assets/audio/bosque.m4a';
 import lluvia from '../assets/audio/lluvia.m4a';
 import mar from '../assets/audio/mar.m4a';
 import videoRecuerdos from '../assets/video/recuerdos-en-familia.mp4';
+import islaMontanas from '../assets/img/paisajes/isla-montanas.jpg';
+import atardecerPalmeras from '../assets/img/paisajes/atardecer-palmeras.jpg';
+import praderaFlores from '../assets/img/paisajes/pradera-flores.jpg';
 import machuPicchu from '../assets/img/viajes/machu-picchu.jpg';
 import tajMahal from '../assets/img/viajes/taj-mahal.jpg';
 import tajMahalMeditando from '../assets/img/viajes/taj-mahal-meditando.jpg';
@@ -97,6 +100,13 @@ export const TRAVELS: TravelMemory[] = [
   { id: 'bus-de-colores', title: 'De paseo en el bus de colores', place: 'Un viaje con amigos', src: busDeColores },
   { id: 'cumpleanos', title: 'Cumpleaños en familia', place: 'En casa', src: cumpleanos },
   { id: 'perritos', title: 'Con los perritos', place: 'En casa', src: perritos },
+];
+
+/** Real photos for the game "El despertar del paisaje" (supplied by the user), in play order. */
+export const AWAKE_SCENES: { id: string; title: string; src: string }[] = [
+  { id: 'isla-montanas', title: 'Isla entre montañas', src: islaMontanas },
+  { id: 'atardecer-palmeras', title: 'Atardecer con palmeras', src: atardecerPalmeras },
+  { id: 'pradera-flores', title: 'Pradera con flores', src: praderaFlores },
 ];
 
 export const trackById = (id: string) => TRACKS.find((t) => t.id === id);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Flower2, Headphones, Heart, Images, Leaf, Music2, Plane, Play, Puzzle, SkipBack, SkipForward, Wind, Pause, LoaderCircle, Square, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Track } from '../types';
-import { LANDSCAPES, TRACKS, TRAVELS, trackById, ASSETS } from '../data/media';
+import { AWAKE_SCENES, LANDSCAPES, TRACKS, TRAVELS, trackById, ASSETS } from '../data/media';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { usePlayer, audioEngine } from '../hooks/usePlayer';
@@ -304,7 +304,7 @@ export function WorldPage() {
           </span>
         </div>
         <ul className="col-list">
-          <ColItem art={<LandscapeArt scene={LANDSCAPES[2]} />} label="El despertar del paisaje" effort="Muy bajo" level={0} onOpen={() => setGame('despertar')} />
+          <ColItem art={<img src={AWAKE_SCENES[0].src} alt="" />} label="El despertar del paisaje" effort="Muy bajo" level={0} onOpen={() => setGame('despertar')} />
           <ColItem art={<span className="art-lights" />} label="Eco de luces" effort="Medio" level={1} onOpen={() => setGame('eco')} />
           <ColItem art={<span className="art-quote">“ ”</span>} label="Completa el refrán" effort="Avanzado" level={2} onOpen={() => setGame('refran')} />
         </ul>

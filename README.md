@@ -15,9 +15,9 @@ Que la persona sepa dónde está, qué día y qué hora es y quién la acompaña
 
 | Sección | Qué hace |
 |---|---|
-| **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, último mensaje de la familia (reproducir, pausar, detener), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
+| **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia», abre Mi gente; los mensajes se escuchan en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
 | **Mi gente** | Carrusel de familiares, perfil individual, agregar/editar/eliminar contactos, mensajes de voz, video y texto, grabación de mensajes de voz, álbum de fotos por persona. |
-| **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos de viajes (fotos reales de la familia en pase automático con música opcional), recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, Eco de luces, Completa el refrán) y relajación (respiración guiada, meditación, sonidos relajantes). |
+| **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos de viajes (fotos reales de la familia en pase automático con música opcional), recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, con 3 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán) y relajación (respiración guiada, meditación, sonidos relajantes). |
 | **Mi cuidado** | Nota del equipo de salud, “¿Cómo te sientes hoy?” (registro diario), signos vitales del monitor integrado (simulado en la demo), plan de cuidado, evolución del ánimo (gráfica de 7 días), tratamientos, procedimientos y recomendaciones por categoría. Solo informativo. |
 | **Controles** | Barra inferior inspirada en la máquina: bajar volumen, reproducir/pausar, subir volumen y campana de notificaciones. Arriba: silenciar y configuración. |
 | **Configuración** | Nombre, volumen, tamaño de texto, reducir movimiento, notificaciones, ubicación y clima de ejemplo, información de la app y restablecer datos de demostración. |
