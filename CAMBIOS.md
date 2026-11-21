@@ -153,3 +153,11 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: VERIFICACION.md (antes .claude/skills/verify/SKILL.md), .gitignore.
 * Resultado: el repositorio no contiene skills de Claude Code.
 * Estado: Completado.
+
+23:52 — Pruebas de las correcciones de la ronda 2
+
+* Propiedades (5): los datos guardados por la versión anterior recuperan «Ejemplo» solo en los registros de demostración, un registro creado por la familia no se marca, la nota antigua con «estable» solo se reemplaza si era la de ejemplo, y el resultado es idempotente.
+* E2E: actualización desde el formato anterior (etiquetas, nota, notificaciones y PIN); pantalla de error (restablecer pide doble confirmación, guarda copia y no borra fotos ni audios; «Volver a intentar» se recupera); sin conexión el audio se sirve por rangos (206) desde el service worker; el PIN de demostración no se muestra en la versión instalada.
+* Archivos afectados: tests/property/storage.test.ts, tests/e2e/migration.spec.ts, tests/e2e/error-screen.spec.ts, tests/e2e/offline.spec.ts, tests/e2e/caregiver.spec.ts.
+* Resultado: las pruebas nuevas pasan (sin fallos de producción encontrados); tsc PASS. No se ejecutó el procedimiento completo de VERIFICACION.md (se hará cuando el usuario lo indique).
+* Estado: Completado.

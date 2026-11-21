@@ -51,3 +51,15 @@ test('PIN de cuidador: incorrecto no abre nada, correcto ejecuta, Bloquear vuelv
   await confirm.getByRole('button', { name: 'Cancelar' }).click();
   expect((await readData(page)).contacts).toHaveLength(4);
 });
+
+test('la versión de producción no revela el PIN de demostración, pero 1234 sí desbloquea', async ({ page }) => {
+  await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi gente' }).click();
+  await page.locator('[aria-label="Tus personas"]').getByRole('button', { name: 'Agregar' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Modo cuidador' });
+  await expect(dialog).toBeVisible();
+  const text = (await dialog.textContent()) ?? '';
+  expect(text).not.toContain('1234');
+  expect(text).not.toContain('PIN de demostración');
+  await enterPin(page, '1234');
+  await expect(page.getByRole('dialog', { name: 'Agregar a alguien' })).toBeVisible();
+});

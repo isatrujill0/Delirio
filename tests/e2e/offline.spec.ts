@@ -19,6 +19,10 @@ test('tras la primera visita la app abre y reproduce música sin conexión', asy
   expect((await page.evaluate(() => fetch('/precache.json').then((r) => r.json()))).length).toBeGreaterThan(10);
 
   await context.setOffline(true);
+  const ranged: { status: number; range: string | null; sw: boolean }[] = [];
+  page.on('response', (r) => {
+    if (r.status() === 206) ranged.push({ status: 206, range: r.headers()['content-range'] ?? null, sw: r.fromServiceWorker() });
+  });
   await reload(page);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
 
@@ -33,6 +37,8 @@ test('tras la primera visita la app abre y reproduce música sin conexión', asy
     });
   await expect.poll(async () => (await state())?.t ?? 0, { timeout: 10_000 }).toBeGreaterThan(0.3);
   expect((await state())?.error).toBeNull();
+  // Offline, at least one media Range request was answered by the service worker with 206 + Content-Range.
+  await expect.poll(() => ranged.filter((r) => r.sw && /^bytes \d+-\d+\/\d+$/.test(r.range ?? '')).length).toBeGreaterThan(0);
   await expect(page.getByRole('contentinfo', { name: 'Controles' }).getByText('No se pudo')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
