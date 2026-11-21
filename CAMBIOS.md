@@ -214,3 +214,12 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/assets/img/viajes/*.jpg (12 nuevas), src/data/media.ts, src/pages/WorldPage.tsx, src/styles/pages.css, README.md.
 * Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS (incluye tamaño táctil). Sin errores de consola al abrir la cuadrícula y el visor. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:49 — 10 recuerdos más, cada uno con su lugar
+
+* Se agregaron 10 fotos a «Recuerdos de viajes» (22 en total): Burj Khalifa (Dubái, Emiratos Árabes Unidos), templo en kimono y puente entre montañas (Japón), comida coreana (Seúl, Corea del Sur), calles de Nueva York (Estados Unidos), Disneyland (California, Estados Unidos), Día de Muertos (México), juego en la nieve, concierto y bus de colores.
+* Los recuerdos se ordenaron por viaje: primero los de lugares conocidos y al final los de casa.
+* Donde el lugar no se distingue en la foto, se usó una descripción (por ejemplo «Un viaje de invierno») en vez de inventar un país.
+* Archivos afectados: src/assets/img/viajes/*.jpg (10 nuevas, 1,2 MB), src/data/media.ts.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

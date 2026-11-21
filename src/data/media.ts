@@ -25,6 +25,16 @@ import picnicPlaya from '../assets/img/viajes/picnic-playa.jpg';
 import crucero from '../assets/img/viajes/crucero.jpg';
 import cumpleanos from '../assets/img/viajes/cumpleanos.jpg';
 import perritos from '../assets/img/viajes/perritos.jpg';
+import burjKhalifa from '../assets/img/viajes/burj-khalifa.jpg';
+import kimonosTemplo from '../assets/img/viajes/kimonos-templo.jpg';
+import puenteMontanas from '../assets/img/viajes/puente-montanas.jpg';
+import comidaSeul from '../assets/img/viajes/comida-seul.jpg';
+import nuevaYork from '../assets/img/viajes/nueva-york.jpg';
+import disneyland from '../assets/img/viajes/disneyland.jpg';
+import nieve from '../assets/img/viajes/nieve.jpg';
+import diaDeMuertos from '../assets/img/viajes/dia-de-muertos.jpg';
+import concierto from '../assets/img/viajes/concierto.jpg';
+import busDeColores from '../assets/img/viajes/bus-de-colores.jpg';
 
 /** Bundled assets addressable as "asset:<key>" from persisted data. */
 export const ASSETS: Record<string, string> = {
@@ -69,12 +79,22 @@ export const TRAVELS: TravelMemory[] = [
   { id: 'taj-mahal', title: 'Taj Mahal', place: 'India', src: tajMahal },
   { id: 'taj-mahal-meditando', title: 'Meditando en el Taj Mahal', place: 'India', src: tajMahalMeditando },
   { id: 'cristo-redentor', title: 'Cristo Redentor', place: 'Río de Janeiro, Brasil', src: cristoRedentor },
+  { id: 'burj-khalifa', title: 'Burj Khalifa', place: 'Dubái, Emiratos Árabes Unidos', src: burjKhalifa },
+  { id: 'kimonos-templo', title: 'En kimono frente al templo', place: 'Japón', src: kimonosTemplo },
+  { id: 'puente-montanas', title: 'Puente entre montañas', place: 'Japón', src: puenteMontanas },
+  { id: 'comida-seul', title: 'Comida coreana', place: 'Seúl, Corea del Sur', src: comidaSeul },
+  { id: 'nueva-york', title: 'Por las calles de Nueva York', place: 'Nueva York, Estados Unidos', src: nuevaYork },
+  { id: 'disneyland', title: 'Un día en Disneyland', place: 'California, Estados Unidos', src: disneyland },
   { id: 'torre-iluminada', title: 'Bajo la torre iluminada', place: 'Una noche de viaje', src: torreIluminada },
   { id: 'globos-de-luz', title: 'Entre globos de luz', place: 'Una exposición de luces', src: globosDeLuz },
   { id: 'caminata-rio', title: 'Caminata junto al río', place: 'Entre montañas y pinos', src: caminataRio },
+  { id: 'nieve', title: 'Jugando en la nieve', place: 'Un viaje de invierno', src: nieve },
   { id: 'mirador-montana', title: 'Mirador en la montaña', place: 'Mirando el valle juntos', src: miradorMontana },
   { id: 'picnic-playa', title: 'Pícnic en la playa', place: 'Frente al mar', src: picnicPlaya },
   { id: 'crucero', title: 'En el crucero', place: 'Viaje en familia', src: crucero },
+  { id: 'dia-de-muertos', title: 'Día de Muertos', place: 'México', src: diaDeMuertos },
+  { id: 'concierto', title: 'En el escenario', place: 'En concierto', src: concierto },
+  { id: 'bus-de-colores', title: 'De paseo en el bus de colores', place: 'Un viaje con amigos', src: busDeColores },
   { id: 'cumpleanos', title: 'Cumpleaños en familia', place: 'En casa', src: cumpleanos },
   { id: 'perritos', title: 'Con los perritos', place: 'En casa', src: perritos },
 ];
