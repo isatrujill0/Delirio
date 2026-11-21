@@ -1,0 +1,17 @@
+# Dependencias y compilaciones
+node_modules
+dist
+dist-artifact
+test-results
+playwright-report
+verify-output
+*.log
+
+# Configuración local de Claude (no se versiona)
+.claude/
+
+# Material de trabajo de impeccable
+.impeccable/review
+.impeccable/questions
+.impeccable/mocks
+*.tsbuildinfo
