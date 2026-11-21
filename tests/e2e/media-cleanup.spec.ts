@@ -30,7 +30,7 @@ test('una foto agregada guarda un blob y eliminarla (con PIN y confirmación) lo
   const photosOf = async () => (await readData(page)).photos.filter((p: { contactId?: string }) => p.contactId === 'c-mama').length;
   const before = await photosOf();
 
-  await page.locator('input[type=file]').setInputFiles(asset('src/assets/img/daniela.jpg'));
+  await page.locator('input[type=file]').setInputFiles(asset('src/assets/img/karen.jpg'));
   await expect(page.getByRole('status')).toContainText('Foto agregada');
   await expect.poll(() => blobCount(page)).toBe(1);
   expect(await photosOf()).toBe(before + 1);
@@ -71,5 +71,5 @@ test('un mensaje de video guarda un blob y eliminarlo lo borra', async ({ page }
   await page.getByRole('dialog', { name: '¿Eliminar este mensaje?' }).getByRole('button', { name: 'Eliminar' }).click();
   await expect(page.getByRole('status')).toContainText('Mensaje eliminado');
   await expect.poll(() => blobCount(page)).toBe(0);
-  expect((await readData(page)).messages.filter((m: { kind: string }) => m.kind === 'video')).toHaveLength(1); // only Daniela's demo video remains
+  expect((await readData(page)).messages.filter((m: { kind: string }) => m.kind === 'video')).toHaveLength(1); // only Karen's demo video remains
 });

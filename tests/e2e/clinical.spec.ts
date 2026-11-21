@@ -37,18 +37,18 @@ test('registros dañados en el almacenamiento se descartan sin romper la app', a
     localStorage.setItem('nexo:data:v1', JSON.stringify(d));
   });
   await reload(page);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 
   await rail(page).getByRole('button', { name: 'Mi gente' }).click();
   const carousel = page.locator('[aria-label="Tus personas"]');
-  await expect(carousel.getByRole('img', { name: 'Persona 1 de 4' })).toBeVisible();
+  await expect(carousel.getByRole('img', { name: 'Persona 1 de 5' })).toBeVisible();
   await expect(carousel.getByRole('button', { name: /bad|^x$/ })).toHaveCount(0);
   await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: 'Mensajes', exact: true }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mensajes de Mamá' })).toBeVisible();
   await expect(page.locator('.msg-row')).toHaveCount(1);
 
   const data = await readData(page);
-  expect(data.contacts.map((c: { id: string }) => c.id)).toEqual(['c-mama', 'c-papa', 'c-daniela', 'c-carmen']);
+  expect(data.contacts.map((c: { id: string }) => c.id)).toEqual(['c-mama', 'c-papa', 'c-rafa', 'c-karen', 'c-bryan']);
   expect(data.messages.map((m: { id: string }) => m.id)).not.toContain('bad-msg');
   expect(errors).toEqual([]);
 });

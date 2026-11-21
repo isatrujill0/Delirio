@@ -170,3 +170,15 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/wellbeing.ts, src/services/storage.ts, tests/property/storage.test.ts, tests/property/wellbeing.test.ts.
 * Resultado: propiedades 125/125; E2E de bienestar, migración y datos clínicos 5/5; tsc PASS. No hubo una cuarta ronda de revisión (el límite es de 3 rondas). No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:17 — Fotos reales de la familia de demostración
+
+* La paciente de demostración pasa a ser Leslie (hija). Contactos: Mamá, Papá, Rafa (hermano), Karen (hermana) y Bryan (novio), cada uno con la foto entregada por el usuario (recortada y reducida para el avatar). Se quitaron Daniela y Tía Carmen.
+* El usuario confirmó que tiene permiso de estas personas para usar sus fotos en el prototipo.
+* Inicio muestra la foto de la familia; el álbum incluye la foto de Mamá con Leslie y las de cada familiar.
+* El video de demostración «Recuerdos en familia» se regeneró con la nueva foto familiar.
+* Los mensajes de demostración se adaptaron (hija, hermanita) y siguen marcados como «Demostración»; no se inventaron datos personales de la familia.
+* Textos neutros en género: estados de ánimo «En calma», «Con cansancio» y «Sin ánimo», y frases de relajación y recomendaciones.
+* Archivos afectados: src/assets/img/* (nuevas: rafa, karen, bryan, mama-y-leslie; reemplazadas: familia, mama, papa; eliminada: daniela), src/assets/video/recuerdos-en-familia.mp4, scripts/generate-media.mjs, src/data/demo.ts, src/data/media.ts, src/services/wellbeing.ts, src/pages/world/Relax.tsx, README.md, tests/e2e/*.spec.ts, tests/e2e/fixtures.ts.
+* Resultado: tsc PASS; propiedades 125/125; E2E 17/17; capturas de Inicio, Mi gente y Mi cuidado revisadas a 1180 × 820. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

@@ -256,11 +256,11 @@ encode('bosque', normalize(loopable(forest(S + 3, 5)), 0.75));
 encode('lluvia', normalize(loopable(rain(S + 3, 7)), 0.7));
 encode('mar', normalize(loopable(sea(S + 3, 9)), 0.75));
 
-// Demo video: a slow pan across the family photo with the first music piece.
+// Demo video: a slow zoom on the family photo (cropped to the faces, 720×512) with the first music piece.
 const vid = spawnSync('ffmpeg', [
   '-v', 'error', '-y', '-loop', '1', '-i', join(ROOT, 'src/assets/img/familia.jpg'),
   '-i', join(AUDIO, 'amanecer-sereno.m4a'),
-  '-filter_complex', "[0:v]scale=1280:-2,zoompan=z='min(1.0+on*0.0011,1.25)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=720x512:fps=24,format=yuv420p,fade=t=in:st=0:d=1,fade=t=out:st=13:d=1[v];[1:a]afade=t=out:st=12.5:d=1.5[a]",
+  '-filter_complex', "[0:v]crop=iw:iw*512/720:0:ih*0.15,scale=1280:-2,zoompan=z='min(1.0+on*0.0011,1.25)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=720x512:fps=24,format=yuv420p,fade=t=in:st=0:d=1,fade=t=out:st=13:d=1[v];[1:a]afade=t=out:st=12.5:d=1.5[a]",
   '-map', '[v]', '-map', '[a]', '-t', '14', '-c:v', 'libx264', '-profile:v', 'main', '-crf', '30', '-preset', 'slow',
   '-c:a', 'aac', '-b:a', '48k', '-movflags', '+faststart', join(VIDEO, 'recuerdos-en-familia.mp4'),
 ]);

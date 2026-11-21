@@ -49,7 +49,7 @@ test('PIN de cuidador: incorrecto no abre nada, correcto ejecuta, Bloquear vuelv
   const confirm = page.getByRole('dialog', { name: '¿Restablecer los datos?' });
   await expect(confirm).toBeVisible();
   await confirm.getByRole('button', { name: 'Cancelar' }).click();
-  expect((await readData(page)).contacts).toHaveLength(4);
+  expect((await readData(page)).contacts).toHaveLength(5);
 });
 
 test('la versión de producción no revela el PIN de demostración, pero 1234 sí desbloquea', async ({ page }) => {

@@ -14,7 +14,7 @@ export const test = base.extend({
     });
     await page.goto('/');
     await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important}' });
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
     await use(page);
   },
 });

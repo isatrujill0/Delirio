@@ -2,7 +2,7 @@ import { test, expect, readData, reload } from './fixtures';
 
 test('navega por las cuatro secciones y conserva el nombre cambiado tras recargar', async ({ page }) => {
   const rail = page.getByRole('navigation', { name: 'Secciones' });
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^(Buenos días|Buenas tardes|Buenas noches|Hola), Andrés$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^(Buenos días|Buenas tardes|Buenas noches|Hola), Leslie$/);
   await expect(rail.getByRole('button', { name: 'Inicio' })).toHaveAttribute('aria-current', 'page');
 
   for (const [nav, heading] of [['Mi gente', 'Mi gente'], ['Mi mundo', 'Mi mundo'], ['Mi cuidado', 'Mi cuidado']]) {

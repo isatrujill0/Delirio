@@ -5,11 +5,11 @@ test('agregar, editar y eliminar una persona en Mi gente con persistencia', asyn
   const carousel = page.locator('[aria-label="Tus personas"]');
   // Every demo person is reachable with the arrows (the dots are only a position indicator).
   const seen: string[] = [];
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     seen.push((await carousel.locator('.person.is-center').getAttribute('aria-label'))!.replace(', seleccionado', ''));
     await carousel.getByRole('button', { name: 'Persona siguiente' }).click();
   }
-  expect(seen.sort()).toEqual(['Daniela', 'Mamá', 'Papá', 'Tía Carmen']);
+  expect(seen.sort()).toEqual(['Bryan', 'Karen', 'Mamá', 'Papá', 'Rafa']);
 
   await carousel.getByRole('button', { name: 'Agregar' }).click();
   await enterPin(page); // adding people is a caregiver action
@@ -65,5 +65,5 @@ test('agregar, editar y eliminar una persona en Mi gente con persistencia', asyn
   await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi gente' }).click();
   await expect(carousel.getByRole('button', { name: /Tío Jorge/ })).toHaveCount(0);
   const names = (await readData(page)).contacts.map((c: { name: string }) => c.name);
-  expect(names).toEqual(['Mamá', 'Papá', 'Daniela', 'Tía Carmen']);
+  expect(names).toEqual(['Mamá', 'Papá', 'Rafa', 'Karen', 'Bryan']);
 });

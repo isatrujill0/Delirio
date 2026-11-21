@@ -13,7 +13,7 @@ test('datos guardados con el formato anterior (sin demo ni PIN) se migran: todo 
     localStorage.setItem('nexo:data:v1', JSON.stringify(d));
   });
   await reload(page);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 
   await rail(page).getByRole('button', { name: 'Mi cuidado' }).click();
   await expect(page.locator('.care-note-card')).toContainText('Ejemplo');

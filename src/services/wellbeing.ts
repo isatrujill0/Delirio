@@ -2,10 +2,10 @@ import type { MoodEntry, MoodValue, Vitals } from '../types';
 
 export const MOODS: { value: MoodValue; label: string }[] = [
   { value: 5, label: 'Bien' },
-  { value: 4, label: 'Tranquilo' },
+  { value: 4, label: 'En calma' },
   { value: 3, label: 'Neutral' },
-  { value: 2, label: 'Cansado' },
-  { value: 1, label: 'Bajo' },
+  { value: 2, label: 'Con cansancio' },
+  { value: 1, label: 'Sin ánimo' },
 ];
 export const moodLabel = (v: MoodValue) => MOODS.find((m) => m.value === v)!.label;
 

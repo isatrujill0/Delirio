@@ -141,4 +141,4 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 
 ## Datos de demostración
 
-Todas las personas, mensajes, fotos, tratamientos, procedimientos, recomendaciones, el historial de ánimo, los signos vitales, la nota del equipo y el clima iniciales son ficticios y aparecen marcados como “Demostración” o “Ejemplo”. Mi cuidado es informativo: no diagnostica ni cambia tratamientos.
+Las fotos de la familia de demostración (la paciente Leslie, Mamá, Papá, su hermano Rafa, su hermana Karen y su novio Bryan) son reales y se usan con permiso de esas personas, según confirmó quien desarrolla el proyecto. Los mensajes, los datos de contacto, los tratamientos, procedimientos, recomendaciones, el historial de ánimo, los signos vitales, la nota del equipo y el clima iniciales son ficticios y aparecen marcados como “Demostración” o “Ejemplo”. Mi cuidado es informativo: no diagnostica ni cambia tratamientos.

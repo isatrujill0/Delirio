@@ -2,7 +2,10 @@ import type { Landscape, Track } from '../types';
 import familia from '../assets/img/familia.jpg';
 import mama from '../assets/img/mama.jpg';
 import papa from '../assets/img/papa.jpg';
-import daniela from '../assets/img/daniela.jpg';
+import mamaYLeslie from '../assets/img/mama-y-leslie.jpg';
+import rafa from '../assets/img/rafa.jpg';
+import karen from '../assets/img/karen.jpg';
+import bryan from '../assets/img/bryan.jpg';
 import amanecer from '../assets/audio/amanecer-sereno.m4a';
 import brisa from '../assets/audio/brisa-de-tarde.m4a';
 import calma from '../assets/audio/calma-de-noche.m4a';
@@ -16,7 +19,10 @@ export const ASSETS: Record<string, string> = {
   familia,
   mama,
   papa,
-  daniela,
+  'mama-y-leslie': mamaYLeslie,
+  rafa,
+  karen,
+  bryan,
   'video-recuerdos': videoRecuerdos,
 };
 
