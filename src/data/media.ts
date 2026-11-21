@@ -16,6 +16,14 @@ import videoRecuerdos from '../assets/video/recuerdos-en-familia.mp4';
 import islaMontanas from '../assets/img/paisajes/isla-montanas.jpg';
 import atardecerPalmeras from '../assets/img/paisajes/atardecer-palmeras.jpg';
 import praderaFlores from '../assets/img/paisajes/pradera-flores.jpg';
+import guacamayoMar from '../assets/img/paisajes/guacamayo-mar.jpg';
+import granBuda from '../assets/img/paisajes/gran-buda.jpg';
+import elefantesSelva from '../assets/img/paisajes/elefantes-selva.jpg';
+import fujiPagoda from '../assets/img/paisajes/fuji-pagoda.jpg';
+import moaisAtardecer from '../assets/img/paisajes/moais-atardecer.jpg';
+import pandaBambu from '../assets/img/paisajes/panda-bambu.jpg';
+import auroraBoreal from '../assets/img/paisajes/aurora-boreal.jpg';
+import lunaCiudad from '../assets/img/paisajes/luna-ciudad.jpg';
 import machuPicchu from '../assets/img/viajes/machu-picchu.jpg';
 import tajMahal from '../assets/img/viajes/taj-mahal.jpg';
 import tajMahalMeditando from '../assets/img/viajes/taj-mahal-meditando.jpg';
@@ -107,6 +115,14 @@ export const AWAKE_SCENES: { id: string; title: string; src: string }[] = [
   { id: 'isla-montanas', title: 'Isla entre montañas', src: islaMontanas },
   { id: 'atardecer-palmeras', title: 'Atardecer con palmeras', src: atardecerPalmeras },
   { id: 'pradera-flores', title: 'Pradera con flores', src: praderaFlores },
+  { id: 'guacamayo-mar', title: 'Guacamayo frente al mar', src: guacamayoMar },
+  { id: 'gran-buda', title: 'El gran Buda entre árboles', src: granBuda },
+  { id: 'elefantes-selva', title: 'Elefantes en el río', src: elefantesSelva },
+  { id: 'fuji-pagoda', title: 'Monte Fuji y cerezos', src: fujiPagoda },
+  { id: 'moais-atardecer', title: 'Moáis al atardecer', src: moaisAtardecer },
+  { id: 'panda-bambu', title: 'Panda en el bambú', src: pandaBambu },
+  { id: 'aurora-boreal', title: 'Aurora boreal sobre la nieve', src: auroraBoreal },
+  { id: 'luna-ciudad', title: 'Luna llena sobre la ciudad', src: lunaCiudad },
 ];
 
 export const trackById = (id: string) => TRACKS.find((t) => t.id === id);

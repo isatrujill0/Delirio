@@ -50,26 +50,26 @@ test('una foto agregada guarda un blob y eliminarla (con PIN y confirmación) lo
   expect(await photosOf()).toBe(before);
 });
 
-test('un mensaje de video guarda un blob y eliminarlo lo borra', async ({ page }) => {
+test('una foto enviada en el chat guarda un blob y eliminar el mensaje lo borra', async ({ page }) => {
   expect(await blobCount(page)).toBe(0);
   await people(page).click();
   const panel = page.getByRole('complementary', { name: 'Panel de Mamá' });
-  await panel.getByRole('button', { name: 'Grabar mensaje' }).click();
-  const composer = page.getByRole('dialog', { name: 'Mensaje de Mamá' });
-  await composer.getByRole('radio', { name: 'Video' }).click();
-  await composer.locator('input[type=file][accept="video/*"]').setInputFiles(asset('src/assets/video/recuerdos-en-familia.mp4'));
-  await composer.getByRole('button', { name: 'Guardar mensaje' }).click();
-  await expect(page.getByRole('status')).toContainText('Mensaje guardado');
-  await expect.poll(() => blobCount(page)).toBe(1);
-  expect((await readData(page)).messages.filter((m: { kind: string; media?: string }) => m.kind === 'video' && m.media?.startsWith('idb:'))).toHaveLength(1);
-
   await panel.getByRole('button', { name: 'Mensajes', exact: true }).click();
-  await page.getByRole('button', { name: 'Ver video de Mamá' }).click();
-  const viewer = page.getByRole('dialog', { name: 'Video de Mamá' });
+  await expect(page.getByRole('heading', { level: 1, name: 'Mamá' })).toBeVisible();
+  await page.getByLabel('Escribe un mensaje').fill('Mira mi desayuno');
+  await page.locator('.chat-bar input[type=file]').setInputFiles(asset('src/assets/img/karen.jpg'));
+  await expect.poll(() => blobCount(page)).toBe(1);
+  const sent = (await readData(page)).messages.filter((m: { kind: string; demo: boolean }) => m.kind === 'imagen' && !m.demo);
+  expect(sent).toHaveLength(1);
+  expect(sent[0]).toMatchObject({ from: 'paciente', text: 'Mira mi desayuno' });
+  expect(sent[0].media.startsWith('idb:')).toBe(true);
+
+  await page.locator('.bubble-row.is-mine .bubble-imagen').last().click();
+  const viewer = page.getByRole('dialog', { name: /^Foto de/ });
   await viewer.getByRole('button', { name: 'Eliminar mensaje' }).click();
   await enterPin(page);
   await page.getByRole('dialog', { name: '¿Eliminar este mensaje?' }).getByRole('button', { name: 'Eliminar' }).click();
   await expect(page.getByRole('status')).toContainText('Mensaje eliminado');
   await expect.poll(() => blobCount(page)).toBe(0);
-  expect((await readData(page)).messages.filter((m: { kind: string }) => m.kind === 'video')).toHaveLength(1); // only Karen's demo video remains
+  expect((await readData(page)).messages.filter((m: { kind: string; demo: boolean }) => m.kind === 'imagen' && !m.demo)).toHaveLength(0);
 });

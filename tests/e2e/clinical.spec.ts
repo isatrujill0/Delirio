@@ -44,8 +44,9 @@ test('registros dañados en el almacenamiento se descartan sin romper la app', a
   await expect(carousel.getByRole('img', { name: 'Persona 1 de 5' })).toBeVisible();
   await expect(carousel.getByRole('button', { name: /bad|^x$/ })).toHaveCount(0);
   await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: 'Mensajes', exact: true }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Mensajes de Mamá' })).toBeVisible();
-  await expect(page.locator('.msg-row')).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1, name: 'Mamá' })).toBeVisible();
+  // Mamá's valid demo chat: voice note, photo and Leslie's reply — the damaged record is not shown.
+  await expect(page.locator('.bubble-row')).toHaveCount(3);
 
   const data = await readData(page);
   expect(data.contacts.map((c: { id: string }) => c.id)).toEqual(['c-mama', 'c-papa', 'c-rafa', 'c-karen', 'c-bryan']);

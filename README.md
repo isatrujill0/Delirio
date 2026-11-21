@@ -16,7 +16,7 @@ Que la persona sepa dónde está, qué día y qué hora es y quién la acompaña
 | Sección | Qué hace |
 |---|---|
 | **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia», abre Mi gente; los mensajes se escuchan en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
-| **Mi gente** | Carrusel de familiares, perfil individual, agregar/editar/eliminar contactos, mensajes de voz, video y texto, grabación de mensajes de voz, álbum de fotos por persona. |
+| **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes, Videollamada y Audios), perfil individual, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona (texto, emojis, fotos y notas de voz; escriben tanto la paciente como el familiar), audios que dejó cada familiar, videollamada simulada y álbum de fotos por persona. |
 | **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos de viajes (fotos reales de la familia en pase automático con música opcional), recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, con 3 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán) y relajación (respiración guiada, meditación, sonidos relajantes). |
 | **Mi cuidado** | Nota del equipo de salud, “¿Cómo te sientes hoy?” (registro diario), signos vitales del monitor integrado (simulado en la demo), plan de cuidado, evolución del ánimo (gráfica de 7 días), tratamientos, procedimientos y recomendaciones por categoría. Solo informativo. |
 | **Controles** | Barra inferior inspirada en la máquina: bajar volumen, reproducir/pausar, subir volumen y campana de notificaciones. Arriba: silenciar y configuración. |
@@ -119,7 +119,8 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 - Reproductor único con reproducir, pausar, reanudar, detener, progreso con búsqueda, anterior/siguiente, volumen y favoritos guardados.
 - Audio real: 6 piezas originales y 1 video de demostración incluidos.
 - Contactos: crear, editar, eliminar (con confirmación), foto desde cámara o galería, perfil.
-- Mensajes: voz grabada en el dispositivo, video, texto; los de demostración se leen en voz alta y están marcados.
+- Chat por persona: burbujas de la paciente y del familiar, texto con emojis, fotos y notas de voz grabadas en el dispositivo; en el mismo equipo se elige quién escribe («Escribe Leslie» / «Escribe Mamá»). Los mensajes de demostración se leen en voz alta y están marcados.
+- Videollamada **simulada**: suena, «contesta» a los pocos segundos y muestra la foto del familiar con tu cámara en la esquina; la pantalla indica que es una simulación.
 - Tratamientos y procedimientos: crear, editar, eliminar con validaciones; recordatorios.
 - Recomendaciones por categoría con lectura en voz alta.
 - Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); nota del equipo editable por el personal.
@@ -134,7 +135,7 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 ## Funcionalidades pendientes
 
 - Publicación en GitHub Pages con GitHub Actions.
-- Videollamadas y envío de mensajes desde el paciente hacia la familia (requieren un servicio externo; hoy la familia deja los mensajes en el propio dispositivo).
+- Videollamadas reales y que los mensajes lleguen al teléfono de la familia (requieren un servicio externo; hoy el chat y los audios viven en el propio dispositivo y la videollamada es simulada).
 - Clima real (requiere un servicio meteorológico; hoy es un dato de ejemplo editable).
 - Conexión con un monitor real e historia clínica (hoy el monitor integrado está simulado y los tratamientos se registran a mano).
 - Sincronización entre dispositivos (requiere un servidor y base de datos).

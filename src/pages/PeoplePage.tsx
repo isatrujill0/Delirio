@@ -9,7 +9,8 @@ import { PlayButton, Waveform } from '../components/PlayerControls';
 import { MessageViewer, kindLabel, messageDuration, useMessageControl } from '../components/MessageViewer';
 import { Confirm, Sheet } from '../components/Sheet';
 import { ContactForm, type ContactDraft } from './people/ContactForm';
-import { MessageComposer } from './people/MessageComposer';
+import { Chat } from './people/Chat';
+import { VideoCall } from './people/VideoCall';
 import { PhotoAlbum } from './people/PhotoAlbum';
 import { deleteMedia } from '../services/mediaStore';
 import { mmss, timeAgo } from '../services/time';
@@ -19,19 +20,20 @@ function MessageRow({ m, contact, showName = false, onOpen }: { m: FamilyMessage
   const { toast } = useUI();
   const from = contact?.name ?? 'Tu familia';
   const { player, isThis, playing, toggle } = useMessageControl(m, from, (e) => toast(e, 'error'));
-  const Icon = m.kind === 'video' ? Video : m.kind === 'texto' ? Type : Mic;
+  const Icon = m.kind === 'video' ? Video : m.kind === 'imagen' ? Images : m.kind === 'texto' ? Type : Mic;
+  const visual = m.kind === 'video' || m.kind === 'imagen';
   return (
     <div className={`msg-row ${m.read ? '' : 'is-new'}`}>
-      {m.kind === 'video' ? (
-        <button className="play-btn play-md" onClick={onOpen} aria-label={`Ver video de ${from}`}>
-          <Video />
+      {visual ? (
+        <button className="play-btn play-md" onClick={onOpen} aria-label={`Ver ${m.kind === 'video' ? 'video' : 'foto'} de ${from}`}>
+          <Icon />
         </button>
       ) : (
         <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`mensaje de ${from}, ${timeAgo(m.createdAt, Date.now()).toLowerCase()}`} />
       )}
       <button className="msg-row-main" onClick={onOpen}>
-        {m.kind === 'video' ? <span className="msg-row-kind"><Icon size={18} /> {kindLabel(m)}</span> : <Waveform active={playing} bars={12} />}
-        <span className="num msg-row-dur">{isThis && player.status !== 'idle' ? mmss(player.position) : m.kind === 'video' && m.duration === undefined ? '' : mmss(messageDuration(m))}</span>
+        {visual ? <span className="msg-row-kind"><Icon size={18} /> {kindLabel(m)}</span> : <Waveform active={playing} bars={12} />}
+        <span className="num msg-row-dur">{isThis && player.status !== 'idle' ? mmss(player.position) : visual && m.duration === undefined ? '' : mmss(messageDuration(m))}</span>
         <span className="msg-row-when">
           {showName && <strong>{from} · </strong>}
           {timeAgo(m.createdAt, Date.now())}
@@ -42,7 +44,7 @@ function MessageRow({ m, contact, showName = false, onOpen }: { m: FamilyMessage
   );
 }
 
-function Carousel({ contacts, index, setIndex, onAdd }: { contacts: Contact[]; index: number; setIndex: (i: number) => void; onAdd: () => void }) {
+function Carousel({ contacts, index, setIndex, onAdd, onOpen }: { contacts: Contact[]; index: number; setIndex: (i: number) => void; onAdd: () => void; onOpen: (c: Contact) => void }) {
   const n = contacts.length;
   const at = (o: number) => contacts[(index + o + n) % n];
   const slots = n >= 3 ? [-1, 0, 1] : n === 2 ? [0, 1] : [0];
@@ -52,7 +54,7 @@ function Carousel({ contacts, index, setIndex, onAdd }: { contacts: Contact[]; i
         {slots.map((o) => {
           const c = at(o);
           return (
-            <button key={`${c.id}${o}`} className={`person ${o === 0 ? 'is-center' : ''}`} onClick={() => setIndex((index + o + n) % n)} aria-label={o === 0 ? `${c.name}, seleccionado` : `Ver a ${c.name}`} aria-current={o === 0}>
+            <button key={`${c.id}${o}`} className={`person ${o === 0 ? 'is-center' : ''}`} onClick={() => (o === 0 ? onOpen(c) : setIndex((index + o + n) % n))} aria-label={o === 0 ? `${c.name}, seleccionado. Abrir mensajes, videollamada y audios` : `Ver a ${c.name}`} aria-current={o === 0}>
               <Avatar contact={c} />
               <span className="person-name">{c.name}</span>
             </button>
@@ -91,7 +93,8 @@ export function PeoplePage() {
   const [form, setForm] = useState<Contact | 'new' | null>(null);
   const [profile, setProfile] = useState(false);
   const [confirmDel, setConfirmDel] = useState<Contact | null>(null);
-  const [composer, setComposer] = useState(false);
+  const [call, setCall] = useState<Contact | null>(null);
+  const [quick, setQuick] = useState<Contact | null>(null);
   const [viewing, setViewing] = useState<FamilyMessage | null>(null);
   const [delMsg, setDelMsg] = useState<FamilyMessage | null>(null);
 
@@ -144,72 +147,116 @@ export function PeoplePage() {
       {confirmDel && (
         <Confirm title={`¿Eliminar a ${confirmDel.name}?`} message="También se borrarán sus mensajes y fotos de este dispositivo. Esta acción no se puede deshacer." confirmLabel="Eliminar" danger onConfirm={() => deleteContact(confirmDel)} onCancel={() => setConfirmDel(null)} />
       )}
-      {composer && selected && (
-        <MessageComposer
-          contactId={selected.id}
-          contactName={selected.name}
-          onClose={() => setComposer(false)}
-          onSave={(m) => {
-            update((x) => ({ ...x, messages: [...x.messages, m] }));
-            setComposer(false);
-            toast('Mensaje guardado', 'ok');
-          }}
-        />
+      {call && <VideoCall contact={call} onClose={() => setCall(null)} />}
+      {quick && (
+        <Sheet title={quick.name} onClose={() => setQuick(null)}>
+          <div className="quick-actions">
+            <button className="action" onClick={() => { setQuick(null); go('gente', `mensajes:${quick.id}`); }}>
+              <MessageCircle strokeWidth={1.6} />
+              <span>Mensajes</span>
+            </button>
+            <button className="action" onClick={() => { setQuick(null); setCall(quick); }}>
+              <Video strokeWidth={1.6} />
+              <span>Videollamada</span>
+            </button>
+            <button className="action" onClick={() => { setQuick(null); go('gente', `audios:${quick.id}`); }}>
+              <Mic strokeWidth={1.6} />
+              <span>Audios</span>
+            </button>
+          </div>
+        </Sheet>
       )}
       {viewing && <MessageViewer message={viewing} contact={byId(viewing.contactId)} onClose={() => setViewing(null)} onDelete={() => guard(() => setDelMsg(viewing))} onError={(e) => toast(e, 'error')} />}
       {delMsg && <Confirm title="¿Eliminar este mensaje?" message="Se borrará de este dispositivo." confirmLabel="Eliminar" danger onConfirm={() => removeMessage(delMsg)} onCancel={() => setDelMsg(null)} />}
     </>
   );
 
-  // Sub-views: inbox, one person's messages, photo album
-  if (view === 'mensajes' || view === 'fotos') {
+  // Sub-views: chat with one person, list of chats, a person's voice notes, photo album
+  if (view === 'mensajes' || view === 'fotos' || view === 'audios') {
     const person = viewArg ? byId(viewArg) : undefined;
-    const msgs = data.messages.filter((m) => !person || m.contactId === person.id).sort((a, b) => b.createdAt - a.createdAt);
+    const audios = person ? data.messages.filter((m) => m.contactId === person.id && m.from !== 'paciente' && m.kind === 'audio').sort((a, b) => b.createdAt - a.createdAt) : [];
+    const title =
+      view === 'fotos' ? (person ? `Fotos de ${person.name}` : 'Fotos de tu familia') : view === 'audios' ? `Audios de ${person?.name ?? 'tu familia'}` : person ? person.name : 'Mensajes';
     return (
       <div className="page subpage">
         <header className="sub-head">
           <button className="pill-btn" onClick={() => go('gente', person ? `persona:${person.id}` : null)}>
             <ArrowLeft size={20} /> Mi gente
           </button>
-          <h1>{view === 'fotos' ? (person ? `Fotos de ${person.name}` : 'Fotos de tu familia') : person ? `Mensajes de ${person.name}` : 'Todos los mensajes'}</h1>
-          {view === 'mensajes' && person && (
-            <button className="pill-btn" onClick={() => setComposer(true)}>
-              <Plus size={20} /> Nuevo mensaje
-            </button>
-          )}
-        </header>
-        <div className="sub-body scroll">
-          {view === 'fotos' ? (
-            <PhotoAlbum contactId={person?.id} />
-          ) : msgs.length === 0 ? (
-            <div className="empty">
-              <MessageCircle size={40} strokeWidth={1.5} />
-              <p>Todavía no hay mensajes{person ? ` de ${person.name}` : ''}.</p>
-              {person && (
-                <button className="btn btn-primary" onClick={() => setComposer(true)}>
-                  Grabar el primero
+          {view === 'mensajes' && person && <Avatar contact={person} className="avatar-sm" />}
+          <h1>{title}</h1>
+          {person && view !== 'fotos' && (
+            <div className="sub-head-actions">
+              {view !== 'mensajes' && (
+                <button className="pill-btn" onClick={() => go('gente', `mensajes:${person.id}`)}>
+                  <MessageCircle size={20} /> Mensajes
+                </button>
+              )}
+              <button className="pill-btn" onClick={() => setCall(person)}>
+                <Video size={20} /> Videollamada
+              </button>
+              {view !== 'audios' && (
+                <button className="pill-btn" onClick={() => go('gente', `audios:${person.id}`)}>
+                  <Mic size={20} /> Audios
                 </button>
               )}
             </div>
-          ) : (
-            <ul className="msg-list">
-              {msgs.map((m) => (
-                <li key={m.id}>
-                  <MessageRow m={m} contact={byId(m.contactId)} showName={!person} onOpen={() => setViewing(m)} />
-                  {m.text && <p className="msg-list-text">{m.text}</p>}
-                  {m.demo && <DemoTag />}
-                </li>
-              ))}
-            </ul>
           )}
-        </div>
+        </header>
+        {view === 'mensajes' && person ? (
+          <Chat contact={person} onOpen={setViewing} />
+        ) : (
+          <div className="sub-body scroll">
+            {view === 'fotos' ? (
+              <PhotoAlbum contactId={person?.id} />
+            ) : view === 'audios' ? (
+              audios.length === 0 ? (
+                <div className="empty">
+                  <Mic size={40} strokeWidth={1.5} />
+                  <p>{person?.name ?? 'Tu familia'} todavía no te ha dejado audios.</p>
+                </div>
+              ) : (
+                <ul className="msg-list">
+                  {audios.map((m) => (
+                    <li key={m.id}>
+                      <MessageRow m={m} contact={person} onOpen={() => setViewing(m)} />
+                      {m.demo && <DemoTag />}
+                    </li>
+                  ))}
+                </ul>
+              )
+            ) : (
+              <ul className="chat-index">
+                {contacts.map((c) => {
+                  const thread = data.messages.filter((m) => m.contactId === c.id).sort((a, b) => b.createdAt - a.createdAt);
+                  const lastMsg = thread[0];
+                  const unread = thread.filter((m) => !m.read && m.from !== 'paciente').length;
+                  const preview = lastMsg ? `${lastMsg.from === 'paciente' ? 'Tú: ' : ''}${lastMsg.kind === 'imagen' ? '📷 Foto' : lastMsg.kind === 'video' ? '🎬 Video' : lastMsg.kind === 'audio' ? '🎤 Audio' : lastMsg.text}` : 'Sin mensajes todavía';
+                  return (
+                    <li key={c.id}>
+                      <button className="chat-index-row" onClick={() => go('gente', `mensajes:${c.id}`)}>
+                        <Avatar contact={c} className="avatar-sm" />
+                        <span className="chat-index-text">
+                          <strong>{c.name}</strong>
+                          <small>{preview}</small>
+                        </span>
+                        {lastMsg && <span className="muted num chat-index-when">{timeAgo(lastMsg.createdAt, Date.now())}</span>}
+                        {unread > 0 && <span className="badge num">{unread}</span>}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
         {sheets}
       </div>
     );
   }
 
-  const newCount = selected ? data.messages.filter((m) => m.contactId === selected.id && !m.read).length : 0;
-  const last = selected ? data.messages.filter((m) => m.contactId === selected.id).sort((a, b) => b.createdAt - a.createdAt)[0] : undefined;
+  const newCount = selected ? data.messages.filter((m) => m.contactId === selected.id && !m.read && m.from !== 'paciente').length : 0;
+  const last = selected ? data.messages.filter((m) => m.contactId === selected.id && m.from !== 'paciente').sort((a, b) => b.createdAt - a.createdAt)[0] : undefined;
 
   return (
     <div className="page people">
@@ -231,7 +278,7 @@ export function PeoplePage() {
         </div>
       ) : (
         <>
-          <Carousel contacts={contacts} index={Math.min(index, contacts.length - 1)} setIndex={setIndex} onAdd={() => guard(() => setForm('new'))} />
+          <Carousel contacts={contacts} index={Math.min(index, contacts.length - 1)} setIndex={setIndex} onAdd={() => guard(() => setForm('new'))} onOpen={setQuick} />
           {selected && (
             <aside className="person-panel" aria-label={`Panel de ${selected.name}`}>
               <div className="person-panel-head">
@@ -249,13 +296,17 @@ export function PeoplePage() {
                   <MessageCircle strokeWidth={1.6} />
                   <span>Mensajes</span>
                 </button>
+                <button className="action" onClick={() => setCall(selected)}>
+                  <Video strokeWidth={1.6} />
+                  <span>Videollamada</span>
+                </button>
+                <button className="action" onClick={() => go('gente', `audios:${selected.id}`)}>
+                  <Mic strokeWidth={1.6} />
+                  <span>Audios</span>
+                </button>
                 <button className="action" onClick={() => go('gente', `fotos:${selected.id}`)}>
                   <Images strokeWidth={1.6} />
                   <span>Fotos</span>
-                </button>
-                <button className="action" onClick={() => setComposer(true)}>
-                  <Mic strokeWidth={1.6} />
-                  <span>Grabar mensaje</span>
                 </button>
               </div>
               <button className="row-btn" onClick={() => go('gente', `mensajes:${selected.id}`)}>

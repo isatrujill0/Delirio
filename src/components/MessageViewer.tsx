@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import type { Contact, FamilyMessage } from '../types';
 import { Sheet } from './Sheet';
-import { Avatar, DemoTag, Video } from './Media';
+import { Avatar, DemoTag, MediaImage, Video } from './Media';
 import { PlayButton, Progress, StopButton, Waveform } from './PlayerControls';
 import { useMediaUrl } from '../hooks/useMediaUrl';
 import { usePlayer, audioEngine } from '../hooks/usePlayer';
@@ -14,6 +14,7 @@ export const messageDuration = (m: FamilyMessage) => m.duration ?? speechSeconds
 
 export function kindLabel(m: FamilyMessage): string {
   if (m.kind === 'video') return 'Video';
+  if (m.kind === 'imagen') return 'Foto';
   if (m.kind === 'audio') return m.media ? 'Mensaje de voz' : 'Mensaje leído por NEXO';
   return 'Mensaje escrito';
 }
@@ -54,7 +55,9 @@ interface Props {
 }
 
 export function MessageViewer({ message: m, contact, onClose, onDelete, onError }: Props) {
-  const from = contact?.name ?? 'Tu familia';
+  const { data } = useAppData();
+  const mine = m.from === 'paciente';
+  const from = mine ? data.userName || 'Tú' : contact?.name ?? 'Tu familia';
   const { update } = useAppData();
   const { player, isThis, playing, toggle } = useMessageControl(m, from, onError);
   const video = useMediaUrl(m.kind === 'video' ? m.media : undefined);
@@ -67,7 +70,7 @@ export function MessageViewer({ message: m, contact, onClose, onDelete, onError 
     <Sheet title={`${kindLabel(m)} de ${from}`} onClose={onClose} size="lg">
       <div className="msg-view">
         <header className="msg-view-head">
-          {contact && <Avatar contact={contact} className="avatar-md" />}
+          {contact && !mine && <Avatar contact={contact} className="avatar-md" />}
           <div>
             <h3>{from}</h3>
             <p className="muted">
@@ -77,7 +80,9 @@ export function MessageViewer({ message: m, contact, onClose, onDelete, onError 
           {m.demo && <DemoTag />}
         </header>
 
-        {m.kind === 'video' ? (
+        {m.kind === 'imagen' ? (
+          <MediaImage src={m.media} alt={m.text || 'Foto del mensaje'} className="msg-image-full" />
+        ) : m.kind === 'video' ? (
           video.url ? (
             <Video
               className="msg-video"
@@ -102,7 +107,7 @@ export function MessageViewer({ message: m, contact, onClose, onDelete, onError 
         )}
 
         {m.text && <blockquote className="msg-text">“{m.text}”</blockquote>}
-        {m.demo && m.kind !== 'video' && !m.media && (
+        {m.demo && m.kind === 'audio' && !m.media && (
           <p className="fine-print">Mensaje de demostración: no hay una grabación real; NEXO lee el texto en voz alta con la voz del sistema.</p>
         )}
         {onDelete && (

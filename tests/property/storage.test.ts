@@ -35,7 +35,7 @@ const lists = ['contacts', 'messages', 'photos', 'treatments', 'procedures', 're
 const isStr = (v: unknown) => typeof v === 'string';
 const nonEmpty = (v: unknown) => typeof v === 'string' && v !== '';
 const isBool = (v: unknown) => typeof v === 'boolean';
-const KINDS = ['audio', 'video', 'texto'];
+const KINDS = ['audio', 'video', 'texto', 'imagen'];
 const STATUSES = ['programado', 'confirmado', 'realizado', 'reprogramado', 'cancelado'];
 const CATS = ['Descanso', 'Alimentación', 'Movimiento', 'Emociones', 'Visitas'];
 
@@ -60,6 +60,8 @@ function assertValid(d: AppData) {
   for (const m of d.messages) {
     expect(nonEmpty(m.contactId)).toBe(true);
     expect(KINDS).toContain(m.kind);
+    expect(['contacto', 'paciente']).toContain(m.from);
+    if (m.kind === 'imagen') expect(typeof m.media).toBe('string');
     expect(isStr(m.text)).toBe(true);
     expect(Number.isFinite(m.createdAt)).toBe(true);
     expect(isBool(m.read) && isBool(m.demo)).toBe(true);
@@ -177,7 +179,8 @@ const contactBody = fc.record({ name: nonBlank, relation: text, phone: text, abo
 const messageBody = fc.record({
   contactId: nonBlank, kind: fc.constantFrom(...KINDS) as fc.Arbitrary<FamilyMessage['kind']>, text, media: opt(nonBlank),
   duration: opt(fc.integer({ min: 0, max: 5000 })), createdAt: fc.integer({ min: 0, max: 2e12 }), read: bool, demo: bool,
-}).filter((m) => m.kind === 'texto' || !!m.media || m.text !== '').map((r) => clean(r));
+  from: fc.constantFrom<FamilyMessage['from']>('contacto', 'paciente'),
+}).filter((m) => (m.kind === 'texto' || !!m.media || m.text !== '') && (m.kind !== 'imagen' || !!m.media)).map((r) => clean(r));
 const photoBody = fc.record({ src: nonBlank, caption: text, contactId: opt(nonBlank), demo: bool }).map((r) => clean(r));
 const treatmentBody = fc.record({
   name: nonBlank, description: text, startDate: text, frequency: text, times: fc.array(text, { maxLength: 4 }), observations: text, demo: bool,

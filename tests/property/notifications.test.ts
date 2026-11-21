@@ -12,7 +12,7 @@ const hm = fc.tuple(fc.integer({ min: 0, max: 23 }), fc.integer({ min: 0, max: 5
 
 const message: fc.Arbitrary<FamilyMessage> = fc.record({
   id: fc.uuid(), contactId: fc.constantFrom('c-mama', 'c-papa', 'nobody'), kind: fc.constantFrom('texto', 'audio', 'video') as fc.Arbitrary<FamilyMessage['kind']>,
-  text: fc.string({ maxLength: 200 }), createdAt: fc.constant(0), read: fc.boolean(),
+  text: fc.string({ maxLength: 200 }), createdAt: fc.constant(0), read: fc.boolean(), from: fc.constant<FamilyMessage['from']>('contacto'),
 }) as fc.Arbitrary<FamilyMessage>;
 const treatment: fc.Arbitrary<Treatment> = fc.record({
   id: fc.uuid(), name: fc.string({ minLength: 1 }), description: fc.constant(''), startDate: fc.constant('2026-01-01'),
@@ -208,5 +208,15 @@ describe('notifications: pruneDismissed', () => {
       const pruned = pruneDismissed({ ...d, dismissedNotifications: dismissed }, n);
       expect(deriveNotifications({ ...d, dismissedNotifications: pruned }, n).map((x) => x.id)).toEqual(out);
     }), cfg(516, 500));
+  });
+});
+
+describe('notifications: the patient\'s own chat messages', () => {
+  it('a message written by the patient never produces a notification, read or not', () => {
+    fc.assert(fc.property(message, fc.boolean(), (m, read) => {
+      const base = createDemoData(new Date(2026, 10, 21, 10));
+      const data = { ...base, messages: [{ ...m, from: 'paciente' as const, read }], treatments: [], procedures: [] };
+      expect(deriveNotifications(data, new Date(2026, 10, 21, 10)).filter((n) => n.kind === 'mensaje')).toHaveLength(0);
+    }), cfg(640, 200));
   });
 });

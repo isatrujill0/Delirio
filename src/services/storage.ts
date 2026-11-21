@@ -21,7 +21,7 @@ const num = (v: unknown, fallback: number) => (typeof v === 'number' && Number.i
 
 const optStr = (v: unknown) => (typeof v === 'string' ? v : undefined);
 const reqStr = (v: unknown) => (typeof v === 'string' && v.trim() !== '' ? v : null);
-const KINDS: MessageKind[] = ['audio', 'video', 'texto'];
+const KINDS: MessageKind[] = ['audio', 'video', 'texto', 'imagen'];
 const STATUSES: ProcedureStatus[] = ['programado', 'confirmado', 'realizado', 'reprogramado', 'cancelado'];
 const CATEGORIES: RecommendationCategory[] = ['Descanso', 'Alimentación', 'Movimiento', 'Emociones', 'Visitas'];
 
@@ -68,11 +68,13 @@ const fixContact = (x: Record<string, unknown>): Contact | null => {
 const fixMessage = (x: Record<string, unknown>): FamilyMessage | null => {
   const contactId = reqStr(x.contactId);
   if (!contactId || !KINDS.includes(x.kind as MessageKind) || typeof x.createdAt !== 'number' || !Number.isFinite(x.createdAt)) return null;
-  const m: FamilyMessage = { id: x.id as string, contactId, kind: x.kind as MessageKind, text: str(x.text, ''), createdAt: x.createdAt, read: bool(x.read, false), demo: bool(x.demo, false) };
+  const from = x.from === 'paciente' ? 'paciente' : 'contacto'; // older saves only had family messages
+  const m: FamilyMessage = { id: x.id as string, contactId, kind: x.kind as MessageKind, from, text: str(x.text, ''), createdAt: x.createdAt, read: bool(x.read, false), demo: bool(x.demo, false) };
   const media = optStr(x.media);
   if (media) m.media = media;
   if (typeof x.duration === 'number' && Number.isFinite(x.duration) && x.duration >= 0) m.duration = x.duration;
   if (m.kind !== 'texto' && !m.media && !m.text) return null; // nothing to play
+  if (m.kind === 'imagen' && !m.media) return null; // a photo message needs its photo
   return m;
 };
 

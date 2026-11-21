@@ -13,12 +13,16 @@ export interface Contact {
   demo: boolean;
 }
 
-export type MessageKind = 'audio' | 'video' | 'texto';
+export type MessageKind = 'audio' | 'video' | 'texto' | 'imagen';
+
+/** Who wrote the message in the chat: the family member (contact) or the patient. */
+export type MessageFrom = 'contacto' | 'paciente';
 
 export interface FamilyMessage {
   id: string;
   contactId: string;
   kind: MessageKind;
+  from: MessageFrom;
   /** Text content; for demo voice messages this is read aloud by the device voice. */
   text: string;
   media?: MediaRef;

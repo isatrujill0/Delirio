@@ -233,3 +233,16 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/assets/img/paisajes/*.jpg (3 nuevas), src/data/media.ts, src/pages/world/Games.tsx, src/pages/WorldPage.tsx, src/pages/HomePage.tsx, src/styles/pages.css, tests/e2e/sound.spec.ts, README.md.
 * Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS; el juego se completó y pasó al paisaje 2 sin errores de consola. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+11:57 — Mi gente como WhatsApp: chat, videollamada y audios; 8 paisajes más para el juego
+
+* Al tocar la burbuja de una persona en Mi gente aparecen tres opciones grandes: Mensajes, Videollamada y Audios. El panel lateral también las ofrece (junto con Fotos).
+* Mensajes: chat estilo WhatsApp por persona, con burbujas a la derecha (la paciente) y a la izquierda (el familiar). Se puede escribir con emojis, enviar fotos y grabar notas de voz. Sobre la caja de texto se elige quién escribe («Escribe Leslie» / «Escribe Mamá»), así ambos pueden escribir en el mismo dispositivo. Al tocar una burbuja se abre el mensaje (verlo en grande, escucharlo, eliminarlo con PIN). Lista de conversaciones con vista previa y mensajes nuevos.
+* Videollamada: pantalla de llamada que suena, se conecta a los 4 segundos, muestra la foto del familiar y la cámara de la paciente en una esquina, con micrófono, cámara y colgar. Marcada como «Demo: llamada simulada»: NEXO todavía no se conecta con el teléfono de la familia.
+* Audios: lista de las notas de voz que dejó cada familiar.
+* Se quitó el antiguo «Grabar mensaje» (sus funciones pasaron al chat). Los mensajes guardan quién los escribió; los de la paciente no generan notificaciones. Los datos guardados antes se cargan como mensajes del familiar.
+* Juego «El despertar del paisaje»: 8 paisajes más entregados por el usuario (11 en total).
+* Pruebas: E2E adaptadas al chat (la de limpieza de archivos ahora envía y borra una foto en el chat); propiedades nuevas: los mensajes de la paciente nunca notifican; validación del remitente y de los mensajes con foto.
+* Archivos afectados: src/pages/people/Chat.tsx y VideoCall.tsx (nuevos), src/hooks/useRecorder.ts (nuevo), src/pages/people/MessageComposer.tsx (eliminado), src/pages/PeoplePage.tsx, src/components/MessageViewer.tsx, src/types/index.ts, src/services/storage.ts, src/services/notifications.ts, src/data/demo.ts, src/data/media.ts, src/assets/img/paisajes/* (8 nuevas), src/styles/pages.css, tests/**, README.md.
+* Resultado: tsc PASS; propiedades 133/133; E2E 17/17; smoke PASS; recorrido real en la app (escribir como Leslie y como Mamá con emoji, audios, llamada) sin errores de consola. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

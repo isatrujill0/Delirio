@@ -6,7 +6,7 @@ test('agregar, editar y eliminar una persona en Mi gente con persistencia', asyn
   // Every demo person is reachable with the arrows (the dots are only a position indicator).
   const seen: string[] = [];
   for (let i = 0; i < 5; i++) {
-    seen.push((await carousel.locator('.person.is-center').getAttribute('aria-label'))!.replace(', seleccionado', ''));
+    seen.push((await carousel.locator('.person.is-center').getAttribute('aria-label'))!.replace(/, seleccionado.*$/, ''));
     await carousel.getByRole('button', { name: 'Persona siguiente' }).click();
   }
   expect(seen.sort()).toEqual(['Bryan', 'Karen', 'Mamá', 'Papá', 'Rafa']);
@@ -29,7 +29,7 @@ test('agregar, editar y eliminar una persona en Mi gente con persistencia', asyn
   await expect(page.getByRole('status')).toContainText('Tío Jorge se agregó a Mi gente');
 
   await expect(page.getByRole('complementary', { name: 'Panel de Tío Jorge' })).toContainText('Le gusta el fútbol');
-  await expect(carousel.getByRole('button', { name: 'Tío Jorge, seleccionado' })).toBeAttached();
+  await expect(carousel.getByRole('button', { name: /^Tío Jorge, seleccionado/ })).toBeAttached();
   expect((await readData(page)).contacts.map((c: { name: string }) => c.name)).toContain('Tío Jorge');
 
   // Persisted across reload (selection resets; navigate to him)
