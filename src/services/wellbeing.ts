@@ -66,3 +66,32 @@ export function validateVitals(v: Pick<Vitals, 'heartRate' | 'respRate' | 'spo2'
   }
   return e;
 }
+
+/**
+ * Plausible ranges for the simulated demo vitals of a person resting in bed. They only drive the
+ * labelled "Simulación" on demo data; NEXO never reads a monitor and never interprets these values.
+ */
+export const SIM_RANGES = {
+  heartRate: { min: 68, max: 92, step: 2 },
+  respRate: { min: 14, max: 20, step: 1 },
+  spo2: { min: 94, max: 98, step: 1 },
+} as const;
+
+type SimVitals = Pick<Vitals, 'heartRate' | 'respRate' | 'spo2'>;
+
+/**
+ * One gentle step of a bounded random walk: each value moves by at most its `step`,
+ * leans back toward the middle of its range, and never leaves the range.
+ */
+export function simulateVitalsStep(cur: SimVitals, rand: () => number = Math.random): SimVitals {
+  const next = {} as SimVitals;
+  for (const k of Object.keys(SIM_RANGES) as (keyof typeof SIM_RANGES)[]) {
+    const { min, max, step } = SIM_RANGES[k];
+    const start = Math.min(max, Math.max(min, Math.round(Number.isFinite(cur[k]) ? cur[k] : (min + max) / 2)));
+    const mid = (min + max) / 2;
+    const pull = (mid - start) / (max - min); // −0.5 … 0.5: drift back toward the middle
+    const delta = Math.round((rand() * 2 - 1 + pull) * step);
+    next[k] = Math.min(max, Math.max(min, start + Math.max(-step, Math.min(step, delta))));
+  }
+  return next;
+}

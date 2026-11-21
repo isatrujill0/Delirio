@@ -182,3 +182,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/assets/img/* (nuevas: rafa, karen, bryan, mama-y-leslie; reemplazadas: familia, mama, papa; eliminada: daniela), src/assets/video/recuerdos-en-familia.mp4, scripts/generate-media.mjs, src/data/demo.ts, src/data/media.ts, src/services/wellbeing.ts, src/pages/world/Relax.tsx, README.md, tests/e2e/*.spec.ts, tests/e2e/fixtures.ts.
 * Resultado: tsc PASS; propiedades 125/125; E2E 17/17; capturas de Inicio, Mi gente y Mi cuidado revisadas a 1180 × 820. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:30 — Signos vitales: textos que no se salen y simulación en vivo
+
+* En pantallas angostas (celular, vertical o texto grande), cada recuadro de signos muestra ícono, etiqueta y valor uno debajo del otro; las etiquetas se dividen con guion si no caben y los valores quedan alineados. Verificado: ningún texto sale de su recuadro a 1180 × 820 ni en un iPhone 13.
+* A pedido del usuario, los signos de demostración ahora se mueven: cada 4 segundos dan un paso pequeño dentro de rangos tranquilos (ritmo cardíaco 68–92 lpm, respiración 14–20 rpm, oxigenación 94–98 %). El corazón late al ritmo simulado (se detiene con «Reducir movimiento»).
+* Honestidad: la tarjeta dice «Valores simulados: no vienen de un monitor» con la etiqueta «Simulación»; los valores registrados por el personal no se mueven. NEXO sigue sin interpretar los valores.
+* Pruebas: 3 propiedades nuevas (siempre dentro de rango, sin saltos bruscos, no se queda quieta).
+* Archivos afectados: src/services/wellbeing.ts, src/pages/care/Wellbeing.tsx, src/styles/pages.css, tests/property/wellbeing.test.ts, README.md.
+* Resultado: tsc PASS; propiedades 128/128; E2E 17/17. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

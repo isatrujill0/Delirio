@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES } from '../../src/services/wellbeing';
+import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES, simulateVitalsStep, SIM_RANGES } from '../../src/services/wellbeing';
 import type { MoodValue } from '../../src/types';
 
 const cfg = (seed: number, numRuns = 300) => ({ seed, numRuns });
@@ -141,5 +141,37 @@ describe('wellbeing: validateVitals', () => {
   });
   it('boundaries are inclusive', () => {
     expect(validateVitals({ heartRate: R.heartRate.min, respRate: R.respRate.max, spo2: R.spo2.max })).toEqual({});
+  });
+});
+
+describe('wellbeing: simulateVitalsStep (labelled demo simulation)', () => {
+  const vit = fc.record({ heartRate: fc.integer({ min: -50, max: 300 }), respRate: fc.integer({ min: -10, max: 100 }), spo2: fc.integer({ min: 0, max: 120 }) });
+  const rand = fc.double({ min: 0, max: 1, maxExcluded: true, noNaN: true });
+  it('always stays inside the plausible ranges, whatever the starting values', () => {
+    fc.assert(fc.property(vit, rand, (v, r) => {
+      const n = simulateVitalsStep(v, () => r);
+      for (const k of Object.keys(SIM_RANGES) as (keyof typeof SIM_RANGES)[]) {
+        expect(Number.isInteger(n[k])).toBe(true);
+        expect(n[k]).toBeGreaterThanOrEqual(SIM_RANGES[k].min);
+        expect(n[k]).toBeLessThanOrEqual(SIM_RANGES[k].max);
+      }
+    }), cfg(620, 500));
+  });
+  it('from an in-range value, each step moves at most `step` (no jumps)', () => {
+    const inRange = fc.record({ heartRate: fc.integer({ min: 68, max: 92 }), respRate: fc.integer({ min: 14, max: 20 }), spo2: fc.integer({ min: 94, max: 98 }) });
+    fc.assert(fc.property(inRange, rand, (v, r) => {
+      const n = simulateVitalsStep(v, () => r);
+      for (const k of Object.keys(SIM_RANGES) as (keyof typeof SIM_RANGES)[]) expect(Math.abs(n[k] - v[k])).toBeLessThanOrEqual(SIM_RANGES[k].step);
+    }), cfg(621, 500));
+  });
+  it('a long walk keeps moving (it is not stuck) and never leaves the ranges', () => {
+    fc.assert(fc.property(fc.integer(), (seed) => {
+      let s = seed | 0;
+      const r = () => { s = (s * 1103515245 + 12345) | 0; return ((s >>> 0) % 10000) / 10000; };
+      let v = { heartRate: 72, respRate: 16, spo2: 97 };
+      const seen = new Set<number>();
+      for (let i = 0; i < 200; i++) { v = simulateVitalsStep(v, r); seen.add(v.heartRate); }
+      expect(seen.size).toBeGreaterThan(1);
+    }), cfg(622, 100));
   });
 });

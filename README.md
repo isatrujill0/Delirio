@@ -122,7 +122,7 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 - Mensajes: voz grabada en el dispositivo, video, texto; los de demostración se leen en voz alta y están marcados.
 - Tratamientos y procedimientos: crear, editar, eliminar con validaciones; recordatorios.
 - Recomendaciones por categoría con lectura en voz alta.
-- Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); signos vitales y nota del equipo editables por el personal.
+- Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); signos vitales y nota del equipo editables por el personal. Los signos de demostración se muestran como **simulación en vivo** (cambian cada 4 s dentro de rangos tranquilos: 68–92 lpm, 14–20 rpm, 94–98 %), marcados «Simulación» y con el aviso «no vienen de un monitor»; cuando el personal registra valores reales, quedan fijos.
 - Notificaciones dentro de la app con insignia, aviso sonoro y configuración por tipo.
 - Modo cuidador: agregar, editar o eliminar personas, mensajes, fotos, tratamientos, procedimientos, signos, la nota del equipo y restablecer datos piden un PIN (de demostración: **1234**; se cambia en Configuración → Contenido). Queda desbloqueado 10 minutos o hasta tocar «Bloquear». Es una barrera contra toques accidentales, no una medida de seguridad.
 - Configuración persistente; restablecer datos de demostración.

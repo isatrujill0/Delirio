@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { HeartPulse, MessageSquareHeart, Pencil, Sprout, Activity, Heart, Wind } from 'lucide-react';
 import type { MoodValue } from '../../types';
 import { useAppData } from '../../hooks/useAppData';
 import { useUI } from '../../hooks/useUI';
 import { useNow } from '../../hooks/useNow';
-import { MOODS, isoDay, lastDays, moodTrend, upsertMood, validateVitals, TREND_TEXT, moodLabel } from '../../services/wellbeing';
+import { MOODS, isoDay, lastDays, moodTrend, upsertMood, validateVitals, TREND_TEXT, moodLabel, simulateVitalsStep } from '../../services/wellbeing';
+import type { Vitals } from '../../types';
 import { timeAgo, clock } from '../../services/time';
 import { MoodChart } from '../../components/MoodChart';
 import { DemoTag } from '../../components/Media';
@@ -116,6 +117,21 @@ export function MoodCard() {
   );
 }
 
+/** Every few seconds, demo vitals take one small plausible step. Real (staff-entered) vitals never change. */
+function useSimulatedVitals(v: Vitals | null): Vitals | null {
+  const [live, setLive] = useState(v);
+  useEffect(() => {
+    setLive(v);
+    if (!v?.demo) return;
+    const id = window.setInterval(() => {
+      if (document.visibilityState === 'hidden') return;
+      setLive((cur) => (cur ? { ...cur, ...simulateVitalsStep(cur) } : cur));
+    }, 4000);
+    return () => window.clearInterval(id);
+  }, [v]);
+  return live;
+}
+
 export function VitalsCard() {
   const { data, update } = useAppData();
   const { toast } = useUI();
@@ -123,6 +139,8 @@ export function VitalsCard() {
   const [edit, setEdit] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
   const v = data.vitals;
+  const shown = useSimulatedVitals(v);
+  const simulated = !!v?.demo;
   const [form, setForm] = useState({ heartRate: '', respRate: '', spo2: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const at = v ? clock(new Date(v.recordedAt)) : null;
@@ -149,17 +167,27 @@ export function VitalsCard() {
         <span>
           <h2>Tu salud</h2>
           <small className="muted vitals-meta">
-            {v ? `Registrado ${timeAgo(v.recordedAt, Date.now()).toLowerCase()} · ${at!.time} ${at!.period}` : 'Aún no hay signos registrados'}
-            {v?.demo && <DemoTag label="Ejemplo" />}
+            {simulated
+              ? 'Valores simulados: no vienen de un monitor'
+              : v
+                ? `Registrado ${timeAgo(v.recordedAt, Date.now()).toLowerCase()} · ${at!.time} ${at!.period}`
+                : 'Aún no hay signos registrados'}
+            {simulated && <DemoTag label="Simulación" />}
           </small>
         </span>
-        <span className="vitals-heart" aria-hidden="true"><HeartPulse strokeWidth={1.8} /></span>
+        <span
+          className={`vitals-heart ${simulated ? 'is-live' : ''}`}
+          style={shown ? ({ ['--beat' as string]: `${(60 / shown.heartRate).toFixed(2)}s` } as CSSProperties) : undefined}
+          aria-hidden="true"
+        >
+          <HeartPulse strokeWidth={1.8} />
+        </span>
       </button>
-      {v ? (
+      {shown ? (
         <ul className="vitals">
-          <li><Heart strokeWidth={1.6} /><span><small>Ritmo cardíaco</small><strong className="num">{v.heartRate} <em>lpm</em></strong></span></li>
-          <li><Wind strokeWidth={1.6} /><span><small>Respiración</small><strong className="num">{v.respRate} <em>rpm</em></strong></span></li>
-          <li><span className="o2" aria-hidden="true">O<sub>2</sub></span><span><small>Oxigenación</small><strong className="num">{v.spo2} <em>%</em></strong></span></li>
+          <li><Heart strokeWidth={1.6} /><span><small>Ritmo cardíaco</small><strong className="num">{shown.heartRate} <em>lpm</em></strong></span></li>
+          <li><Wind strokeWidth={1.6} /><span><small>Respiración</small><strong className="num">{shown.respRate} <em>rpm</em></strong></span></li>
+          <li><span className="o2" aria-hidden="true">O<sub>2</sub></span><span><small>Oxigenación</small><strong className="num">{shown.spo2} <em>%</em></strong></span></li>
         </ul>
       ) : (
         <button className="btn btn-ghost" onClick={open}>Registrar signos</button>
