@@ -246,3 +246,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/people/Chat.tsx y VideoCall.tsx (nuevos), src/hooks/useRecorder.ts (nuevo), src/pages/people/MessageComposer.tsx (eliminado), src/pages/PeoplePage.tsx, src/components/MessageViewer.tsx, src/types/index.ts, src/services/storage.ts, src/services/notifications.ts, src/data/demo.ts, src/data/media.ts, src/assets/img/paisajes/* (8 nuevas), src/styles/pages.css, tests/**, README.md.
 * Resultado: tsc PASS; propiedades 133/133; E2E 17/17; smoke PASS; recorrido real en la app (escribir como Leslie y como Mamá con emoji, audios, llamada) sin errores de consola. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+12:18 — Mi gente con solo Mensajes y Videollamada; aviso de mensajes en Inicio; refranes con voz
+
+* Mi gente: al tocar la burbuja de una persona solo aparecen Mensajes y Videollamada. Los audios ya no tienen sección propia: se escuchan dentro del chat. El panel lateral muestra esas dos opciones; el álbum de fotos se movió al perfil (⋯ → «Ver fotos de …»). En el chat queda solo el botón de Videollamada.
+* Inicio: el widget de familia muestra la foto, «Tu familia» y, si hay mensajes sin leer, el aviso «Mensaje nuevo de …» (o «Mensajes nuevos de Mamá, Papá y …»). Es solo un aviso, no se puede tocar; los mensajes se abren en Mi gente.
+* Completa el refrán: cada refrán se lee en voz alta junto con sus tres opciones numeradas (se puede repetir con el botón de sonido). Se puede responder tocando o con «Responder con la voz»: se dice la terminación o el número de la opción. Si lo que se escuchó no coincide, el juego lo dice y pide repetir en vez de adivinar. Al responder, la voz dice si fue correcto y el refrán completo.
+* Se corrigió el aviso de Inicio para que no sea una región que los lectores de pantalla anuncian sin parar (lo detectó una prueba).
+* Pruebas: 4 propiedades nuevas para reconocer la respuesta hablada (con palabras de relleno, mayúsculas o tildes, por número, y nunca adivinar ante silencio o palabras sin relación); 1 E2E nuevo con voz y micrófono simulados; E2E adaptados (fotos desde el perfil, audio desde el chat).
+* Archivos afectados: src/services/games.ts, src/hooks/useSpeechAnswer.ts (nuevo), src/pages/world/Games.tsx, src/pages/PeoplePage.tsx, src/pages/HomePage.tsx, src/styles/pages.css, tests/property/games.test.ts, tests/e2e/voice-proverb.spec.ts (nuevo), tests/e2e/media-cleanup.spec.ts, tests/e2e/sound.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 137/137; E2E 18/18; smoke PASS. El reconocimiento de voz real no se ha probado en un iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

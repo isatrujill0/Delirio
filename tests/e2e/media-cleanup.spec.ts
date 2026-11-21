@@ -25,7 +25,9 @@ const people = (page: Page) => page.getByRole('navigation', { name: 'Secciones' 
 test('una foto agregada guarda un blob y eliminarla (con PIN y confirmación) lo borra', async ({ page }) => {
   expect(await blobCount(page)).toBe(0);
   await people(page).click();
-  await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: 'Fotos' }).click();
+  // The album now lives in the person's profile (⋯).
+  await page.getByRole('button', { name: 'Perfil de Mamá' }).click();
+  await page.getByRole('dialog', { name: 'Mamá' }).getByRole('button', { name: 'Ver fotos de Mamá' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Fotos de Mamá' })).toBeVisible();
   const photosOf = async () => (await readData(page)).photos.filter((p: { contactId?: string }) => p.contactId === 'c-mama').length;
   const before = await photosOf();

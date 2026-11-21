@@ -50,3 +50,55 @@ export function revealFraction(taps: number, needed = 7): number {
   if (taps <= 0) return 0;
   return Math.min(1, taps / needed);
 }
+
+/** Lowercase, no accents, no punctuation, single spaces: "¡Dios LE ayúda!" → "dios le ayuda". */
+export function normalizeSpeech(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9ñ\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const STOPWORDS = new Set(['que', 'no', 'se', 'le', 'lo', 'el', 'la', 'los', 'las', 'de', 'del', 'en', 'y', 'a', 'al', 'mas', 'un', 'una', 'te', 'y']);
+const NUMBER_WORDS: string[][] = [
+  ['1', 'uno', 'una', 'primera', 'primero'],
+  ['2', 'dos', 'segunda', 'segundo'],
+  ['3', 'tres', 'tercera', 'tercero'],
+];
+
+const keyWords = (s: string) => {
+  const all = normalizeSpeech(s).split(' ').filter(Boolean);
+  const content = all.filter((w) => !STOPWORDS.has(w));
+  return content.length ? content : all;
+};
+
+/**
+ * Which option the person said, from the recogniser's alternatives (best first). Accepts the ending
+ * itself (with extra words, any accents or case) or the option number ("la dos", "tercera").
+ * Returns null when nothing matches clearly, so the game can ask again instead of guessing.
+ */
+export function matchSpokenAnswer(heard: string[], options: string[]): number | null {
+  for (const raw of heard) {
+    const words = normalizeSpeech(raw).split(' ').filter(Boolean);
+    if (!words.length) continue;
+    const said = new Set(words);
+    // Content words of each option that were said.
+    const scores = options.map((o) => {
+      const kw = keyWords(o);
+      return kw.filter((w) => said.has(w)).length / kw.length;
+    });
+    const ranked = scores.map((sc, i) => ({ sc, i })).sort((a, b) => b.sc - a.sc);
+    if (ranked[0] && ranked[0].sc >= 0.6 && ranked[0].sc - (ranked[1]?.sc ?? 0) >= 0.25) return ranked[0].i;
+    // A short answer naming the option number.
+    if (words.length <= 4) {
+      const hits = NUMBER_WORDS.slice(0, options.length)
+        .map((ws, i) => (ws.some((w) => said.has(w)) ? i : -1))
+        .filter((i) => i >= 0);
+      if (hits.length === 1) return hits[0];
+    }
+  }
+  return null;
+}

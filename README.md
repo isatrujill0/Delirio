@@ -15,9 +15,9 @@ Que la persona sepa dónde está, qué día y qué hora es y quién la acompaña
 
 | Sección | Qué hace |
 |---|---|
-| **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia», abre Mi gente; los mensajes se escuchan en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
-| **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes, Videollamada y Audios), perfil individual, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona (texto, emojis, fotos y notas de voz; escriben tanto la paciente como el familiar), audios que dejó cada familiar, videollamada simulada y álbum de fotos por persona. |
-| **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos de viajes (fotos reales de la familia en pase automático con música opcional), recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, con 3 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán) y relajación (respiración guiada, meditación, sonidos relajantes). |
+| **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia») con el aviso «Mensaje nuevo de …» (solo informa; los mensajes se abren en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
+| **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes o Videollamada), perfil individual con álbum de fotos, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona con texto, emojis, fotos y notas de voz en la misma conversación (escriben tanto la paciente como el familiar) y videollamada simulada. |
+| **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos de viajes (fotos reales de la familia en pase automático con música opcional), recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, con 11 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán, que se lee en voz alta y se puede responder hablando) y relajación (respiración guiada, meditación, sonidos relajantes). |
 | **Mi cuidado** | Nota del equipo de salud, “¿Cómo te sientes hoy?” (registro diario), signos vitales del monitor integrado (simulado en la demo), plan de cuidado, evolución del ánimo (gráfica de 7 días), tratamientos, procedimientos y recomendaciones por categoría. Solo informativo. |
 | **Controles** | Barra inferior inspirada en la máquina: bajar volumen, reproducir/pausar, subir volumen y campana de notificaciones. Arriba: silenciar y configuración. |
 | **Configuración** | Nombre, volumen, tamaño de texto, reducir movimiento, notificaciones, ubicación y clima de ejemplo, información de la app y restablecer datos de demostración. |
@@ -106,6 +106,7 @@ Pendiente de configurar (se hará al final). La app ya está preparada: Vite usa
 - El sonido solo empieza después de un toque (política de reproducción de iOS).
 - Grabar mensajes de voz requiere permiso de micrófono y funciona solo en HTTPS o `localhost`.
 - La lectura en voz alta usa las voces instaladas en el iPad; la calidad depende de ellas.
+- Responder los refranes con la voz usa el reconocimiento de voz del navegador (Safari en iPad lo tiene). Puede necesitar internet y permiso de micrófono; si no está disponible, el juego lo dice y se responde tocando. Aún no se ha probado en un iPad físico.
 - iPadOS puede borrar los datos de sitios web que no se usan en varias semanas; instalada como app de pantalla de inicio, esa limpieza es mucho menos probable.
 
 ### Qué funciona sin conexión

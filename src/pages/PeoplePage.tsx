@@ -159,10 +159,6 @@ export function PeoplePage() {
               <Video strokeWidth={1.6} />
               <span>Videollamada</span>
             </button>
-            <button className="action" onClick={() => { setQuick(null); go('gente', `audios:${quick.id}`); }}>
-              <Mic strokeWidth={1.6} />
-              <span>Audios</span>
-            </button>
           </div>
         </Sheet>
       )}
@@ -172,11 +168,10 @@ export function PeoplePage() {
   );
 
   // Sub-views: chat with one person, list of chats, a person's voice notes, photo album
-  if (view === 'mensajes' || view === 'fotos' || view === 'audios') {
+  if (view === 'mensajes' || view === 'fotos') {
     const person = viewArg ? byId(viewArg) : undefined;
-    const audios = person ? data.messages.filter((m) => m.contactId === person.id && m.from !== 'paciente' && m.kind === 'audio').sort((a, b) => b.createdAt - a.createdAt) : [];
     const title =
-      view === 'fotos' ? (person ? `Fotos de ${person.name}` : 'Fotos de tu familia') : view === 'audios' ? `Audios de ${person?.name ?? 'tu familia'}` : person ? person.name : 'Mensajes';
+      view === 'fotos' ? (person ? `Fotos de ${person.name}` : 'Fotos de tu familia') : person ? person.name : 'Mensajes';
     return (
       <div className="page subpage">
         <header className="sub-head">
@@ -185,22 +180,10 @@ export function PeoplePage() {
           </button>
           {view === 'mensajes' && person && <Avatar contact={person} className="avatar-sm" />}
           <h1>{title}</h1>
-          {person && view !== 'fotos' && (
-            <div className="sub-head-actions">
-              {view !== 'mensajes' && (
-                <button className="pill-btn" onClick={() => go('gente', `mensajes:${person.id}`)}>
-                  <MessageCircle size={20} /> Mensajes
-                </button>
-              )}
-              <button className="pill-btn" onClick={() => setCall(person)}>
-                <Video size={20} /> Videollamada
-              </button>
-              {view !== 'audios' && (
-                <button className="pill-btn" onClick={() => go('gente', `audios:${person.id}`)}>
-                  <Mic size={20} /> Audios
-                </button>
-              )}
-            </div>
+          {person && view === 'mensajes' && (
+            <button className="pill-btn" onClick={() => setCall(person)}>
+              <Video size={20} /> Videollamada
+            </button>
           )}
         </header>
         {view === 'mensajes' && person ? (
@@ -209,22 +192,6 @@ export function PeoplePage() {
           <div className="sub-body scroll">
             {view === 'fotos' ? (
               <PhotoAlbum contactId={person?.id} />
-            ) : view === 'audios' ? (
-              audios.length === 0 ? (
-                <div className="empty">
-                  <Mic size={40} strokeWidth={1.5} />
-                  <p>{person?.name ?? 'Tu familia'} todavía no te ha dejado audios.</p>
-                </div>
-              ) : (
-                <ul className="msg-list">
-                  {audios.map((m) => (
-                    <li key={m.id}>
-                      <MessageRow m={m} contact={person} onOpen={() => setViewing(m)} />
-                      {m.demo && <DemoTag />}
-                    </li>
-                  ))}
-                </ul>
-              )
             ) : (
               <ul className="chat-index">
                 {contacts.map((c) => {
@@ -300,14 +267,7 @@ export function PeoplePage() {
                   <Video strokeWidth={1.6} />
                   <span>Videollamada</span>
                 </button>
-                <button className="action" onClick={() => go('gente', `audios:${selected.id}`)}>
-                  <Mic strokeWidth={1.6} />
-                  <span>Audios</span>
-                </button>
-                <button className="action" onClick={() => go('gente', `fotos:${selected.id}`)}>
-                  <Images strokeWidth={1.6} />
-                  <span>Fotos</span>
-                </button>
+
               </div>
               <button className="row-btn" onClick={() => go('gente', `mensajes:${selected.id}`)}>
                 <span className="row-btn-icon">
@@ -356,6 +316,9 @@ export function PeoplePage() {
             <p className="profile-line muted">
               {data.messages.filter((m) => m.contactId === selected.id).length} mensajes · {data.photos.filter((p) => p.contactId === selected.id).length} fotos
             </p>
+            <button className="pill-btn" onClick={() => { setProfile(false); go('gente', `fotos:${selected.id}`); }}>
+              <Images size={20} /> Ver fotos de {selected.name}
+            </button>
           </div>
         </Sheet>
       )}

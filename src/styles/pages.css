@@ -94,15 +94,31 @@
   min-height: 0;
   transition: transform var(--t-slow) var(--ease-out), box-shadow var(--t-slow) var(--ease-out);
 }
-button.family-card {
-  display: block;
-  width: 100%;
-  padding: 0;
-  text-align: left;
-  color: inherit;
+.family-notice {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  max-width: calc(100% - 40px);
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 10px;
+  padding: 12px 18px;
+  border-radius: 22px;
+  background: rgb(60 60 160 / 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--rim);
+  font-size: 1.05rem;
+  font-weight: 500;
 }
-button.family-card:active {
-  transform: scale(0.99);
+.family-notice small {
+  grid-column: 2;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-2);
 }
 .family-label {
   position: absolute;
@@ -344,9 +360,8 @@ button.family-card:active {
   gap: 10px;
 }
 .action-grid .action {
-  min-height: 74px;
-  flex-direction: row;
-  gap: 10px;
+  min-height: 96px;
+  gap: 8px;
 }
 .action {
   min-height: clamp(88px, 13vh, 106px);
@@ -970,6 +985,9 @@ button.family-card:active {
   gap: 14px;
 }
 .option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 76px;
   padding: 12px 26px;
   border-radius: 26px;
@@ -1881,7 +1899,7 @@ html:not([data-text='normal']) .family-card {
 /* ── Mi gente: quick actions, chat list, chat, video call ── */
 .quick-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
 }
 .quick-actions .action {
@@ -2230,5 +2248,39 @@ html:not([data-text='normal']) .family-card {
   .chat {
     flex: none;
     height: min(60vh, 680px);
+  }
+}
+
+/* Completa el refrán: numbered options and voice answer */
+.option-num {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: rgb(214 205 255 / 0.22);
+  font-size: 1rem;
+  flex: none;
+}
+.voice-answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.voice-answer .btn {
+  min-width: 300px;
+}
+.voice-answer .is-listening {
+  animation: listening 1.4s ease-in-out infinite;
+}
+@keyframes listening {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(199 182 255 / 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgb(199 182 255 / 0);
   }
 }
