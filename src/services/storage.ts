@@ -177,8 +177,13 @@ export function sanitize(raw: unknown, defaults: AppData): AppData {
     procedures: list(raw.procedures, defaults.procedures, fixProcedure),
     recommendations: list(raw.recommendations, defaults.recommendations, fixRecommendation),
     favorites: arr<unknown>(raw.favorites, []).filter((x): x is string => typeof x === 'string'),
-    // Older saves have unflagged moods; while the care note is still the demo one, they are the demo history.
-    moods: sanitizeMoods(raw.moods, defaults.moods, isObj(raw.careNote) && raw.careNote.demo === true),
+    // Saves from before the flag existed have no `demo` key on any mood: while the care note is still the
+    // demo one, those moods are the demo history. Once any mood carries the key, an unflagged one is the patient's.
+    moods: sanitizeMoods(
+      raw.moods,
+      defaults.moods,
+      isObj(raw.careNote) && raw.careNote.demo === true && Array.isArray(raw.moods) && !raw.moods.some((m) => isObj(m) && 'demo' in m),
+    ),
     vitals: raw.vitals === null ? null : sanitizeVitals(raw.vitals, defaults.vitals),
     careNote: isObj(raw.careNote) && typeof raw.careNote.text === 'string'
       ? // A note without a real date gets updatedAt 0, which the UI shows as "sin fecha" rather than "ahora".

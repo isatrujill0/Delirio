@@ -161,3 +161,12 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: tests/property/storage.test.ts, tests/e2e/migration.spec.ts, tests/e2e/error-screen.spec.ts, tests/e2e/offline.spec.ts, tests/e2e/caregiver.spec.ts.
 * Resultado: las pruebas nuevas pasan (sin fallos de producción encontrados); tsc PASS. No se ejecutó el procedimiento completo de VERIFICACION.md (se hará cuando el usuario lo indique).
 * Estado: Completado.
+
+23:55 — Corrección de la ronda 3: el ánimo del paciente ya no se marca como «Ejemplo»
+
+* La revisión independiente (ronda 3, la última) confirmó resueltos los hallazgos importantes de la ronda 2 y encontró una regresión: tras recargar, el ánimo registrado por el paciente se guardaba como «Ejemplo» mientras la nota del equipo siguiera siendo la de demostración.
+* Corrección: el ánimo registrado se guarda siempre como real, y la migración solo trata como de ejemplo los datos antiguos donde ningún registro de ánimo tenía la marca.
+* Pruebas de regresión: el ánimo registrado sigue siendo real tras dos recargas, con o sin nota de ejemplo; un registro sin marca junto a otros marcados es del paciente.
+* Archivos afectados: src/services/wellbeing.ts, src/services/storage.ts, tests/property/storage.test.ts, tests/property/wellbeing.test.ts.
+* Resultado: propiedades 125/125; E2E de bienestar, migración y datos clínicos 5/5; tsc PASS. No hubo una cuarta ronda de revisión (el límite es de 3 rondas). No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

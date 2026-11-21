@@ -14,7 +14,8 @@ export const isoDay = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-
 
 /** Insert or replace the entry for `date`; result stays sorted and one-per-day. */
 export function upsertMood(list: MoodEntry[], date: string, value: MoodValue): MoodEntry[] {
-  return [...list.filter((m) => m.date !== date), { date, value }].sort((a, b) => a.date.localeCompare(b.date));
+  // Logged by the patient: never sample data.
+  return [...list.filter((m) => m.date !== date), { date, value, demo: false }].sort((a, b) => a.date.localeCompare(b.date));
 }
 
 /** The last `n` calendar days ending today, with the mood logged that day (or null). */

@@ -17,7 +17,7 @@ describe('wellbeing: upsertMood', () => {
       const dates = out.map((m) => m.date);
       expect(new Set(dates).size).toBe(dates.length);
       expect([...dates].sort()).toEqual(dates);
-      expect(out.find((m) => m.date === d)).toEqual({ date: d, value: v });
+      expect(out.find((m) => m.date === d)).toEqual({ date: d, value: v, demo: false }); // logged by the patient: never demo
     }), cfg(501));
   });
   it('idempotent for the same date/value', () => {

@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import fc from 'fast-check';
 import { sanitize, serialize, parse } from '../../src/services/storage';
+import { upsertMood } from '../../src/services/wellbeing';
 import { createDemoData } from '../../src/data/demo';
-import type { AppData, Contact, FamilyMessage, Photo, Procedure, Recommendation, Treatment } from '../../src/types';
+import type { AppData, Contact, FamilyMessage, MoodValue, Photo, Procedure, Recommendation, Treatment } from '../../src/types';
 
 const FIXED = new Date(2026, 10, 18, 10, 30);
 const defaults: AppData = createDemoData(FIXED);
@@ -383,5 +384,25 @@ describe('storage: migration from data saved before the `demo` flag', () => {
       expect(sanitize(once, defaults)).toEqual(once);
       expect(sanitize(JSON.parse(serialize(once)), defaults)).toEqual(once);
     }), cfg(605, 100));
+  });
+});
+
+// Regression (review round 3): a mood the patient logs must never come back labelled as demo.
+describe('storage: patient moods stay real after a reload', () => {
+  it('a mood logged with upsertMood keeps demo === false through sanitize, whatever the care note', () => {
+    fc.assert(fc.property(fc.integer({ min: 1, max: 5 }), fc.boolean(), (v, noteDemo) => {
+      const base = createDemoData(new Date(2026, 10, 21, 10));
+      const today = '2026-11-21';
+      const d = { ...base, careNote: { ...base.careNote, demo: noteDemo }, moods: upsertMood(base.moods, today, v as MoodValue) };
+      const once = sanitize(JSON.parse(serialize(d)), base);
+      expect(once.moods.find((m) => m.date === today)?.demo).toBe(false);
+      expect(sanitize(JSON.parse(serialize(once)), base).moods.find((m) => m.date === today)?.demo).toBe(false);
+    }), cfg(606, 50));
+  });
+  it('an unflagged mood next to flagged ones is the patient\'s (not legacy demo data)', () => {
+    const base = createDemoData(new Date(2026, 10, 21, 10));
+    const raw = JSON.parse(serialize(base));
+    raw.moods.push({ date: '2026-11-21', value: 1 });
+    expect(sanitize(raw, base).moods.find((m) => m.date === '2026-11-21')?.demo).toBe(false);
   });
 });
