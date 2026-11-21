@@ -204,3 +204,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/wellbeing.ts, src/pages/care/Wellbeing.tsx, src/styles/pages.css, src/types/index.ts, tests/property/wellbeing.test.ts, README.md, RELIABILITY.md.
 * Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS (1180 × 820, 1180 × 760 y vertical); en iPhone 13 ningún texto sale de su recuadro. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:42 — «Paisajes» pasa a ser «Recuerdos de viajes» con fotos reales
+
+* En Mi mundo, el acceso «Paisajes» ahora es «Viajes» y abre «Recuerdos de viajes»: 12 fotos de la familia entregadas por el usuario (Machu Picchu, Taj Mahal, Cristo Redentor, playa, montaña, crucero, cumpleaños, los perritos, entre otras).
+* Cuadrícula de 4 columnas en el iPad (2 en vertical) y visor a pantalla completa con anterior/siguiente, pase automático cada 9 segundos y música suave opcional («Amanecer sereno»).
+* Las fotos se redujeron a un máximo de 1100 px (1,3 MB en total) y quedan guardadas para uso sin conexión.
+* Las ilustraciones de paisajes se conservan donde ya se usaban como arte (playlist, juegos).
+* Archivos afectados: src/assets/img/viajes/*.jpg (12 nuevas), src/data/media.ts, src/pages/WorldPage.tsx, src/styles/pages.css, README.md.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS (incluye tamaño táctil). Sin errores de consola al abrir la cuadrícula y el visor. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

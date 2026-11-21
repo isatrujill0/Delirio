@@ -13,6 +13,18 @@ import bosque from '../assets/audio/bosque.m4a';
 import lluvia from '../assets/audio/lluvia.m4a';
 import mar from '../assets/audio/mar.m4a';
 import videoRecuerdos from '../assets/video/recuerdos-en-familia.mp4';
+import machuPicchu from '../assets/img/viajes/machu-picchu.jpg';
+import tajMahal from '../assets/img/viajes/taj-mahal.jpg';
+import tajMahalMeditando from '../assets/img/viajes/taj-mahal-meditando.jpg';
+import cristoRedentor from '../assets/img/viajes/cristo-redentor.jpg';
+import torreIluminada from '../assets/img/viajes/torre-iluminada.jpg';
+import globosDeLuz from '../assets/img/viajes/globos-de-luz.jpg';
+import caminataRio from '../assets/img/viajes/caminata-rio.jpg';
+import miradorMontana from '../assets/img/viajes/mirador-montana.jpg';
+import picnicPlaya from '../assets/img/viajes/picnic-playa.jpg';
+import crucero from '../assets/img/viajes/crucero.jpg';
+import cumpleanos from '../assets/img/viajes/cumpleanos.jpg';
+import perritos from '../assets/img/viajes/perritos.jpg';
 
 /** Bundled assets addressable as "asset:<key>" from persisted data. */
 export const ASSETS: Record<string, string> = {
@@ -42,6 +54,29 @@ export const LANDSCAPES: Landscape[] = [
   { id: 'lago', title: 'Lago al amanecer', place: 'Agua quieta y neblina', soundId: 'mar', palette: ['#23407a', '#4f7fc4', '#9cc3ec', '#d9e6ff', '#fff3d9'], sun: 'sol' },
   { id: 'valle', title: 'Valle verde', place: 'Colinas después de la lluvia', soundId: 'lluvia', palette: ['#1f4a5e', '#3f8a7e', '#8cc9a0', '#cfe9c8', '#f3f7dc'], sun: 'sol' },
   { id: 'noche', title: 'Noche estrellada', place: 'Cielo despejado sobre los cerros', soundId: 'bosque', palette: ['#0d1033', '#1f2466', '#3c3f95', '#7b72cf', '#d8d2ff'], sun: 'luna' },
+];
+
+export interface TravelMemory {
+  id: string;
+  title: string;
+  place: string;
+  src: string;
+}
+
+/** "Recuerdos de viajes" in Mi mundo: the family's real trip and home photos (shared with permission). */
+export const TRAVELS: TravelMemory[] = [
+  { id: 'machu-picchu', title: 'Machu Picchu', place: 'Perú', src: machuPicchu },
+  { id: 'taj-mahal', title: 'Taj Mahal', place: 'India', src: tajMahal },
+  { id: 'taj-mahal-meditando', title: 'Meditando en el Taj Mahal', place: 'India', src: tajMahalMeditando },
+  { id: 'cristo-redentor', title: 'Cristo Redentor', place: 'Río de Janeiro, Brasil', src: cristoRedentor },
+  { id: 'torre-iluminada', title: 'Bajo la torre iluminada', place: 'Una noche de viaje', src: torreIluminada },
+  { id: 'globos-de-luz', title: 'Entre globos de luz', place: 'Una exposición de luces', src: globosDeLuz },
+  { id: 'caminata-rio', title: 'Caminata junto al río', place: 'Entre montañas y pinos', src: caminataRio },
+  { id: 'mirador-montana', title: 'Mirador en la montaña', place: 'Mirando el valle juntos', src: miradorMontana },
+  { id: 'picnic-playa', title: 'Pícnic en la playa', place: 'Frente al mar', src: picnicPlaya },
+  { id: 'crucero', title: 'En el crucero', place: 'Viaje en familia', src: crucero },
+  { id: 'cumpleanos', title: 'Cumpleaños en familia', place: 'En casa', src: cumpleanos },
+  { id: 'perritos', title: 'Con los perritos', place: 'En casa', src: perritos },
 ];
 
 export const trackById = (id: string) => TRACKS.find((t) => t.id === id);
