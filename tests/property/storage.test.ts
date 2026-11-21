@@ -317,3 +317,71 @@ describe('storage: round-trip of valid data', () => {
     }), cfg(513, 200));
   });
 });
+
+describe('storage: migration from data saved before the `demo` flag', () => {
+  const LEGACY_NOTE = 'Te encuentras estable y recibiendo el cuidado que necesitas.';
+  const strip = <T extends object>(x: T): T => { const { demo: _d, ...rest } = x as T & { demo?: unknown }; return rest as T; };
+  const legacyOf = (d: AppData) => ({
+    ...d,
+    treatments: d.treatments.map(strip),
+    procedures: d.procedures.map(strip),
+    recommendations: d.recommendations.map(strip),
+    moods: d.moods.map(strip),
+    careNote: { ...d.careNote, text: LEGACY_NOTE },
+  });
+  const builtIn = [...defaults.treatments, ...defaults.procedures, ...defaults.recommendations].map((x) => x.id);
+  const userId = fc.stringMatching(/^t-[0-9a-f]{8}$/);
+
+  it('built-in demo ids without the flag come back demo === true, moods included', () => {
+    fc.assert(fc.property(fc.constant(null), () => {
+      const out = sanitize(legacyOf(defaults), defaults);
+      for (const k of ['treatments', 'procedures', 'recommendations'] as const) {
+        expect(out[k].length).toBe(defaults[k].length);
+        for (const x of out[k]) expect(x.demo).toBe(true);
+      }
+      expect(out.moods.length).toBe(defaults.moods.length);
+      for (const m of out.moods) expect(m.demo).toBe(true);
+      expect(out.careNote.text).toBe(defaults.careNote.text);
+      expect(out.careNote.demo).toBe(true);
+    }), cfg(601, 5));
+  });
+
+  it('user-created ids (t- + 8 hex) without the flag are demo === false, built-ins stay true', () => {
+    fc.assert(fc.property(fc.uniqueArray(userId, { minLength: 1, maxLength: 6 }), fc.array(fc.constantFrom(...defaults.treatments.map((t) => t.id)), { maxLength: 3 }), (ids, keep) => {
+      const mine = ids.map((id) => ({ id, name: `Mío ${id}`, description: '', startDate: '2026-11-01', frequency: '', times: [], observations: '' }));
+      const kept = defaults.treatments.filter((t) => keep.includes(t.id)).map(strip);
+      const out = sanitize({ ...legacyOf(defaults), treatments: [...kept, ...mine] }, defaults);
+      for (const t of out.treatments) expect(t.demo).toBe(ids.includes(t.id) ? false : true);
+      expect(out.treatments.filter((t) => !t.demo).map((t) => t.id)).toEqual(ids);
+      expect(builtIn).toEqual(expect.arrayContaining(kept.map((t) => t.id)));
+    }), cfg(602, 200));
+  });
+
+  it('an explicit demo flag always wins over the id-based guess', () => {
+    fc.assert(fc.property(fc.boolean(), (flag) => {
+      const t = { ...strip(defaults.treatments[0]), demo: flag };
+      expect(sanitize({ ...legacyOf(defaults), treatments: [t] }, defaults).treatments[0].demo).toBe(flag);
+    }), cfg(603, 10));
+  });
+
+  it('the legacy note text is replaced only when careNote.demo === true', () => {
+    fc.assert(fc.property(fc.oneof(fc.constant(true), fc.constant(false), fc.constant(undefined), fc.constant('true'), fc.constant(1), fc.constant(null)), (flag) => {
+      const out = sanitize({ ...legacyOf(defaults), careNote: { text: LEGACY_NOTE, updatedAt: 5, demo: flag } }, defaults);
+      if (flag === true) expect(out.careNote.text).toBe(defaults.careNote.text);
+      else expect(out.careNote.text).toBe(LEGACY_NOTE);
+      expect(out.careNote.updatedAt).toBe(5);
+      // moods only count as demo while the stored set is the demo one
+      for (const m of out.moods) expect(m.demo).toBe(flag === true);
+    }), cfg(604, 30));
+  });
+
+  it('is idempotent on legacy input', () => {
+    fc.assert(fc.property(fc.uniqueArray(userId, { maxLength: 4 }), fc.boolean(), (ids, demoNote) => {
+      const mine = ids.map((id) => ({ id, name: id, description: '', startDate: '', frequency: '', times: [], observations: '' }));
+      const legacy = { ...legacyOf(defaults), treatments: [...defaults.treatments.map(strip), ...mine], careNote: { text: LEGACY_NOTE, updatedAt: 1, demo: demoNote } };
+      const once = sanitize(legacy, defaults);
+      expect(sanitize(once, defaults)).toEqual(once);
+      expect(sanitize(JSON.parse(serialize(once)), defaults)).toEqual(once);
+    }), cfg(605, 100));
+  });
+});
