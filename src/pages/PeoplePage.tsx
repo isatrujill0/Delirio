@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Images, Mail, MessageCircle, Mic, MoreHorizontal, Pencil, Phone, Plus, Trash2, Users, Video, Type } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Images, MessageCircle, Mic, MoreHorizontal, Pencil, Phone, Plus, Trash2, Users, Video, Type } from 'lucide-react';
 import type { Contact, FamilyMessage } from '../types';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
@@ -259,24 +259,22 @@ export function PeoplePage() {
                 </button>
               </div>
               <div className="action-grid">
-                <button className="action" onClick={() => go('gente', `mensajes:${selected.id}`)}>
-                  <MessageCircle strokeWidth={1.6} />
+                <button
+                  className="action"
+                  onClick={() => go('gente', `mensajes:${selected.id}`)}
+                  aria-label={newCount > 0 ? `Mensajes: ${newCount} ${newCount === 1 ? 'nuevo' : 'nuevos'}` : 'Mensajes'}
+                >
+                  <span className="action-icon">
+                    <MessageCircle strokeWidth={1.6} />
+                    {newCount > 0 && <span className="badge num" aria-hidden="true">{newCount}</span>}
+                  </span>
                   <span>Mensajes</span>
                 </button>
                 <button className="action" onClick={() => setCall(selected)}>
                   <Video strokeWidth={1.6} />
                   <span>Videollamada</span>
                 </button>
-
               </div>
-              <button className="row-btn" onClick={() => go('gente', `mensajes:${selected.id}`)}>
-                <span className="row-btn-icon">
-                  <Mail strokeWidth={1.6} />
-                  {newCount > 0 && <span className="badge num">{newCount}</span>}
-                </span>
-                <span>{newCount > 0 ? (newCount === 1 ? 'Mensaje nuevo' : 'Mensajes nuevos') : 'Ver mensajes'}</span>
-                <ArrowRight />
-              </button>
               <p className="panel-label">Último mensaje</p>
               {last ? <MessageRow m={last} contact={selected} onOpen={() => setViewing(last)} /> : <p className="muted">{selected.name} aún no ha dejado mensajes.</p>}
               {selected.about && <p className="panel-about">{selected.about}</p>}

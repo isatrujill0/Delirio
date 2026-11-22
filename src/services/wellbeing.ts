@@ -55,10 +55,12 @@ export const VITAL_RANGES = {
   heartRate: { min: 20, max: 250, label: 'Ritmo cardíaco' },
   respRate: { min: 4, max: 80, label: 'Respiración' },
   spo2: { min: 50, max: 100, label: 'Oxigenación' },
+  systolic: { min: 50, max: 250, label: 'Presión arterial' },
+  diastolic: { min: 30, max: 150, label: 'Presión arterial' },
 } as const;
 
 /** Range checks only — these catch typing mistakes, they are not clinical thresholds. */
-export function validateVitals(v: Pick<Vitals, 'heartRate' | 'respRate' | 'spo2'>): Record<string, string> {
+export function validateVitals(v: Pick<Vitals, 'heartRate' | 'respRate' | 'spo2' | 'systolic' | 'diastolic'>): Record<string, string> {
   const e: Record<string, string> = {};
   for (const k of Object.keys(VITAL_RANGES) as (keyof typeof VITAL_RANGES)[]) {
     const r = VITAL_RANGES[k];
@@ -75,9 +77,11 @@ export const SIM_RANGES = {
   heartRate: { min: 68, max: 92, step: 2 },
   respRate: { min: 14, max: 20, step: 1 },
   spo2: { min: 94, max: 98, step: 1 },
+  systolic: { min: 108, max: 128, step: 2 },
+  diastolic: { min: 68, max: 82, step: 2 },
 } as const;
 
-type SimVitals = Pick<Vitals, 'heartRate' | 'respRate' | 'spo2'>;
+type SimVitals = Pick<Vitals, 'heartRate' | 'respRate' | 'spo2' | 'systolic' | 'diastolic'>;
 
 /**
  * One gentle step of a bounded random walk: each value moves by at most its `step`,
@@ -106,6 +110,8 @@ export const REFERENCE_RANGES: Record<VitalKey, { min: number; max: number }> = 
   heartRate: { min: 60, max: 100 },
   respRate: { min: 12, max: 20 },
   spo2: { min: 94, max: 100 },
+  systolic: { min: 90, max: 130 },
+  diastolic: { min: 60, max: 85 },
 };
 
 export type VitalStatus = 'en-rango' | 'bajo' | 'alto';
@@ -136,6 +142,6 @@ export function vitalTrend(samples: number[], tolerance: number): VitalTrend {
   return diff > tolerance ? 'sube' : diff < -tolerance ? 'baja' : 'estable';
 }
 
-export const TREND_TOLERANCE: Record<VitalKey, number> = { heartRate: 4, respRate: 1.5, spo2: 1 };
+export const TREND_TOLERANCE: Record<VitalKey, number> = { heartRate: 4, respRate: 1.5, spo2: 1, systolic: 4, diastolic: 3 };
 // "Sin cambios", not "Estable": a direction of change, never a statement about the person's health.
 export const VITAL_TREND_TEXT: Record<VitalTrend, string> = { estable: 'Sin cambios', sube: 'Subiendo', baja: 'Bajando' };

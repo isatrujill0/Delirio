@@ -94,30 +94,43 @@
   min-height: 0;
   transition: transform var(--t-slow) var(--ease-out), box-shadow var(--t-slow) var(--ease-out);
 }
+.home-right {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.home-right .family-card {
+  flex: 1;
+}
 .family-notice {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 2;
-  max-width: calc(100% - 40px);
   margin: 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
   align-items: center;
-  column-gap: 10px;
+  gap: 14px;
   padding: 12px 18px;
-  border-radius: 22px;
-  background: rgb(60 60 160 / 0.55);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--rim);
+  border-radius: 24px;
+}
+.family-notice-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #c7b6ff, #8c76f2);
+}
+.family-notice > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.family-notice strong {
   font-size: 1.05rem;
   font-weight: 500;
 }
 .family-notice small {
-  grid-column: 2;
-  font-size: 0.8rem;
-  font-weight: 400;
+  font-size: 0.85rem;
   color: var(--ink-2);
 }
 .family-label {
@@ -1420,8 +1433,7 @@ html:not([data-text='normal']) .vitals li {
 }
 .evolution-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 150px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
 }
 .evolution-main {
@@ -2282,5 +2294,161 @@ html:not([data-text='normal']) .family-card {
   }
   50% {
     box-shadow: 0 0 0 12px rgb(199 182 255 / 0);
+  }
+}
+
+.action-icon {
+  position: relative;
+  display: inline-grid;
+}
+.action-icon .badge {
+  position: absolute;
+  top: -10px;
+  right: -16px;
+}
+
+/* ── Mi cuidado, less text ── */
+.care-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: 8px;
+}
+.care-head h1 {
+  margin: 0;
+}
+.care-head-note {
+  margin: 2px 0 0;
+}
+.care-note-text p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 1.05rem;
+}
+.care-flowers {
+  display: none;
+}
+.trend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding: 3px 12px;
+  border-radius: var(--r-pill);
+  background: rgb(126 224 176 / 0.16);
+  border: 1px solid rgb(126 224 176 / 0.35);
+  font-size: 0.85rem;
+  font-weight: 450;
+  vertical-align: middle;
+}
+.next-card {
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.next-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.35rem;
+}
+.next-card h2 svg {
+  width: 28px;
+  height: 28px;
+}
+.next-item {
+  flex: none;
+  width: 100%;
+  min-height: var(--touch);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px 8px 14px;
+  border-radius: 22px;
+  background: rgb(214 205 255 / 0.14);
+  border: 1px solid var(--rim-soft);
+  text-align: left;
+}
+.next-item > svg:first-child {
+  flex: none;
+  width: 30px;
+  height: 30px;
+}
+.next-item-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.next-item-text small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+.next-item-text strong {
+  font-size: 1.15rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.next-item-text .num {
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+.next-link {
+  flex: none;
+  align-self: flex-start;
+  min-height: var(--touch);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  color: var(--ink-2);
+}
+/* Four vitals as a 2 × 2 grid: every label and value fits (blood pressure is the widest). */
+.vitals {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.vitals li {
+  padding: 6px 12px;
+  min-height: 56px;
+}
+.next-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.next-item-text small,
+.next-item-text strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.next-item-text strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (orientation: portrait), (max-width: 900px) {
+  /* Narrow tiles: the unit and trend arrow may drop to a second line instead of spilling out. */
+  .vitals strong {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 6px;
+    white-space: normal;
+  }
+  .vital-trend {
+    margin-left: 0;
   }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Heart, MapPin, MessageCircle, Music2, CalendarClock, Pill } from 'lucide-react';
+import { Heart, MapPin, MessageCircle, CalendarClock, Pill } from 'lucide-react';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { useNow } from '../hooks/useNow';
@@ -59,13 +59,6 @@ function NextUp() {
           </span>
         </button>
       )}
-      <button className="chip" onClick={() => go('mundo')}>
-        <Music2 strokeWidth={1.75} />
-        <span>
-          <small>Mi mundo</small>
-          Escuchar algo tranquilo
-        </span>
-      </button>
     </div>
   );
 }
@@ -79,18 +72,25 @@ function FamilyCard() {
   const notice =
     unread.length === 0 ? null : names.length === 1 ? `${unread.length === 1 ? 'Mensaje nuevo' : `${unread.length} mensajes nuevos`} de ${names[0]}` : `Mensajes nuevos de ${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;
   return (
-    <article className="family-card" aria-label="Tu familia">
-      <MediaImage src={cover} alt="Foto de tu familia" className="family-photo" />
+    <div className="home-right">
+      <article className="family-card" aria-label="Tu familia">
+        <MediaImage src={cover} alt="Foto de tu familia" className="family-photo" />
+        <span className="family-label">
+          <Heart size={26} strokeWidth={1.8} aria-hidden="true" /> Tu familia
+        </span>
+      </article>
       {notice && (
-        <p className="family-notice">
-          <MessageCircle size={22} strokeWidth={1.8} aria-hidden="true" /> {notice}
-          <small>Ábrelo en Mi gente</small>
+        <p className="family-notice glass">
+          <span className="family-notice-icon" aria-hidden="true">
+            <MessageCircle size={24} strokeWidth={1.8} />
+          </span>
+          <span>
+            <strong>{notice}</strong>
+            <small>Ábrelos en Mi gente</small>
+          </span>
         </p>
       )}
-      <span className="family-label">
-        <Heart size={26} strokeWidth={1.8} aria-hidden="true" /> Tu familia
-      </span>
-    </article>
+    </div>
   );
 }
 

@@ -56,7 +56,7 @@ test('una foto enviada en el chat guarda un blob y eliminar el mensaje lo borra'
   expect(await blobCount(page)).toBe(0);
   await people(page).click();
   const panel = page.getByRole('complementary', { name: 'Panel de Mamá' });
-  await panel.getByRole('button', { name: 'Mensajes', exact: true }).click();
+  await panel.getByRole('button', { name: /^Mensajes/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mamá' })).toBeVisible();
   await page.getByLabel('Escribe un mensaje').fill('Mira mi desayuno');
   await page.locator('.chat-bar input[type=file]').setInputFiles(asset('src/assets/img/karen.jpg'));

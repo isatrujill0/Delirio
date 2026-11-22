@@ -136,6 +136,9 @@ function sanitizeVitals(v: unknown, fallback: Vitals | null): Vitals | null {
     heartRate: clamp(Math.round(num(v.heartRate, 0)), 0, 250),
     respRate: clamp(Math.round(num(v.respRate, 0)), 0, 80),
     spo2: clamp(Math.round(num(v.spo2, 0)), 0, 100),
+    // Blood pressure was added later: older demo readings get the demo values, older real ones 0 ("—").
+    systolic: clamp(Math.round(num(v.systolic, v.demo === true ? 118 : 0)), 0, 300),
+    diastolic: clamp(Math.round(num(v.diastolic, v.demo === true ? 76 : 0)), 0, 200),
     recordedAt: v.recordedAt,
     demo: bool(v.demo, false),
   };

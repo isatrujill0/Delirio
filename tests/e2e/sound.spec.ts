@@ -60,7 +60,7 @@ test('silenciar mientras suena un mensaje hablado cancela la voz y el dock deja 
   // Messages are played from Mi gente (the home widget only shows the family photo).
   await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi gente' }).click();
   // Voice notes are played inside the chat ("Mensajes").
-  await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: 'Mensajes', exact: true }).click();
+  await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: /^Mensajes/ }).click();
   await page.getByRole('button', { name: /^Reproducir audio de Mamá/ }).first().click();
   await expect.poll(async () => (await spy(page)).speak.length).toBe(1);
   expect((await spy(page)).speak[0]).toContain('Hola, mi amor');

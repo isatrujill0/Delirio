@@ -90,6 +90,8 @@ export interface Vitals {
   heartRate: number; // lpm
   respRate: number; // rpm
   spo2: number; // %
+  systolic: number; // mmHg (presión arterial, máxima)
+  diastolic: number; // mmHg (presión arterial, mínima)
   recordedAt: number;
   demo: boolean;
 }

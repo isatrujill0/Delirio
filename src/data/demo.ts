@@ -77,7 +77,7 @@ export function createDemoData(now = new Date()): AppData {
       { id: 'r-7', category: 'Visitas', title: 'Horario de visitas', summary: 'Tu familia puede acompañarte.', body: 'El horario de visitas lo define la clínica. Pregunta a tu enfermera los horarios de hoy.', demo: true },
     ],
     moods: ([3, 2, 3, 4, 3, 4] as const).map((value, i) => ({ date: isoDay(new Date(t - (6 - i) * 24 * H)), value, demo: true })),
-    vitals: { heartRate: 72, respRate: 16, spo2: 97, recordedAt: t - 2 * H, demo: true },
+    vitals: { heartRate: 72, respRate: 16, spo2: 97, systolic: 118, diastolic: 76, recordedAt: t - 2 * H, demo: true },
     careNote: { text: 'Tu equipo de salud está pendiente de ti. Si algo te molesta o tienes una pregunta, díselo a tu enfermera.', updatedAt: t - 3 * H, demo: true },
     favorites: ['amanecer-sereno', 'bosque'],
     scores: {},

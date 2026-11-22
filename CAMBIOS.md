@@ -257,3 +257,19 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/games.ts, src/hooks/useSpeechAnswer.ts (nuevo), src/pages/world/Games.tsx, src/pages/PeoplePage.tsx, src/pages/HomePage.tsx, src/styles/pages.css, tests/property/games.test.ts, tests/e2e/voice-proverb.spec.ts (nuevo), tests/e2e/media-cleanup.spec.ts, tests/e2e/sound.spec.ts, README.md.
 * Resultado: tsc PASS; propiedades 137/137; E2E 18/18; smoke PASS. El reconocimiento de voz real no se ha probado en un iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+---
+
+21/11/2026
+
+23:01 — Inicio más limpio, contador en Mensajes y Mi cuidado reorganizado con presión arterial
+
+* Inicio: se quitó el acceso «Escuchar algo tranquilo». El aviso «Mensajes nuevos de …» pasó a un cuadro aparte debajo de la foto de la familia (sigue sin ser tocable).
+* Mi gente: se quitó el recuadro «Mensajes nuevos»; ahora el número de mensajes sin leer aparece como un circulito sobre el botón Mensajes.
+* Mi cuidado, con menos texto: encabezado corto; mensaje del equipo de salud en dos líneas; «¿Cómo te sientes hoy?» se mantiene; «Tu plan de cuidado» pasó a «Lo próximo» (tratamiento y procedimiento con su hora en una línea, y acceso a Consejos); «Tu ánimo» sin el bloque lateral de texto (la tendencia es una etiqueta pequeña).
+* Monitor integrado: se agregó la presión arterial (máxima/mínima, mmHg) con su rango de referencia y tendencia; los cuatro signos se actualizan cada 3 segundos en una cuadrícula 2 × 2. El formulario del personal también registra la presión. Las lecturas guardadas antes reciben valores de ejemplo (si eran de demostración) o «—» (si eran reales).
+* Todo cabe sin desplazarse a 1180 × 820; en celular ningún texto sale de su recuadro.
+* Pruebas: propiedades con presión arterial y su migración (138); E2E adaptadas a los nuevos nombres de botones (18).
+* Archivos afectados: src/pages/HomePage.tsx, src/pages/PeoplePage.tsx, src/pages/CarePage.tsx, src/pages/care/Wellbeing.tsx, src/services/wellbeing.ts, src/services/storage.ts, src/types/index.ts, src/data/demo.ts, src/styles/pages.css, tests/**, README.md.
+* Resultado: tsc PASS; propiedades 138/138; E2E 18/18; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
