@@ -354,3 +354,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/flight.ts y src/services/faceTracker.ts (nuevos), src/pages/world/HeadFlight.tsx (nuevo), src/pages/world/Games.tsx, src/pages/WorldPage.tsx, src/styles/pages.css, public/models/* (nuevos), public/sw.js, package.json, package-lock.json, tests/property/flight.test.ts y tests/e2e/flight.spec.ts (nuevos), tests/e2e/offline.spec.ts, README.md.
 * Resultado: tsc PASS; propiedades 152/152; E2E 21/21; smoke PASS. Sin probar todavía en el iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+11:09 — Refrán corregido y mensajes nuevos marcados al abrir el chat
+
+* Completa el refrán: «A caballo regalado…» ahora termina en «no se le miran los dientes» (antes decía «el colmillo», que no es la forma correcta).
+* Mi gente → Mensajes: al abrir un chat, los mensajes que no se habían visto aparecen debajo de una línea «1 mensaje nuevo» / «N mensajes nuevos», con el borde resaltado y la etiqueta «Nuevo», y el chat empieza en ese punto (como en WhatsApp). Siguen marcados así mientras se está en el chat; al salir quedan como leídos y el circulito desaparece.
+* Datos de ejemplo: además de Mamá y Papá, Rafa tiene una conversación con un mensaje nuevo sin leer, y Papá un segundo mensaje («Mañana te llevo tu cobija favorita 💙»). Bryan y Karen siguen sin mensajes nuevos porque Leslie ya les respondió.
+* Pruebas: 1 E2E nuevo (abrir el chat de Rafa muestra el mensaje nuevo; al volver a entrar ya no está marcado y queda guardado como leído); la propiedad de datos de ejemplo ahora incluye a Rafa; el E2E de refranes usa la terminación corregida.
+* Archivos afectados: src/services/games.ts, src/pages/people/Chat.tsx, src/data/demo.ts, src/styles/pages.css, tests/e2e/new-messages.spec.ts (nuevo), tests/e2e/voice-proverb.spec.ts, tests/property/messages.test.ts.
+* Resultado: tsc PASS; propiedades 152/152; E2E 22/22; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

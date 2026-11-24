@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Camera, Mic, Play, SendHorizontal, Smile, Square, X } from 'lucide-react';
 import type { Contact, FamilyMessage, MessageKind } from '../../types';
 import { useAppData } from '../../hooks/useAppData';
@@ -10,6 +10,7 @@ import { messageDuration, useMessageControl } from '../../components/MessageView
 import { putMedia, shrinkImage } from '../../services/mediaStore';
 import { clock, mmss, relativeDay } from '../../services/time';
 import { uid } from '../../services/id';
+import { unreadFromFamily } from '../../services/messages';
 
 const EMOJIS = ['😀', '😂', '🥰', '😍', '😘', '🤗', '😊', '🥹', '😢', '😴', '🙏', '👍', '👏', '💪', '🙌', '❤️', '💜', '💙', '💛', '🌸', '🌻', '☀️', '🌈', '⭐', '🎉', '🎂', '🐶', '☕', '🍓', '🏥', '😷', '🤒'];
 
@@ -21,17 +22,18 @@ const stamp = (ts: number) => {
 };
 
 /** One chat bubble. Tapping it opens the message (bigger view, read aloud, delete). */
-function Bubble({ m, contact, onOpen }: { m: FamilyMessage; contact: Contact; onOpen: () => void }) {
+function Bubble({ m, contact, isNew, onOpen }: { m: FamilyMessage; contact: Contact; isNew: boolean; onOpen: () => void }) {
   const { toast } = useUI();
   const mine = m.from === 'paciente';
   const { player, isThis, playing, toggle } = useMessageControl(m, mine ? 'ti' : contact.name, (e) => toast(e, 'error'));
   const meta = (
     <span className="bubble-meta num">
+      {isNew && <span className="new-pill">Nuevo</span>}
       {m.demo && <DemoTag label="Ejemplo" />} {stamp(m.createdAt)}
     </span>
   );
   return (
-    <li className={`bubble-row ${mine ? 'is-mine' : ''}`}>
+    <li className={`bubble-row ${mine ? 'is-mine' : ''} ${isNew ? 'is-new' : ''}`}>
       {m.kind === 'audio' ? (
         <div className="bubble bubble-audio">
           <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`audio de ${mine ? 'ti' : contact.name}, ${stamp(m.createdAt)}`} />
@@ -73,6 +75,11 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
   const input = useRef<HTMLTextAreaElement>(null);
   const msgs = data.messages.filter((m) => m.contactId === contact.id).sort((a, b) => a.createdAt - b.createdAt);
 
+  // What had not been seen when the chat was opened stays marked "Nuevo" during this visit,
+  // even though opening the chat marks it as read.
+  const [fresh] = useState(() => new Set(unreadFromFamily(data.messages, contact.id).map((m) => m.id)));
+  const firstFresh = msgs.find((m) => fresh.has(m.id))?.id;
+
   // Opening the chat means the family's messages have been seen.
   useEffect(() => {
     if (msgs.some((m) => !m.read && m.from !== 'paciente'))
@@ -85,7 +92,17 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
   const toBottom = () => {
     if (list.current && pinned.current) list.current.scrollTop = list.current.scrollHeight;
   };
+  const divider = useRef<HTMLLIElement>(null);
+  const opened = useRef(false);
   useEffect(() => {
+    if (!opened.current && divider.current && list.current) {
+      // First view: start at the "new messages" line, like WhatsApp.
+      opened.current = true;
+      list.current.scrollTop = Math.max(0, divider.current.offsetTop - 12);
+      pinned.current = list.current.scrollHeight - list.current.scrollTop - list.current.clientHeight < 40;
+      return;
+    }
+    opened.current = true;
     pinned.current = true;
     toBottom();
   }, [msgs.length]);
@@ -146,7 +163,14 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
       >
         {msgs.length === 0 && <li className="chat-empty muted">Todavía no hay mensajes. Escribe el primero.</li>}
         {msgs.map((m) => (
-          <Bubble key={m.id} m={m} contact={contact} onOpen={() => onOpen(m)} />
+          <Fragment key={m.id}>
+            {m.id === firstFresh && (
+              <li className="chat-divider" ref={divider}>
+                <span>{fresh.size === 1 ? '1 mensaje nuevo' : `${fresh.size} mensajes nuevos`}</span>
+              </li>
+            )}
+            <Bubble m={m} contact={contact} isNew={fresh.has(m.id)} onOpen={() => onOpen(m)} />
+          </Fragment>
         ))}
       </ol>
 

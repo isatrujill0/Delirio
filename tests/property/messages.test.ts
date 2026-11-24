@@ -51,12 +51,13 @@ describe('messages: unreadFromFamily (the "new messages" badge)', () => {
       expect(last!.createdAt).toBe(Math.max(...mine.map((m) => m.createdAt)));
     }), cfg(673));
   });
-  it('demo data: Bryan and Karen have no "new" messages (Leslie already answered); Mamá and Papá do', () => {
+  it('demo data: Bryan and Karen have no "new" messages (Leslie already answered); Mamá, Papá and Rafa do', () => {
     const d = createDemoData(new Date(2026, 10, 24, 15));
     const people = new Set(unreadFromFamily(d.messages).map((m) => m.contactId));
     expect(people.has('c-bryan')).toBe(false);
     expect(people.has('c-karen')).toBe(false);
     expect(people.has('c-mama')).toBe(true);
     expect(people.has('c-papa')).toBe(true);
+    expect(people.has('c-rafa')).toBe(true);
   });
 });
