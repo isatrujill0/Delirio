@@ -47,6 +47,9 @@ export function createDemoData(now = new Date()): AppData {
       { id: 'm-7', contactId: 'c-mama', kind: 'texto', from: 'paciente', text: 'Mami, ¿vienes hoy a visitarme? 💜', createdAt: t - 3 * H, read: true, demo: true },
       { id: 'm-8', contactId: 'c-bryan', kind: 'texto', from: 'paciente', text: 'Yo también te extraño 🥹 Ven pronto.', createdAt: t - 7 * H, read: true, demo: true },
       { id: 'm-9', contactId: 'c-karen', kind: 'texto', from: 'paciente', text: '¡Me encantó el video! 😄', createdAt: t - 20 * H, read: true, demo: true },
+      { id: 'm-10', contactId: 'c-rafa', kind: 'texto', from: 'paciente', text: '¡Gracias, Rafa! Te espero 🤗', createdAt: t - 29 * H, read: true, demo: true },
+      { id: 'm-11', contactId: 'c-rafa', kind: 'texto', from: 'contacto', text: 'Les, hoy me acordé del viaje a Machu Picchu 😄 Ya quiero que vuelvas a casa. Te quiero mucho.', createdAt: t - 0.7 * H, read: false, demo: true },
+      { id: 'm-12', contactId: 'c-papa', kind: 'texto', from: 'contacto', text: 'Mañana te llevo tu cobija favorita 💙', createdAt: t - 4 * H, read: false, demo: true },
     ],
     photos: [
       { id: 'p-1', src: 'asset:familia', caption: 'Toda la familia junta', demo: true },

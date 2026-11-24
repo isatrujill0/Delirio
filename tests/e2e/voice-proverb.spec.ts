@@ -53,7 +53,7 @@ test('el refrán se lee en voz alta y se puede responder hablando', async ({ pag
 
   // Saying the right ending answers it.
   const right = await page.evaluate((s) => {
-    const PROVERBS = [['Al que madruga', 'Dios le ayuda'], ['Más vale tarde', 'que nunca'], ['Camarón que se duerme', 'se lo lleva la corriente'], ['No por mucho madrugar', 'amanece más temprano'], ['A caballo regalado', 'no se le mira el colmillo'], ['Más vale pájaro en mano', 'que cien volando'], ['Del dicho al hecho', 'hay mucho trecho'], ['Perro que ladra', 'no muerde'], ['Dime con quién andas', 'y te diré quién eres'], ['En boca cerrada', 'no entran moscas']];
+    const PROVERBS = [['Al que madruga', 'Dios le ayuda'], ['Más vale tarde', 'que nunca'], ['Camarón que se duerme', 'se lo lleva la corriente'], ['No por mucho madrugar', 'amanece más temprano'], ['A caballo regalado', 'no se le miran los dientes'], ['Más vale pájaro en mano', 'que cien volando'], ['Del dicho al hecho', 'hay mucho trecho'], ['Perro que ladra', 'no muerde'], ['Dime con quién andas', 'y te diré quién eres'], ['En boca cerrada', 'no entran moscas']];
     return PROVERBS.find(([a]) => s.startsWith(a))![1];
   }, start);
   await page.evaluate((r) => (window as unknown as { __heard: string[] }).__heard.push(`creo que ${r}`), right);

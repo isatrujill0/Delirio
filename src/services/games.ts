@@ -5,7 +5,7 @@ export const PROVERBS: { start: string; end: string }[] = [
   { start: 'Más vale tarde…', end: 'que nunca' },
   { start: 'Camarón que se duerme…', end: 'se lo lleva la corriente' },
   { start: 'No por mucho madrugar…', end: 'amanece más temprano' },
-  { start: 'A caballo regalado…', end: 'no se le mira el colmillo' },
+  { start: 'A caballo regalado…', end: 'no se le miran los dientes' },
   { start: 'Más vale pájaro en mano…', end: 'que cien volando' },
   { start: 'Del dicho al hecho…', end: 'hay mucho trecho' },
   { start: 'Perro que ladra…', end: 'no muerde' },

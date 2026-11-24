@@ -2726,3 +2726,30 @@ html:not([data-text='normal']) .family-card {
 .world-col:has(.col-list > li:nth-child(4)) .col-head small {
   display: none; /* the four game names already say what is inside */
 }
+
+/* Chat: messages that had not been seen when the chat was opened */
+.chat-divider {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0;
+}
+.chat-divider span {
+  padding: 4px 14px;
+  border-radius: var(--r-pill);
+  background: rgb(197 107 240 / 0.3);
+  border: 1px solid rgb(197 107 240 / 0.6);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.bubble-row.is-new .bubble {
+  border-color: rgb(197 107 240 / 0.8);
+  box-shadow: 0 0 0 2px rgb(197 107 240 / 0.25);
+}
+.new-pill {
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: #c56bf0;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
