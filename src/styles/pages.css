@@ -2480,3 +2480,178 @@ html:not([data-text='normal']) .family-card {
 .last-msg {
   min-height: 64px;
 }
+
+/* ── Video call, laid out like a real call ── */
+.call.call-v2 {
+  padding: 0;
+  overflow: hidden;
+  background: #0d0f3a;
+  display: block;
+  min-height: 72vh;
+}
+.call-main {
+  position: absolute;
+  inset: 0;
+}
+.feed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 20%, #5b4fd6, #1b1d63 70%);
+}
+.feed-img {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  max-width: none; /* the base reset caps images at 100%, which left a strip on the right */
+  height: 108%;
+  object-fit: cover;
+}
+/* A still photo that moves a little, like a person on camera. */
+.feed-remote.is-live .feed-img {
+  animation: feed-sway 9s ease-in-out infinite alternate, feed-light 4s ease-in-out infinite alternate;
+}
+@keyframes feed-sway {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  35% {
+    transform: translate(-1.2%, 0.6%) scale(1.02);
+  }
+  70% {
+    transform: translate(0.8%, -0.4%) scale(1.01);
+  }
+  100% {
+    transform: translate(-0.4%, 0.8%) scale(1.03);
+  }
+}
+@keyframes feed-light {
+  from {
+    filter: brightness(1) saturate(1);
+  }
+  to {
+    filter: brightness(1.05) saturate(1.06);
+  }
+}
+.feed-ringing {
+  position: absolute;
+  bottom: 22%;
+  font-size: 1.3rem;
+  color: var(--ink-2);
+}
+.feed-self video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+.feed-off {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+.call-top {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  right: 240px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.call-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  background: rgb(10 12 50 / 0.55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: 1.05rem;
+}
+.call-live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5b7a;
+  animation: live-dot 1.6s ease-out infinite;
+}
+.call-pip {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 200px;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 2px solid rgb(255 255 255 / 0.5);
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.35);
+}
+.call-pip .call-avatar {
+  width: 110px;
+  height: 110px;
+}
+.call-pip .feed-ringing {
+  display: none;
+}
+.call-pip-swap {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(10 12 50 / 0.6);
+}
+.call-v2 .call-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 44px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 12px 18px;
+  border-radius: var(--r-pill);
+  background: rgb(10 12 50 / 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.call-v2 .call-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  font-size: 0.78rem;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+}
+@media (orientation: portrait), (max-width: 900px) {
+  .call-pip {
+    width: 120px;
+  }
+  .call-top {
+    right: 150px;
+  }
+}
+/* The call uses the whole sheet, edge to edge; the small window sits below the close button. */
+.sheet-body:has(> .call-v2) {
+  padding: 0;
+}
+.call.call-v2 {
+  flex: 1;
+  border-radius: 0;
+}
+.call-pip {
+  top: 78px;
+}

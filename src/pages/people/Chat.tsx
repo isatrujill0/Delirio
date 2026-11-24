@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Camera, Mic, Play, SendHorizontal, Smile, Square, X } from 'lucide-react';
-import type { Contact, FamilyMessage, MessageFrom, MessageKind } from '../../types';
+import type { Contact, FamilyMessage, MessageKind } from '../../types';
 import { useAppData } from '../../hooks/useAppData';
 import { useUI } from '../../hooks/useUI';
 import { canRecordAudio, useRecorder } from '../../hooks/useRecorder';
 import { MediaImage, DemoTag } from '../../components/Media';
 import { PlayButton, Waveform } from '../../components/PlayerControls';
 import { messageDuration, useMessageControl } from '../../components/MessageViewer';
-import { Segmented } from '../../components/Form';
 import { putMedia, shrinkImage } from '../../services/mediaStore';
 import { clock, mmss, relativeDay } from '../../services/time';
 import { uid } from '../../services/id';
@@ -60,13 +59,12 @@ function Bubble({ m, contact, onOpen }: { m: FamilyMessage; contact: Contact; on
 }
 
 /**
- * WhatsApp-style conversation with one person. Both sides can write on this device: choose who is
- * writing (the patient or the family member during a visit), then send text, emojis, photos or a voice note.
+ * WhatsApp-style conversation with one person. What is written here is sent by the patient:
+ * text with emojis, photos or a voice note. The family's messages arrive in the same conversation.
  */
 export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: FamilyMessage) => void }) {
   const { data, update } = useAppData();
   const { toast } = useUI();
-  const [who, setWho] = useState<MessageFrom>('paciente');
   const [text, setText] = useState('');
   const [emojis, setEmojis] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -74,7 +72,6 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
   const list = useRef<HTMLOListElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
   const msgs = data.messages.filter((m) => m.contactId === contact.id).sort((a, b) => a.createdAt - b.createdAt);
-  const patient = data.userName || 'Tú';
 
   // Opening the chat means the family's messages have been seen.
   useEffect(() => {
@@ -94,7 +91,7 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
   }, [msgs.length]);
 
   const send = (kind: MessageKind, extra: Partial<FamilyMessage> = {}) => {
-    const m: FamilyMessage = { id: uid('msg'), contactId: contact.id, kind, from: who, text: '', createdAt: Date.now(), read: true, demo: false, ...extra };
+    const m: FamilyMessage = { id: uid('msg'), contactId: contact.id, kind, from: 'paciente', text: '', createdAt: Date.now(), read: true, demo: false, ...extra };
     update((d) => ({ ...d, messages: [...d.messages, m] }));
   };
 
@@ -154,15 +151,6 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
       </ol>
 
       <div className="chat-compose">
-        <Segmented<MessageFrom>
-          label="¿Quién escribe?"
-          value={who}
-          onChange={setWho}
-          options={[
-            { value: 'paciente', label: `Escribe ${patient}` },
-            { value: 'contacto', label: `Escribe ${contact.name}` },
-          ]}
-        />
         {emojis && (
           <div className="emoji-grid" role="group" aria-label="Emojis">
             {EMOJIS.map((e) => (
@@ -197,7 +185,7 @@ export function Chat({ contact, onOpen }: { contact: Contact; onOpen: (m: Family
               className="chat-input"
               rows={1}
               value={text}
-              placeholder={`Mensaje de ${who === 'paciente' ? patient : contact.name}`}
+              placeholder={`Escribe a ${contact.name}`}
               aria-label="Escribe un mensaje"
               maxLength={1000}
               onChange={(e) => setText(e.target.value)}
