@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Flower2, Headphones, Heart, Images, Leaf, Music2, Plane, Play, Puzzle, SkipBack, SkipForward, Wind, Pause, LoaderCircle, Square, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Flower2, Headphones, Heart, Images, Leaf, Music2, Play, Puzzle, SkipBack, SkipForward, Wind, Pause, LoaderCircle, Square, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Track } from '../types';
 import { AWAKE_SCENES, LANDSCAPES, TRACKS, TRAVELS, trackById, ASSETS } from '../data/media';
 import { useAppData } from '../hooks/useAppData';
@@ -153,8 +153,24 @@ function Memories() {
   const [i, setI] = useState<number | null>(null);
   const [video, setVideo] = useState(false);
   const photos = data.photos;
+  const [travel, setTravel] = useState<number | null>(null);
   return (
     <>
+      <h2 className="list-title">Viajes</h2>
+      <ul className="landscape-grid">
+        {TRAVELS.map((t, k) => (
+          <li key={t.id}>
+            <button className="landscape-card" onClick={() => setTravel(k)}>
+              <img src={t.src} alt="" loading="lazy" decoding="async" draggable={false} />
+              <span className="memory-caption">
+                <strong>{t.title}</strong>
+                <small>{t.place}</small>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <h2 className="list-title">En familia</h2>
       <ul className="memory-grid">
         <li>
           <button className="memory memory-video" onClick={() => { audioEngine.stop(); setVideo(true); }}>
@@ -184,6 +200,7 @@ function Memories() {
           </div>
         </Sheet>
       )}
+      {travel !== null && <TravelViewer start={travel} onClose={() => setTravel(null)} />}
       {video && (
         <Sheet title="Recuerdos en familia" onClose={() => setVideo(false)} size="lg">
           <Video className="msg-video" src={ASSETS['video-recuerdos']} controls playsInline autoPlay preload="metadata" />
@@ -198,7 +215,6 @@ const SUBTITLES: Record<string, string> = {
   playlist: 'Mi playlist',
   musica: 'Música suave',
   naturaleza: 'Sonidos de naturaleza',
-  viajes: 'Recuerdos de viajes',
   recuerdos: 'Recuerdos',
 };
 
@@ -207,7 +223,6 @@ export function WorldPage() {
   const { playlist } = useFavorites();
   const [game, setGame] = useState<GameId | null>(null);
   const [relax, setRelax] = useState<'respirar' | 'meditar' | null>(null);
-  const [travel, setTravel] = useState<number | null>(null);
 
   if (sub && SUBTITLES[sub]) {
     const tracks = sub === 'playlist' ? playlist.map((id) => trackById(id)!) : TRACKS.filter((t) => t.category === sub);
@@ -220,21 +235,7 @@ export function WorldPage() {
           <h1>{SUBTITLES[sub]}</h1>
         </header>
         <div className="sub-body scroll">
-          {sub === 'viajes' ? (
-            <ul className="landscape-grid">
-              {TRAVELS.map((t, i) => (
-                <li key={t.id}>
-                  <button className="landscape-card" onClick={() => setTravel(i)}>
-                    <img src={t.src} alt="" loading="lazy" decoding="async" draggable={false} />
-                    <span className="memory-caption">
-                      <strong>{t.title}</strong>
-                      <small>{t.place}</small>
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : sub === 'recuerdos' ? (
+          {sub === 'recuerdos' ? (
             <Memories />
           ) : tracks.length === 0 ? (
             <div className="empty">
@@ -251,9 +252,8 @@ export function WorldPage() {
               ))}
             </ul>
           )}
-          {sub !== 'viajes' && sub !== 'recuerdos' && <p className="fine-print">Piezas originales de NEXO, compuestas y sintetizadas para este dispositivo. Los sonidos de naturaleza se repiten hasta que los detengas.</p>}
+          {sub !== 'recuerdos' && <p className="fine-print">Piezas originales de NEXO, compuestas y sintetizadas para este dispositivo. Los sonidos de naturaleza se repiten hasta que los detengas.</p>}
         </div>
-        {travel !== null && <TravelViewer start={travel} onClose={() => setTravel(null)} />}
       </div>
     );
   }
@@ -268,9 +268,6 @@ export function WorldPage() {
           <h1>Mi mundo</h1>
           <p className="section-sub accent">Relájate, disfruta y mantén tu mente activa.</p>
           <div className="quick-row">
-            <button className="chip" onClick={() => go('mundo', 'viajes')}>
-              <Plane strokeWidth={1.75} /> <span>Viajes</span>
-            </button>
             <button className="chip" onClick={() => go('mundo', 'recuerdos')}>
               <Images strokeWidth={1.75} /> <span>Recuerdos</span>
             </button>

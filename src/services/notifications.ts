@@ -1,6 +1,7 @@
 import type { AppData, AppNotification } from '../types';
 import { hmToLabel } from './time';
 import { nextDose, procTime } from './care';
+import { unreadFromFamily } from './messages';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const dayKey = (d: Date) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
@@ -16,8 +17,7 @@ export function deriveNotifications(data: AppData, now: Date): AppNotification[]
   const contact = (id: string) => data.contacts.find((c) => c.id === id);
 
   if (cfg.messages) {
-    for (const m of data.messages) {
-      if (m.read || m.from === 'paciente') continue; // only what the family sent
+    for (const m of unreadFromFamily(data.messages)) {
       const who = contact(m.contactId)?.name ?? 'Tu familia';
       // Demo "audio" messages are text read aloud by NEXO, not a recorded voice.
       const what = m.kind === 'video' ? 'un video' : m.kind === 'imagen' ? 'una foto' : m.kind === 'audio' && m.media ? 'un mensaje de voz' : 'un mensaje';

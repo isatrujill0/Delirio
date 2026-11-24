@@ -2477,3 +2477,6 @@ html:not([data-text='normal']) .family-card {
     min-height: 300px;
   }
 }
+.last-msg {
+  min-height: 64px;
+}

@@ -320,3 +320,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/layouts/DeviceChrome.tsx, src/styles/layout.css, tests/e2e/sound.spec.ts, tests/e2e/wellbeing.spec.ts.
 * Resultado: tsc PASS; propiedades 141/141; E2E 19/19; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:50 — Recuerdos en una sola pantalla; mensajes nuevos coherentes con el chat
+
+* Mi mundo: se quitó «Viajes» como acceso aparte. «Recuerdos» reúne todo en una sola pantalla: primero «Viajes» (las 22 fotos de viajes, con el visor y pase automático) y luego «En familia» (el video y las fotos de la familia).
+* Mi gente: un mensaje del familiar solo cuenta como nuevo si llegó después de la última respuesta de la paciente en esa conversación (si ella respondió, ya lo vio). La regla se aplica igual en el circulito de Mensajes, en la lista de conversaciones, en el aviso de Inicio y en la campana.
+* El panel «Último mensaje» ahora muestra el último mensaje real de la conversación, sea del familiar o de la paciente («Tú: …»), y al tocarlo abre el chat.
+* Datos de ejemplo corregidos: Bryan y Karen ya no aparecen con mensajes nuevos porque Leslie les había respondido; Mamá le responde a Leslie después de su pregunta, así que sus 2 mensajes sí son nuevos.
+* Pruebas: 5 propiedades nuevas (regla de mensajes nuevos, responder marca todo lo anterior como visto, último mensaje de la conversación y coherencia de los datos de ejemplo).
+* Archivos afectados: src/services/messages.ts (nuevo), src/services/notifications.ts, src/pages/PeoplePage.tsx, src/pages/HomePage.tsx, src/pages/WorldPage.tsx, src/data/demo.ts, src/styles/pages.css, tests/property/messages.test.ts (nuevo), README.md.
+* Resultado: tsc PASS; propiedades 146/146; E2E 19/19; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
