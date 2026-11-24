@@ -331,3 +331,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/messages.ts (nuevo), src/services/notifications.ts, src/pages/PeoplePage.tsx, src/pages/HomePage.tsx, src/pages/WorldPage.tsx, src/data/demo.ts, src/styles/pages.css, tests/property/messages.test.ts (nuevo), README.md.
 * Resultado: tsc PASS; propiedades 146/146; E2E 19/19; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:58 — Chat sin «Escribe Leslie / Escribe Mamá» y videollamada como una llamada real
+
+* Mi gente → Mensajes: se quitaron los botones «Escribe Leslie / Escribe Mamá». Lo que se escribe en el chat lo envía la paciente; la caja dice «Escribe a Mamá».
+* Videollamada rediseñada como una llamada real: la cámara del familiar ocupa toda la pantalla (en la demo, su foto con un movimiento suave, como alguien frente a la cámara), con nombre, punto «en vivo» y tiempo arriba; la cámara de la paciente aparece en una ventana pequeña y al tocarla se intercambian las vistas. Botones de micrófono, cámara y colgar sobre el video.
+* Sigue marcada como «Demo: llamada simulada» y explica que la cámara del familiar es su foto. Dentro de la vista previa de claude.ai el iPad puede no dar permiso de cámara (el visor no lo ofrece); en la app publicada o instalada la cámara sí funciona.
+* Pruebas: 1 E2E nuevo (chat sin selector, envío como paciente, llamada que contesta, intercambio de vistas y colgar).
+* Archivos afectados: src/pages/people/Chat.tsx, src/pages/people/VideoCall.tsx, src/styles/pages.css, tests/e2e/videocall.spec.ts (nuevo), README.md.
+* Resultado: tsc PASS; propiedades 146/146; E2E 20/20; smoke PASS; con cámara simulada de Chromium se vio el video propio en la ventana pequeña. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

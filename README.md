@@ -16,7 +16,7 @@ Que la persona sepa dónde está, qué día y qué hora es y quién la acompaña
 | Sección | Qué hace |
 |---|---|
 | **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia») con el aviso «Mensaje nuevo de …» (solo informa; los mensajes se abren en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
-| **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes o Videollamada), perfil individual con álbum de fotos, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona con texto, emojis, fotos y notas de voz en la misma conversación (escriben tanto la paciente como el familiar) y videollamada simulada. |
+| **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes o Videollamada), perfil individual con álbum de fotos, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona con texto, emojis, fotos y notas de voz en la misma conversación (lo que se escribe lo envía la paciente) y videollamada simulada con cámara propia. |
 | **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos (viajes de la familia con fotos reales en pase automático y música opcional, más fotos y video en familia), juegos cognitivos (El despertar del paisaje, con 11 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán, que se lee en voz alta y se puede responder hablando) y relajación (respiración guiada, meditación guiada por una voz femenina tranquila sobre música suave, sonidos relajantes). |
 | **Mi cuidado** | Nota del equipo de salud, “¿Cómo te sientes hoy?” (registro diario), signos vitales del monitor integrado (simulado en la demo), plan de cuidado, evolución del ánimo (gráfica de 7 días), tratamientos, procedimientos y recomendaciones por categoría. Solo informativo. |
 | **Controles** | Barra inferior inspirada en la máquina: bajar volumen, reproducir/pausar, subir volumen y campana de notificaciones. Arriba: silenciar y configuración. |
@@ -124,8 +124,8 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 - Reproductor único con reproducir, pausar, reanudar, detener, progreso con búsqueda, anterior/siguiente, volumen y favoritos guardados.
 - Audio real: 6 piezas originales y 1 video de demostración incluidos.
 - Contactos: crear, editar, eliminar (con confirmación), foto desde cámara o galería, perfil.
-- Chat por persona: burbujas de la paciente y del familiar, texto con emojis, fotos y notas de voz grabadas en el dispositivo; en el mismo equipo se elige quién escribe («Escribe Leslie» / «Escribe Mamá»). Los mensajes de demostración se leen en voz alta y están marcados.
-- Videollamada **simulada**: suena, «contesta» a los pocos segundos y muestra la foto del familiar con tu cámara en la esquina; la pantalla indica que es una simulación.
+- Chat por persona: burbujas de la paciente y del familiar, texto con emojis, fotos y notas de voz grabadas en el dispositivo; lo que se escribe lo envía la paciente. Los mensajes de demostración se leen en voz alta y están marcados.
+- Videollamada **simulada**, con la forma de una llamada real: suena, «contesta» a los pocos segundos, la cámara del familiar ocupa la pantalla (su foto con movimiento suave) y tu cámara real aparece en una ventana pequeña; al tocarla se intercambian. La pantalla indica que es una simulación. Dentro de la vista previa de claude.ai la cámara puede no estar disponible (el visor no da permiso de cámara); en la app publicada o instalada sí funciona.
 - Tratamientos y procedimientos: crear, editar, eliminar con validaciones; recordatorios.
 - Recomendaciones por categoría con lectura en voz alta.
 - Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); nota del equipo editable por el personal.
