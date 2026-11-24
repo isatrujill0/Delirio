@@ -285,3 +285,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: .github/workflows/deploy.yml (nuevo), README.md, CAMBIOS.md.
 * Resultado: la compilación de producción pasa localmente. La publicación no se ha verificado en GitHub porque Pages aún no está activado.
 * Estado: En progreso (esperando la activación de Pages).
+
+10:29 — Corrección: tarjetas encimadas en pantallas bajas (vista previa en iPad)
+
+* Problema reportado por el usuario con una foto: en el iPad, dentro de la vista previa de claude.ai (con las barras de Safari y del visor), NEXO tiene unos 640 px de alto; en Mi mundo y Mi cuidado las tarjetas quedaban encima de los controles inferiores y no se podía llegar a Música, Juegos ni Relajación.
+* Reproducido a 1130 × 640: 10 botones de Mi mundo y 8 de Mi cuidado quedaban debajo de la barra de controles.
+* Corrección: cuando la pantalla horizontal mide menos de 740 px de alto, cada sección ocupa lo que necesita y se desplaza dentro de su área, sin tapar los controles (las mismas reglas que ya se usaban con texto grande). A 1180 × 820 el diseño no cambia.
+* Comprobado en 1130 × 640, 1180 × 700, 1180 × 600 y 1024 × 560: ningún botón queda debajo de los controles en las cuatro secciones.
+* Archivos afectados: src/styles/pages.css.
+* Resultado: tsc PASS; propiedades 138/138; E2E 18/18; smoke PASS. Sin probar todavía en el iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
