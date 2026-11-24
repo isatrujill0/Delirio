@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pause, Play, RotateCcw } from 'lucide-react';
+import { Pause, Play, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { Sheet } from '../../components/Sheet';
 import { audioEngine } from '../../services/audioEngine';
 import { trackById } from '../../data/media';
@@ -77,10 +77,16 @@ const STEPS = [
 ];
 const STEP_SECONDS = 25;
 
-/** Three-minute guided meditation: on-screen steps over a calm music track. */
+/** Three-minute guided meditation: each step is shown on screen and read by a calm female voice over soft music. */
 export function Meditation({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(-1);
+  const [voiceOn, setVoiceOn] = useState(true);
   const startedMusic = useRef(false);
+
+  // Voices load lazily in some browsers: ask early so the first step already uses the right one.
+  useEffect(() => {
+    if (typeof speechSynthesis !== 'undefined') speechSynthesis.getVoices();
+  }, []);
 
   useEffect(() => {
     if (step < 0 || step >= STEPS.length) return;
@@ -88,8 +94,20 @@ export function Meditation({ onClose }: { onClose: () => void }) {
     return () => window.clearTimeout(t);
   }, [step]);
 
+  // Read each step aloud (and the closing words), after a short breath of music.
+  useEffect(() => {
+    if (step < 0 || !voiceOn) return;
+    const text = step >= STEPS.length ? 'Terminaste la meditación. Quédate un momento así, en calma.' : STEPS[step];
+    const t = window.setTimeout(() => audioEngine.narrate(text), step === 0 ? 1500 : 600);
+    return () => {
+      window.clearTimeout(t);
+      audioEngine.stopNarration();
+    };
+  }, [step, voiceOn]);
+
   useEffect(
     () => () => {
+      audioEngine.stopNarration();
       if (startedMusic.current) audioEngine.stop();
     },
     [],
@@ -108,7 +126,7 @@ export function Meditation({ onClose }: { onClose: () => void }) {
       <div className="meditation">
         {step < 0 ? (
           <>
-            <p className="lead">Tres minutos para soltar la tensión, con música suave.</p>
+            <p className="lead">Tres minutos para soltar la tensión, con música suave y una voz que te guía.</p>
             <button className="btn btn-primary" onClick={start}>
               <Play size={20} /> Empezar
             </button>
@@ -131,6 +149,9 @@ export function Meditation({ onClose }: { onClose: () => void }) {
               ))}
             </div>
             <div className="game-foot center">
+              <button className="btn btn-ghost" onClick={() => setVoiceOn((v) => !v)} aria-pressed={voiceOn}>
+                {voiceOn ? <Volume2 size={20} /> : <VolumeX size={20} />} {voiceOn ? 'Voz guía activada' : 'Solo música'}
+              </button>
               <button className="btn btn-ghost" onClick={() => setStep((s) => Math.min(STEPS.length, s + 1))}>
                 Siguiente paso
               </button>

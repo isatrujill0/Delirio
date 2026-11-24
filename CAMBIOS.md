@@ -295,3 +295,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/styles/pages.css.
 * Resultado: tsc PASS; propiedades 138/138; E2E 18/18; smoke PASS. Sin probar todavía en el iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:35 — Meditación guiada con voz femenina sobre la música
+
+* A pedido del usuario, cada paso de la meditación (Mi mundo → Relajación → Meditación) además de verse en pantalla lo lee una voz femenina en español, lenta y suave, mientras sigue sonando la música. Mientras habla, la música baja un poco y luego vuelve a su volumen.
+* La voz se elige entre las del dispositivo: femenina en español, prefiriendo la de Colombia y luego la de México (en iPad, por ejemplo «Paulina» o «Mónica»). Si no hay una femenina, usa otra voz en español.
+* Botón «Voz guía activada / Solo música» para quien prefiera escuchar solo la música. Silenciar NEXO también calla la voz. Al terminar, la voz dice la frase de cierre.
+* Pruebas: 3 propiedades nuevas (elegir siempre una voz femenina en español si existe, preferir Colombia y México, nunca una voz en otro idioma); 1 E2E nuevo (la voz lee los pasos con la música sonando, y «Solo música» la calla).
+* Archivos afectados: src/services/audioEngine.ts, src/pages/world/Relax.tsx, tests/property/audio-voice.test.ts (nuevo), tests/e2e/meditation-voice.spec.ts (nuevo), README.md.
+* Resultado: tsc PASS; propiedades 141/141; E2E 19/19; smoke PASS. La voz real depende de las voces instaladas en el iPad y no se ha escuchado en el dispositivo físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

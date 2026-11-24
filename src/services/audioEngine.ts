@@ -45,6 +45,27 @@ export function volumeToGain(volume: number, muted: boolean): number {
  * iPadOS ignores HTMLMediaElement.volume, so media is routed through a Web Audio GainNode
  * (created on the first user gesture) to make the volume buttons really work.
  */
+/** Spanish variants, most preferred first (Colombia, then Latin America, then Spain). */
+const ES_PREFERENCE = ['es-CO', 'es-MX', 'es-US', 'es-419', 'es-AR', 'es-CL', 'es-ES'];
+/** Voice names (iPadOS, macOS, Windows, Chrome) that are female; and male ones to avoid. */
+const FEMALE_NAMES = /paulina|m[oó]nica|marisol|soledad|ang[eé]lica|isabela|francisca|paloma|helena|laura|luc[ií]a|elena|esperanza|sabina|dalia|elvira|salom[eé]|ximena|catalina|camila|valentina|paola|female|mujer|google espa[ñn]ol de estados unidos/i;
+const MALE_NAMES = /jorge|diego|juan|carlos|pablo|ra[uú]l|[aá]lvaro|enrique|gonzalo|andr[eé]s|eddy|reed|rocko|grandpa|male(?!.*female)|hombre/i;
+
+/**
+ * Calm narrator voice: a Spanish female voice when the device has one (preferring Colombian and
+ * Latin American Spanish), otherwise any Spanish voice. Null when there is no Spanish voice.
+ */
+export function pickNarratorVoice<V extends { name: string; lang: string }>(voices: V[]): V | null {
+  const spanish = voices.filter((v) => v.lang.toLowerCase().startsWith('es'));
+  if (!spanish.length) return null;
+  const rank = (v: V) => {
+    const female = FEMALE_NAMES.test(v.name) ? 0 : MALE_NAMES.test(v.name) ? 2 : 1;
+    const i = ES_PREFERENCE.findIndex((l) => l.toLowerCase() === v.lang.toLowerCase().replace('_', '-'));
+    return female * 100 + (i < 0 ? ES_PREFERENCE.length : i);
+  };
+  return [...spanish].sort((a, b) => rank(a) - rank(b))[0];
+}
+
 class AudioEngine {
   private el: HTMLAudioElement | null = null;
   private ctx: AudioContext | null = null;
@@ -57,6 +78,7 @@ class AudioEngine {
   private speechElapsed = 0;
   private speechTimer: number | undefined;
   private ownedUrl: string | null = null;
+  private narrating = 0;
   /** Called when a media file finishes (used by the playlist to advance). */
   onEnded: ((id: string | null) => void) | null = null;
 
@@ -112,6 +134,7 @@ class AudioEngine {
 
   setVolume(volume: number, muted: boolean) {
     this.level = volumeToGain(volume, muted);
+    if (this.level === 0) this.stopNarration();
     if (this.gain && this.ctx) this.gain.gain.setTargetAtTime(this.level, this.ctx.currentTime, 0.05);
     else if (this.el) this.el.volume = this.level;
     // An utterance's volume is fixed once it starts: muting has to stop the voice itself.
@@ -228,6 +251,57 @@ class AudioEngine {
       this.ownedUrl = null;
     }
     if (this.state.kind !== 'none') this.set({ ...EMPTY });
+  }
+
+  /**
+   * Narrator voice over whatever is playing (e.g. the meditation music): a calm female Spanish voice,
+   * slow and soft. The music is lowered while the voice speaks and restored after. Does nothing when
+   * muted or when the device cannot speak; `onEnd` is still called so callers can keep going.
+   */
+  narrate(text: string, onEnd?: () => void) {
+    this.stopNarration();
+    if (typeof speechSynthesis === 'undefined' || this.level === 0) {
+      onEnd?.();
+      return;
+    }
+    const id = ++this.narrating;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'es-CO';
+    const voice = pickNarratorVoice(speechSynthesis.getVoices());
+    if (voice) {
+      try {
+        u.voice = voice;
+        u.lang = voice.lang;
+      } catch {
+        /* the browser refused this voice: the default Spanish voice still reads the step */
+      }
+    }
+    u.rate = 0.82;
+    u.pitch = 1.05;
+    u.volume = Math.min(1, Math.sqrt(this.level) * 1.1);
+    const finish = () => {
+      if (id !== this.narrating) return;
+      this.duck(false);
+      onEnd?.();
+    };
+    u.onstart = () => this.duck(true);
+    u.onend = finish;
+    u.onerror = finish;
+    speechSynthesis.speak(u);
+  }
+
+  stopNarration() {
+    if (!this.narrating) return;
+    this.narrating++;
+    this.duck(false);
+    if (typeof speechSynthesis !== 'undefined' && this.state.kind !== 'speech') speechSynthesis.cancel();
+  }
+
+  /** Lowers the music to let the narrator be heard (and back). */
+  private duck(on: boolean) {
+    const target = on ? this.level * 0.35 : this.level;
+    if (this.gain && this.ctx) this.gain.gain.setTargetAtTime(target, this.ctx.currentTime, on ? 0.25 : 0.6);
+    else if (this.el) this.el.volume = target;
   }
 
   /** Short tone for games (synthesized). */
