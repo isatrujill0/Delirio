@@ -5,7 +5,7 @@
 NEXO es una máquina inteligente de bienestar y conexión familiar pensada para acompañar a una persona hospitalizada (por ejemplo, en una UCI) desde la mesa de noche. El hardware es un **iPad Air de 11 pulgadas en horizontal** y esta aplicación web es el software que le da vida: no es una página web sobre NEXO, es la pantalla del dispositivo.
 
 Vista previa actual (privada): https://claude.ai/artifact/JpmgYYNtLgyiwFb3FSWezo
-Publicación en GitHub Pages: pendiente.
+Publicación en GitHub Pages: automática desde `main` (ver «Despliegue en GitHub Pages»).
 
 ## Objetivo
 
@@ -90,7 +90,11 @@ Otros comandos:
 
 ## Despliegue en GitHub Pages
 
-Pendiente de configurar (se hará al final). La app ya está preparada: Vite usa `base: './'`, por lo que funciona en cualquier subruta (`https://usuario.github.io/NEXO/`), y la navegación es interna (no usa rutas de URL), así que no hay errores 404 al recargar. Falta crear el workflow de GitHub Actions y activar Pages en el repositorio.
+El workflow `.github/workflows/deploy.yml` compila la app y la publica cada vez que cambia `main` (también se puede lanzar a mano desde la pestaña Actions → «Publicar en GitHub Pages» → Run workflow). Vite usa `base: './'`, así que funciona en la subruta del repositorio, y la navegación es interna, sin errores 404 al recargar.
+
+Activación (una sola vez, la hace el dueño del repositorio): Settings → Pages → Source: **GitHub Actions**. La dirección queda como `https://isatrujill0.github.io/Delirio/`.
+
+Importante: el repositorio es privado. GitHub Pages desde un repositorio privado requiere un plan de pago (GitHub Pro, Team o Enterprise); con el plan gratuito hay que hacer el repositorio público. En ambos casos el sitio publicado es público para quien tenga el enlace (incluidas las fotos de la familia de demostración).
 
 ## Instalar en el iPad (PWA)
 
@@ -135,7 +139,7 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 
 ## Funcionalidades pendientes
 
-- Publicación en GitHub Pages con GitHub Actions.
+- Activar GitHub Pages en la configuración del repositorio (el workflow ya está listo).
 - Videollamadas reales y que los mensajes lleguen al teléfono de la familia (requieren un servicio externo; hoy el chat y los audios viven en el propio dispositivo y la videollamada es simulada).
 - Clima real (requiere un servicio meteorológico; hoy es un dato de ejemplo editable).
 - Conexión con un monitor real e historia clínica (hoy el monitor integrado está simulado y los tratamientos se registran a mano).
