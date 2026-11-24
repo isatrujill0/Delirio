@@ -26,3 +26,27 @@ test('Vuelo del colibrí: sin cámara se juega con el dedo y el colibrí sigue e
   await page.waitForTimeout(500);
   expect(await birdY()).toBe(paused);
 });
+
+test('Vuelo del colibrí: chocar con un arco termina la ronda y «Jugar otra vez» la reinicia', async ({ page }) => {
+  await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi mundo' }).click();
+  await page.getByRole('button', { name: /Vuelo del colibrí/ }).first().click();
+  const game = page.getByRole('dialog', { name: 'Vuelo del colibrí' });
+  await game.getByRole('button', { name: 'Empezar' }).click();
+  const canvas = game.locator('.flight-canvas');
+  const box = (await canvas.boundingBox())!;
+  // Openings are never at the very top, so keeping the bird there hits the first arch.
+  await page.mouse.move(box.x + box.width / 2, box.y + 4);
+  await page.mouse.down();
+  const over = game.getByRole('alert');
+  await expect(over).toContainText('¡Chocaste!', { timeout: 15_000 });
+  await expect(over).toContainText('Pasaste 0 arcos');
+  await page.mouse.up();
+  const frozen = await canvas.getAttribute('data-bird');
+  await page.waitForTimeout(400);
+  expect(await canvas.getAttribute('data-bird')).toBe(frozen); // stopped
+
+  await over.getByRole('button', { name: 'Jugar otra vez' }).click();
+  await expect(game.getByRole('alert')).toHaveCount(0);
+  await expect(game.getByRole('button', { name: 'Pausar' })).toBeVisible();
+  await expect.poll(async () => Number(await canvas.getAttribute('data-bird'))).toBeCloseTo(0.5, 1); // fresh round
+});

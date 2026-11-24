@@ -1,8 +1,10 @@
 /**
  * Finds the patient's face in the camera image, on the device: the small "tiny face detector"
- * model (190 KB, in public/models) runs in the browser; nothing is recorded or sent anywhere.
+ * model (190 KB, bundled with the app) runs in the browser; nothing is recorded or sent anywhere.
  * The library is loaded only when a face game opens, so the rest of NEXO stays light.
  */
+import manifest from '../assets/models/tiny_face_detector_model-weights_manifest.json';
+import modelUrl from '../assets/models/tiny_face_detector_model.bin?url';
 
 export interface FacePosition {
   /** Face centre, 0–1 across and down the camera image. */
@@ -16,18 +18,18 @@ export interface FaceTracker {
   detect(video: HTMLVideoElement): Promise<FacePosition | null>;
 }
 
-// The Claude preview build cannot use the camera, so it does not carry the library at all.
-const loadLibrary = import.meta.env.MODE === 'artifact' ? null : () => import('@vladmandic/face-api');
-
 let tracker: Promise<FaceTracker | null> | null = null;
 
 export function loadFaceTracker(): Promise<FaceTracker | null> {
   if (!tracker) {
     tracker = (async () => {
-      if (!loadLibrary) return null;
       try {
-        const faceapi = await loadLibrary();
-        await faceapi.nets.tinyFaceDetector.loadFromUri(new URL('./models', document.baseURI).href);
+        const faceapi = await import('@vladmandic/face-api');
+        // The weights travel inside the app (an asset, or inlined in the single-file preview),
+        // so the model works offline and wherever the app is opened.
+        const bin = await (await fetch(modelUrl)).arrayBuffer();
+        const weights = faceapi.tf.io.decodeWeights(bin, manifest[0].weights as Parameters<typeof faceapi.tf.io.decodeWeights>[1]);
+        faceapi.nets.tinyFaceDetector.loadFromWeightMap(weights);
         const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.4 });
         return {
           async detect(video) {
@@ -39,7 +41,7 @@ export function loadFaceTracker(): Promise<FaceTracker | null> {
           },
         };
       } catch {
-        tracker = null; // allow a later retry (e.g. it was offline the first time)
+        tracker = null; // allow a later retry
         return null;
       }
     })();

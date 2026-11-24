@@ -110,7 +110,7 @@ Importante: el repositorio es privado. GitHub Pages desde un repositorio privado
 - El sonido solo empieza después de un toque (política de reproducción de iOS).
 - Grabar mensajes de voz requiere permiso de micrófono y funciona solo en HTTPS o `localhost`.
 - La lectura en voz alta usa las voces instaladas en el iPad; la calidad depende de ellas. La meditación elige una voz femenina en español si el iPad la tiene (por ejemplo «Paulina» o «Mónica»); si no, usa la voz en español disponible.
-- «Vuelo del colibrí» usa la cámara frontal y un detector de caras que corre dentro del iPad (librería face-api, modelo de 190 KB en `public/models`); la imagen no se graba ni se envía. Dentro de la vista previa de claude.ai no hay cámara, así que allí se juega con el dedo.
+- «Vuelo del colibrí» usa la cámara frontal y un detector de caras que corre dentro del iPad (librería face-api, modelo de 190 KB empaquetado con la app); la imagen no se graba ni se envía. Si tocas un arco, la ronda termina y puedes jugar otra vez. La vista previa de claude.ai ya incluye el detector, pero allí la cámara solo funciona si el visor lo permite; si no, se juega con el dedo.
 - Responder los refranes con la voz usa el reconocimiento de voz del navegador (Safari en iPad lo tiene). Puede necesitar internet y permiso de micrófono; si no está disponible, el juego lo dice y se responde tocando. Aún no se ha probado en un iPad físico.
 - iPadOS puede borrar los datos de sitios web que no se usan en varias semanas; instalada como app de pantalla de inicio, esa limpieza es mucho menos probable.
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Hand, Pause, Play, ScanFace, Trophy } from 'lucide-react';
+import { Hand, Pause, Play, RotateCcw, ScanFace, Trophy } from 'lucide-react';
 import { Sheet } from '../../components/Sheet';
 import { useAppData } from '../../hooks/useAppData';
 import { audioEngine } from '../../services/audioEngine';
@@ -119,7 +119,7 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
   const [cam, setCam] = useState<CamState>('apagada');
   const [running, setRunning] = useState(false);
   const [score, setScore] = useState(0);
-  const [note, setNote] = useState('');
+  const [over, setOver] = useState(false);
   const canvas = useRef<HTMLCanvasElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const state = useRef<FlightState>(initialFlight());
@@ -223,9 +223,12 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
             audioEngine.tone(784, 0.35);
             setScore(next.score);
           } else {
-            audioEngine.tone(262, 0.3);
-            setNote('¡Casi! Sigue intentando.');
-            window.setTimeout(() => setNote(''), 1600);
+            // Touching an arch ends the round: show the result and offer to start again.
+            audioEngine.tone(262, 0.4);
+            setRunning(false);
+            setOver(true);
+            if (next.score > (data.scores.vuelo ?? 0)) update((d) => ({ ...d, scores: { ...d.scores, vuelo: next.score } }));
+            break;
           }
         }
       }
@@ -235,7 +238,16 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running]);
+
+  const restart = () => {
+    state.current = initialFlight();
+    target.current = 0.5;
+    setScore(0);
+    setOver(false);
+    setRunning(true);
+  };
 
   const close = () => {
     if (score > best) update((d) => ({ ...d, scores: { ...d.scores, vuelo: score } }));
@@ -252,19 +264,19 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
     mode === 'dedo'
       ? cam === 'no-disponible'
         ? 'La cámara no está disponible aquí: mueve el colibrí con el dedo.'
-        : 'Desliza el dedo hacia arriba o hacia abajo.'
+        : 'Desliza el dedo para pasar por el hueco de cada arco sin tocarlo.'
       : cam === 'pidiendo'
         ? 'Encendiendo la cámara…'
         : cam === 'calibrando'
           ? 'Mira de frente a la pantalla, quieta, un momento…'
           : cam === 'sin-cara'
             ? 'No veo tu cara. Acércate un poco a la pantalla.'
-            : 'Sube o baja la cabeza para guiar al colibrí.';
+            : 'Sube o baja la cabeza para pasar por el hueco de cada arco sin tocarlo.';
 
   return (
     <Sheet title="Vuelo del colibrí" onClose={close} size="full">
       <p className="game-hint" aria-live="polite">
-        {note || status}
+        {over ? `¡Chocaste! Pasaste ${score} ${score === 1 ? 'arco' : 'arcos'}.` : status}
       </p>
       <div className="flight">
         <canvas
@@ -275,6 +287,17 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
           role="img"
           aria-label={`Colibrí volando entre arcos de flores. Arcos superados: ${score}`}
         />
+        {over && (
+          <div className="flight-over" role="alert">
+            <strong>¡Chocaste!</strong>
+            <span className="num">
+              Pasaste {score} {score === 1 ? 'arco' : 'arcos'} · Tu mejor: {Math.max(best, score)}
+            </span>
+            <button className="btn btn-primary" onClick={restart}>
+              <RotateCcw size={20} /> Jugar otra vez
+            </button>
+          </div>
+        )}
         {mode === 'cabeza' && (
           <div className={`flight-cam ${cam === 'lista' ? 'is-ok' : ''}`}>
             <video ref={video} playsInline muted autoPlay />
@@ -290,9 +313,11 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
           <button className="btn btn-ghost" onClick={() => setMode((m) => (m === 'cabeza' ? 'dedo' : 'cabeza'))} disabled={cam === 'no-disponible' && mode === 'dedo'}>
             {mode === 'cabeza' ? <Hand size={20} /> : <ScanFace size={20} />} {mode === 'cabeza' ? 'Jugar con el dedo' : 'Jugar con la cabeza'}
           </button>
-          <button className="btn btn-primary" onClick={() => setRunning((r) => !r)} disabled={mode === 'cabeza' && cam !== 'lista' && !running}>
-            {running ? <Pause size={20} /> : <Play size={20} />} {running ? 'Pausar' : score || state.current.arches.length ? 'Continuar' : 'Empezar'}
-          </button>
+          {!over && (
+            <button className="btn btn-primary" onClick={() => setRunning((r) => !r)} disabled={mode === 'cabeza' && cam !== 'lista' && !running}>
+              {running ? <Pause size={20} /> : <Play size={20} />} {running ? 'Pausar' : score || state.current.arches.length ? 'Continuar' : 'Empezar'}
+            </button>
+          )}
         </div>
       </div>
       <p className="fine-print">La cámara solo se usa en este iPad para seguir tu cara; no se graba ni se envía a ningún lugar.</p>
