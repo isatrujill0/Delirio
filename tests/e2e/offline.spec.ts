@@ -15,7 +15,7 @@ test('tras la primera visita la app abre y reproduce música sin conexión', asy
       const name = (await caches.keys()).find((k) => k.startsWith('nexo-'));
       if (!name) return ['(no cache yet)'];
       const cached = new Set((await (await caches.open(name)).keys()).map((r) => new URL(r.url).pathname));
-      return [...files.map((f) => `/${f}`), '/models/tiny_face_detector_model.bin'].filter((p) => !cached.has(p));
+      return files.map((f) => `/${f}`).filter((p) => !cached.has(p)); // includes the face model (a bundled asset)
     });
   await expect.poll(missing, { timeout: 20_000 }).toEqual([]);
   expect((await page.evaluate(() => fetch('/precache.json').then((r) => r.json()))).length).toBeGreaterThan(10);

@@ -364,3 +364,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/games.ts, src/pages/people/Chat.tsx, src/data/demo.ts, src/styles/pages.css, tests/e2e/new-messages.spec.ts (nuevo), tests/e2e/voice-proverb.spec.ts, tests/property/messages.test.ts.
 * Resultado: tsc PASS; propiedades 152/152; E2E 22/22; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+15:45 — Vuelo del colibrí: chocar reinicia y la vista previa ya incluye el detector de caras
+
+* Regla nueva pedida por el usuario: si el colibrí no pasa por el hueco entre las dos partes del arco y lo toca, la ronda termina («¡Chocaste! Pasaste N arcos · Tu mejor: …») y el botón «Jugar otra vez» la reinicia desde cero. Se guarda el mejor puntaje.
+* Cámara en la vista previa: antes la vista previa (archivo único) no incluía el detector de caras, así que nunca podía usar la cámara. Ahora el modelo va empaquetado dentro de la app (y dentro del archivo único de la vista previa) y la librería también. Probado sirviendo el archivo de la vista previa con una cámara simulada: el colibrí siguió la cara. Que la cámara se encienda dentro del visor de claude.ai depende de que el visor lo permita; si no, el juego pasa al modo dedo y lo dice.
+* El modelo dejó de estar en public/models: ahora es un recurso de la compilación (queda en la lista de archivos para uso sin conexión). Caché del service worker: nexo-v4.
+* Tamaños: vista previa 13,6 MB (antes 12,0 MB; límite 16 MB); JavaScript principal de la app sin cambio (323 kB).
+* Pruebas: 1 E2E nuevo (chocar termina la ronda, el colibrí se detiene y «Jugar otra vez» reinicia); la prueba sin conexión ya cuenta el modelo dentro de la lista de la compilación.
+* Archivos afectados: src/pages/world/HeadFlight.tsx, src/services/faceTracker.ts, src/assets/models/* (movidos desde public/models), public/sw.js, src/styles/pages.css, tests/e2e/flight.spec.ts, tests/e2e/offline.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 152/152; E2E 23/23; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
