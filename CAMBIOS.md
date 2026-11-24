@@ -305,3 +305,10 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/audioEngine.ts, src/pages/world/Relax.tsx, tests/property/audio-voice.test.ts (nuevo), tests/e2e/meditation-voice.spec.ts (nuevo), README.md.
 * Resultado: tsc PASS; propiedades 141/141; E2E 19/19; smoke PASS. La voz real depende de las voces instaladas en el iPad y no se ha escuchado en el dispositivo físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:44 — Etiqueta «Tu familia» sin tapar caras
+
+* En Inicio, la etiqueta con corazón «Tu familia» tapaba la cara de una persona de la foto. Ahora es más pequeña y está en la esquina superior izquierda, sobre el fondo de la foto.
+* Archivos afectados: src/pages/HomePage.tsx, src/styles/pages.css.
+* Resultado: revisado a 1180 × 820 y a 1130 × 640 (vista previa en iPad); propiedades 141/141; E2E 19/19; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

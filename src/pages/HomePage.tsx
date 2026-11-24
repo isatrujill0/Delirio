@@ -76,7 +76,7 @@ function FamilyCard() {
       <article className="family-card" aria-label="Tu familia">
         <MediaImage src={cover} alt="Foto de tu familia" className="family-photo" />
         <span className="family-label">
-          <Heart size={26} strokeWidth={1.8} aria-hidden="true" /> Tu familia
+          <Heart size={16} strokeWidth={2} aria-hidden="true" /> Tu familia
         </span>
       </article>
       {notice && (
