@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Flower2, Headphones, Heart, Images, Leaf, Mountain, Music2, Play, Puzzle, SkipBack, SkipForward, Wind, Pause, LoaderCircle, Square, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Flower2, Headphones, Heart, Images, Leaf, Music2, Plane, Play, Puzzle, SkipBack, SkipForward, Wind, Pause, LoaderCircle, Square, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Track } from '../types';
-import { LANDSCAPES, TRACKS, trackById, ASSETS } from '../data/media';
+import { AWAKE_SCENES, LANDSCAPES, TRACKS, TRAVELS, trackById, ASSETS } from '../data/media';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { usePlayer, audioEngine } from '../hooks/usePlayer';
@@ -110,36 +110,37 @@ function TrackRow({ t }: { t: Track }) {
   );
 }
 
-function LandscapeViewer({ start, onClose }: { start: number; onClose: () => void }) {
+/** Full-screen slideshow of the family's trip photos, with optional calm music. */
+function TravelViewer({ start, onClose }: { start: number; onClose: () => void }) {
   const [i, setI] = useState(start);
   const [auto, setAuto] = useState(true);
-  const scene = LANDSCAPES[i];
+  const photo = TRAVELS[i];
   useEffect(() => {
     if (!auto) return;
-    const t = window.setTimeout(() => setI((x) => (x + 1) % LANDSCAPES.length), 12000);
+    const t = window.setTimeout(() => setI((x) => (x + 1) % TRAVELS.length), 9000);
     return () => window.clearTimeout(t);
   }, [auto, i]);
-  const sound = trackById(scene.soundId)!;
+  const music = trackById('amanecer-sereno')!;
   const player = usePlayer();
   return (
-    <Sheet title={scene.title} onClose={onClose} size="full" bare>
+    <Sheet title={photo.title} onClose={onClose} size="full" bare>
       <div className="viewer">
-        <LandscapeArt scene={scene} className="viewer-img kenburns" key={scene.id} />
+        <img className="viewer-img kenburns" src={photo.src} alt={`${photo.title}, ${photo.place}`} key={photo.id} draggable={false} />
         <div className="viewer-bar">
-          <button className="round-btn" onClick={() => setI((i - 1 + LANDSCAPES.length) % LANDSCAPES.length)} aria-label="Paisaje anterior">
+          <button className="round-btn" onClick={() => setI((i - 1 + TRAVELS.length) % TRAVELS.length)} aria-label="Recuerdo anterior">
             <ChevronLeft />
           </button>
           <p>
-            <strong>{scene.title}</strong> <span className="muted">· {scene.place}</span>
+            <strong>{photo.title}</strong> <span className="muted">· {photo.place} · <span className="num">{i + 1} de {TRAVELS.length}</span></span>
           </p>
-          <button className="round-btn" onClick={() => setI((i + 1) % LANDSCAPES.length)} aria-label="Paisaje siguiente">
+          <button className="round-btn" onClick={() => setI((i + 1) % TRAVELS.length)} aria-label="Recuerdo siguiente">
             <ChevronRight />
           </button>
           <button className="pill-btn" onClick={() => setAuto((a) => !a)} aria-pressed={auto}>
             {auto ? 'Pausar pase' : 'Pase automático'}
           </button>
-          <button className="pill-btn" onClick={() => (player.id === sound.id && player.status !== 'idle' ? audioEngine.toggle() : audioEngine.playMedia({ id: sound.id, title: sound.title, subtitle: sound.subtitle, src: sound.src, loop: true }))}>
-            {player.id === sound.id && player.status === 'playing' ? <Pause size={18} /> : <Play size={18} />} {sound.title}
+          <button className="pill-btn" onClick={() => (player.id === music.id && player.status !== 'idle' ? audioEngine.toggle() : audioEngine.playMedia({ id: music.id, title: music.title, subtitle: music.subtitle, src: music.src }))}>
+            {player.id === music.id && player.status === 'playing' ? <Pause size={18} /> : <Play size={18} />} Música: {music.title}
           </button>
         </div>
       </div>
@@ -197,7 +198,7 @@ const SUBTITLES: Record<string, string> = {
   playlist: 'Mi playlist',
   musica: 'Música suave',
   naturaleza: 'Sonidos de naturaleza',
-  paisajes: 'Paisajes',
+  viajes: 'Recuerdos de viajes',
   recuerdos: 'Recuerdos',
 };
 
@@ -206,7 +207,7 @@ export function WorldPage() {
   const { playlist } = useFavorites();
   const [game, setGame] = useState<GameId | null>(null);
   const [relax, setRelax] = useState<'respirar' | 'meditar' | null>(null);
-  const [landscape, setLandscape] = useState<number | null>(null);
+  const [travel, setTravel] = useState<number | null>(null);
 
   if (sub && SUBTITLES[sub]) {
     const tracks = sub === 'playlist' ? playlist.map((id) => trackById(id)!) : TRACKS.filter((t) => t.category === sub);
@@ -219,15 +220,15 @@ export function WorldPage() {
           <h1>{SUBTITLES[sub]}</h1>
         </header>
         <div className="sub-body scroll">
-          {sub === 'paisajes' ? (
+          {sub === 'viajes' ? (
             <ul className="landscape-grid">
-              {LANDSCAPES.map((l, i) => (
-                <li key={l.id}>
-                  <button className="landscape-card" onClick={() => setLandscape(i)}>
-                    <LandscapeArt scene={l} />
+              {TRAVELS.map((t, i) => (
+                <li key={t.id}>
+                  <button className="landscape-card" onClick={() => setTravel(i)}>
+                    <img src={t.src} alt="" loading="lazy" decoding="async" draggable={false} />
                     <span className="memory-caption">
-                      <strong>{l.title}</strong>
-                      <small>{l.place}</small>
+                      <strong>{t.title}</strong>
+                      <small>{t.place}</small>
                     </span>
                   </button>
                 </li>
@@ -250,9 +251,9 @@ export function WorldPage() {
               ))}
             </ul>
           )}
-          {sub !== 'paisajes' && sub !== 'recuerdos' && <p className="fine-print">Piezas originales de NEXO, compuestas y sintetizadas para este dispositivo. Los sonidos de naturaleza se repiten hasta que los detengas.</p>}
+          {sub !== 'viajes' && sub !== 'recuerdos' && <p className="fine-print">Piezas originales de NEXO, compuestas y sintetizadas para este dispositivo. Los sonidos de naturaleza se repiten hasta que los detengas.</p>}
         </div>
-        {landscape !== null && <LandscapeViewer start={landscape} onClose={() => setLandscape(null)} />}
+        {travel !== null && <TravelViewer start={travel} onClose={() => setTravel(null)} />}
       </div>
     );
   }
@@ -267,8 +268,8 @@ export function WorldPage() {
           <h1>Mi mundo</h1>
           <p className="section-sub accent">Relájate, disfruta y mantén tu mente activa.</p>
           <div className="quick-row">
-            <button className="chip" onClick={() => go('mundo', 'paisajes')}>
-              <Mountain strokeWidth={1.75} /> <span>Paisajes</span>
+            <button className="chip" onClick={() => go('mundo', 'viajes')}>
+              <Plane strokeWidth={1.75} /> <span>Viajes</span>
             </button>
             <button className="chip" onClick={() => go('mundo', 'recuerdos')}>
               <Images strokeWidth={1.75} /> <span>Recuerdos</span>
@@ -303,7 +304,7 @@ export function WorldPage() {
           </span>
         </div>
         <ul className="col-list">
-          <ColItem art={<LandscapeArt scene={LANDSCAPES[2]} />} label="El despertar del paisaje" effort="Muy bajo" level={0} onOpen={() => setGame('despertar')} />
+          <ColItem art={<img src={AWAKE_SCENES[0].src} alt="" />} label="El despertar del paisaje" effort="Muy bajo" level={0} onOpen={() => setGame('despertar')} />
           <ColItem art={<span className="art-lights" />} label="Eco de luces" effort="Medio" level={1} onOpen={() => setGame('eco')} />
           <ColItem art={<span className="art-quote">“ ”</span>} label="Completa el refrán" effort="Avanzado" level={2} onOpen={() => setGame('refran')} />
         </ul>

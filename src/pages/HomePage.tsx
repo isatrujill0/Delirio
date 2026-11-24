@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { ArrowRight, Heart, MapPin, MoreHorizontal, Music2, CalendarClock, Pill } from 'lucide-react';
+import { Heart, MapPin, MessageCircle, CalendarClock, Pill } from 'lucide-react';
 import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { useNow } from '../hooks/useNow';
-import { clock, longDate, partOfDay, timeAgo, mmss, hmToLabel, relativeDay } from '../services/time';
+import { clock, longDate, partOfDay, hmToLabel, relativeDay } from '../services/time';
 import { nextDose, orderProcedures } from '../services/care';
 import { MediaImage, DemoTag } from '../components/Media';
-import { PlayButton, StopButton, Waveform } from '../components/PlayerControls';
-import { MessageViewer, messageDuration, useMessageControl } from '../components/MessageViewer';
 import { Sheet } from '../components/Sheet';
 import { WeatherArt } from '../components/WeatherArt';
 
@@ -61,63 +59,38 @@ function NextUp() {
           </span>
         </button>
       )}
-      <button className="chip" onClick={() => go('mundo')}>
-        <Music2 strokeWidth={1.75} />
-        <span>
-          <small>Mi mundo</small>
-          Escuchar algo tranquilo
-        </span>
-      </button>
     </div>
   );
 }
 
 function FamilyCard() {
   const { data } = useAppData();
-  const { go, toast } = useUI();
-  const [open, setOpen] = useState(false);
-  const latest = [...data.messages].filter((m) => m.kind !== 'video').sort((a, b) => b.createdAt - a.createdAt)[0];
-  const contact = data.contacts.find((c) => c.id === latest?.contactId);
-  const from = contact?.name ?? 'Tu familia';
-  const { player, isThis, playing, toggle } = useMessageControl(latest, from, (m) => toast(m, 'error'));
   const cover = data.photos[0]?.src;
-  const unread = data.messages.filter((m) => !m.read).length;
-
+  // A notice only: the card is not tappable. Messages are opened from Mi gente.
+  const unread = data.messages.filter((m) => !m.read && m.from !== 'paciente').sort((x, y) => y.createdAt - x.createdAt);
+  const names = [...new Set(unread.map((m) => data.contacts.find((c) => c.id === m.contactId)?.name).filter(Boolean))] as string[];
+  const notice =
+    unread.length === 0 ? null : names.length === 1 ? `${unread.length === 1 ? 'Mensaje nuevo' : `${unread.length} mensajes nuevos`} de ${names[0]}` : `Mensajes nuevos de ${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;
   return (
-    <article className={`family-card ${playing ? 'is-playing' : ''}`}>
-      <MediaImage src={cover} alt="Foto de tu familia" className="family-photo" />
-      <button className="pill-btn family-more" onClick={() => go('gente', 'mensajes')}>
-        Ver mensajes{unread > 0 && <span className="badge-inline num">{unread}</span>} <ArrowRight size={20} />
-      </button>
-      {latest ? (
-        <div className="family-bar">
-          <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`mensaje de ${from}`} size="lg" />
-          <Waveform active={playing} />
-          <div className="family-bar-text">
-            <strong>Mensaje de tu familia</strong>
-            <small className="num">
-              {from} · {timeAgo(latest.createdAt, Date.now())} · {isThis && player.status !== 'idle' ? `${mmss(player.position)} / ${mmss(player.duration)}` : mmss(messageDuration(latest))}
-            </small>
-          </div>
-          {isThis && player.status !== 'idle' ? (
-            <StopButton label="mensaje" />
-          ) : (
-            <button className="icon-btn icon-btn-soft" onClick={() => setOpen(true)} aria-label="Ver el mensaje completo">
-              <MoreHorizontal />
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="family-bar">
-          <div className="family-bar-text">
-            <strong>Aún no hay mensajes</strong>
-            <small>Tu familia puede dejarte mensajes en Mi gente.</small>
-          </div>
-        </div>
+    <div className="home-right">
+      <article className="family-card" aria-label="Tu familia">
+        <MediaImage src={cover} alt="Foto de tu familia" className="family-photo" />
+        <span className="family-label">
+          <Heart size={26} strokeWidth={1.8} aria-hidden="true" /> Tu familia
+        </span>
+      </article>
+      {notice && (
+        <p className="family-notice glass">
+          <span className="family-notice-icon" aria-hidden="true">
+            <MessageCircle size={24} strokeWidth={1.8} />
+          </span>
+          <span>
+            <strong>{notice}</strong>
+            <small>Ábrelos en Mi gente</small>
+          </span>
+        </p>
       )}
-      {latest?.demo && <DemoTag />}
-      {open && latest && <MessageViewer message={latest} contact={contact} onClose={() => setOpen(false)} onError={(m) => toast(m, 'error')} />}
-    </article>
+    </div>
   );
 }
 

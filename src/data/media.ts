@@ -2,7 +2,10 @@ import type { Landscape, Track } from '../types';
 import familia from '../assets/img/familia.jpg';
 import mama from '../assets/img/mama.jpg';
 import papa from '../assets/img/papa.jpg';
-import daniela from '../assets/img/daniela.jpg';
+import mamaYLeslie from '../assets/img/mama-y-leslie.jpg';
+import rafa from '../assets/img/rafa.jpg';
+import karen from '../assets/img/karen.jpg';
+import bryan from '../assets/img/bryan.jpg';
 import amanecer from '../assets/audio/amanecer-sereno.m4a';
 import brisa from '../assets/audio/brisa-de-tarde.m4a';
 import calma from '../assets/audio/calma-de-noche.m4a';
@@ -10,13 +13,49 @@ import bosque from '../assets/audio/bosque.m4a';
 import lluvia from '../assets/audio/lluvia.m4a';
 import mar from '../assets/audio/mar.m4a';
 import videoRecuerdos from '../assets/video/recuerdos-en-familia.mp4';
+import islaMontanas from '../assets/img/paisajes/isla-montanas.jpg';
+import atardecerPalmeras from '../assets/img/paisajes/atardecer-palmeras.jpg';
+import praderaFlores from '../assets/img/paisajes/pradera-flores.jpg';
+import guacamayoMar from '../assets/img/paisajes/guacamayo-mar.jpg';
+import granBuda from '../assets/img/paisajes/gran-buda.jpg';
+import elefantesSelva from '../assets/img/paisajes/elefantes-selva.jpg';
+import fujiPagoda from '../assets/img/paisajes/fuji-pagoda.jpg';
+import moaisAtardecer from '../assets/img/paisajes/moais-atardecer.jpg';
+import pandaBambu from '../assets/img/paisajes/panda-bambu.jpg';
+import auroraBoreal from '../assets/img/paisajes/aurora-boreal.jpg';
+import lunaCiudad from '../assets/img/paisajes/luna-ciudad.jpg';
+import machuPicchu from '../assets/img/viajes/machu-picchu.jpg';
+import tajMahal from '../assets/img/viajes/taj-mahal.jpg';
+import tajMahalMeditando from '../assets/img/viajes/taj-mahal-meditando.jpg';
+import cristoRedentor from '../assets/img/viajes/cristo-redentor.jpg';
+import torreIluminada from '../assets/img/viajes/torre-iluminada.jpg';
+import globosDeLuz from '../assets/img/viajes/globos-de-luz.jpg';
+import caminataRio from '../assets/img/viajes/caminata-rio.jpg';
+import miradorMontana from '../assets/img/viajes/mirador-montana.jpg';
+import picnicPlaya from '../assets/img/viajes/picnic-playa.jpg';
+import crucero from '../assets/img/viajes/crucero.jpg';
+import cumpleanos from '../assets/img/viajes/cumpleanos.jpg';
+import perritos from '../assets/img/viajes/perritos.jpg';
+import burjKhalifa from '../assets/img/viajes/burj-khalifa.jpg';
+import kimonosTemplo from '../assets/img/viajes/kimonos-templo.jpg';
+import puenteMontanas from '../assets/img/viajes/puente-montanas.jpg';
+import comidaSeul from '../assets/img/viajes/comida-seul.jpg';
+import nuevaYork from '../assets/img/viajes/nueva-york.jpg';
+import disneyland from '../assets/img/viajes/disneyland.jpg';
+import nieve from '../assets/img/viajes/nieve.jpg';
+import diaDeMuertos from '../assets/img/viajes/dia-de-muertos.jpg';
+import concierto from '../assets/img/viajes/concierto.jpg';
+import busDeColores from '../assets/img/viajes/bus-de-colores.jpg';
 
 /** Bundled assets addressable as "asset:<key>" from persisted data. */
 export const ASSETS: Record<string, string> = {
   familia,
   mama,
   papa,
-  daniela,
+  'mama-y-leslie': mamaYLeslie,
+  rafa,
+  karen,
+  bryan,
   'video-recuerdos': videoRecuerdos,
 };
 
@@ -36,6 +75,54 @@ export const LANDSCAPES: Landscape[] = [
   { id: 'lago', title: 'Lago al amanecer', place: 'Agua quieta y neblina', soundId: 'mar', palette: ['#23407a', '#4f7fc4', '#9cc3ec', '#d9e6ff', '#fff3d9'], sun: 'sol' },
   { id: 'valle', title: 'Valle verde', place: 'Colinas después de la lluvia', soundId: 'lluvia', palette: ['#1f4a5e', '#3f8a7e', '#8cc9a0', '#cfe9c8', '#f3f7dc'], sun: 'sol' },
   { id: 'noche', title: 'Noche estrellada', place: 'Cielo despejado sobre los cerros', soundId: 'bosque', palette: ['#0d1033', '#1f2466', '#3c3f95', '#7b72cf', '#d8d2ff'], sun: 'luna' },
+];
+
+export interface TravelMemory {
+  id: string;
+  title: string;
+  place: string;
+  src: string;
+}
+
+/** "Recuerdos de viajes" in Mi mundo: the family's real trip and home photos (shared with permission). */
+export const TRAVELS: TravelMemory[] = [
+  { id: 'machu-picchu', title: 'Machu Picchu', place: 'Perú', src: machuPicchu },
+  { id: 'taj-mahal', title: 'Taj Mahal', place: 'India', src: tajMahal },
+  { id: 'taj-mahal-meditando', title: 'Meditando en el Taj Mahal', place: 'India', src: tajMahalMeditando },
+  { id: 'cristo-redentor', title: 'Cristo Redentor', place: 'Río de Janeiro, Brasil', src: cristoRedentor },
+  { id: 'burj-khalifa', title: 'Burj Khalifa', place: 'Dubái, Emiratos Árabes Unidos', src: burjKhalifa },
+  { id: 'kimonos-templo', title: 'En kimono frente al templo', place: 'Japón', src: kimonosTemplo },
+  { id: 'puente-montanas', title: 'Puente entre montañas', place: 'Japón', src: puenteMontanas },
+  { id: 'comida-seul', title: 'Comida coreana', place: 'Seúl, Corea del Sur', src: comidaSeul },
+  { id: 'nueva-york', title: 'Por las calles de Nueva York', place: 'Nueva York, Estados Unidos', src: nuevaYork },
+  { id: 'disneyland', title: 'Un día en Disneyland', place: 'California, Estados Unidos', src: disneyland },
+  { id: 'torre-iluminada', title: 'Bajo la torre iluminada', place: 'Una noche de viaje', src: torreIluminada },
+  { id: 'globos-de-luz', title: 'Entre globos de luz', place: 'Una exposición de luces', src: globosDeLuz },
+  { id: 'caminata-rio', title: 'Caminata junto al río', place: 'Entre montañas y pinos', src: caminataRio },
+  { id: 'nieve', title: 'Jugando en la nieve', place: 'Un viaje de invierno', src: nieve },
+  { id: 'mirador-montana', title: 'Mirador en la montaña', place: 'Mirando el valle juntos', src: miradorMontana },
+  { id: 'picnic-playa', title: 'Pícnic en la playa', place: 'Frente al mar', src: picnicPlaya },
+  { id: 'crucero', title: 'En el crucero', place: 'Viaje en familia', src: crucero },
+  { id: 'dia-de-muertos', title: 'Día de Muertos', place: 'México', src: diaDeMuertos },
+  { id: 'concierto', title: 'En el escenario', place: 'En concierto', src: concierto },
+  { id: 'bus-de-colores', title: 'De paseo en el bus de colores', place: 'Un viaje con amigos', src: busDeColores },
+  { id: 'cumpleanos', title: 'Cumpleaños en familia', place: 'En casa', src: cumpleanos },
+  { id: 'perritos', title: 'Con los perritos', place: 'En casa', src: perritos },
+];
+
+/** Real photos for the game "El despertar del paisaje" (supplied by the user), in play order. */
+export const AWAKE_SCENES: { id: string; title: string; src: string }[] = [
+  { id: 'isla-montanas', title: 'Isla entre montañas', src: islaMontanas },
+  { id: 'atardecer-palmeras', title: 'Atardecer con palmeras', src: atardecerPalmeras },
+  { id: 'pradera-flores', title: 'Pradera con flores', src: praderaFlores },
+  { id: 'guacamayo-mar', title: 'Guacamayo frente al mar', src: guacamayoMar },
+  { id: 'gran-buda', title: 'El gran Buda entre árboles', src: granBuda },
+  { id: 'elefantes-selva', title: 'Elefantes en el río', src: elefantesSelva },
+  { id: 'fuji-pagoda', title: 'Monte Fuji y cerezos', src: fujiPagoda },
+  { id: 'moais-atardecer', title: 'Moáis al atardecer', src: moaisAtardecer },
+  { id: 'panda-bambu', title: 'Panda en el bambú', src: pandaBambu },
+  { id: 'aurora-boreal', title: 'Aurora boreal sobre la nieve', src: auroraBoreal },
+  { id: 'luna-ciudad', title: 'Luna llena sobre la ciudad', src: lunaCiudad },
 ];
 
 export const trackById = (id: string) => TRACKS.find((t) => t.id === id);

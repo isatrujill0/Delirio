@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES } from '../../src/services/wellbeing';
+import { upsertMood, lastDays, moodTrend, validateVitals, isoDay, VITAL_RANGES, simulateVitalsStep, SIM_RANGES, REFERENCE_RANGES, vitalStatus, vitalTrend, type VitalKey } from '../../src/services/wellbeing';
 import type { MoodValue } from '../../src/types';
 
 const cfg = (seed: number, numRuns = 300) => ({ seed, numRuns });
@@ -123,12 +123,14 @@ describe('wellbeing: validateVitals', () => {
     heartRate: fc.integer({ min: R.heartRate.min, max: R.heartRate.max }),
     respRate: fc.integer({ min: R.respRate.min, max: R.respRate.max }),
     spo2: fc.integer({ min: R.spo2.min, max: R.spo2.max }),
+    systolic: fc.integer({ min: R.systolic.min, max: R.systolic.max }),
+    diastolic: fc.integer({ min: R.diastolic.min, max: R.diastolic.max }),
   });
   it('in-range values never error', () => {
     fc.assert(fc.property(inRange, (v) => { expect(validateVitals(v)).toEqual({}); }), cfg(514));
   });
   it('an out-of-range (or non-finite) field always errors, only on that field', () => {
-    const field = fc.constantFrom('heartRate', 'respRate', 'spo2' as const);
+    const field = fc.constantFrom('heartRate', 'respRate', 'spo2', 'systolic', 'diastolic' as const);
     fc.assert(fc.property(inRange, field, fc.boolean(), fc.integer({ min: 1, max: 1000 }), (v, f, high, d) => {
       const r = R[f as keyof typeof R];
       const bad = high ? r.max + d : r.min - d;
@@ -140,6 +142,73 @@ describe('wellbeing: validateVitals', () => {
     }), cfg(516, 20));
   });
   it('boundaries are inclusive', () => {
-    expect(validateVitals({ heartRate: R.heartRate.min, respRate: R.respRate.max, spo2: R.spo2.max })).toEqual({});
+    expect(validateVitals({ heartRate: R.heartRate.min, respRate: R.respRate.max, spo2: R.spo2.max, systolic: R.systolic.min, diastolic: R.diastolic.max })).toEqual({});
+  });
+});
+
+describe('wellbeing: simulateVitalsStep (labelled demo simulation)', () => {
+  const vit = fc.record({ heartRate: fc.integer({ min: -50, max: 300 }), respRate: fc.integer({ min: -10, max: 100 }), spo2: fc.integer({ min: 0, max: 120 }), systolic: fc.integer({ min: 0, max: 300 }), diastolic: fc.integer({ min: 0, max: 200 }) });
+  const rand = fc.double({ min: 0, max: 1, maxExcluded: true, noNaN: true });
+  it('always stays inside the plausible ranges, whatever the starting values', () => {
+    fc.assert(fc.property(vit, rand, (v, r) => {
+      const n = simulateVitalsStep(v, () => r);
+      for (const k of Object.keys(SIM_RANGES) as (keyof typeof SIM_RANGES)[]) {
+        expect(Number.isInteger(n[k])).toBe(true);
+        expect(n[k]).toBeGreaterThanOrEqual(SIM_RANGES[k].min);
+        expect(n[k]).toBeLessThanOrEqual(SIM_RANGES[k].max);
+      }
+    }), cfg(620, 500));
+  });
+  it('from an in-range value, each step moves at most `step` (no jumps)', () => {
+    const inRange = fc.record({ heartRate: fc.integer({ min: 68, max: 92 }), respRate: fc.integer({ min: 14, max: 20 }), spo2: fc.integer({ min: 94, max: 98 }), systolic: fc.integer({ min: 108, max: 128 }), diastolic: fc.integer({ min: 68, max: 82 }) });
+    fc.assert(fc.property(inRange, rand, (v, r) => {
+      const n = simulateVitalsStep(v, () => r);
+      for (const k of Object.keys(SIM_RANGES) as (keyof typeof SIM_RANGES)[]) expect(Math.abs(n[k] - v[k])).toBeLessThanOrEqual(SIM_RANGES[k].step);
+    }), cfg(621, 500));
+  });
+  it('a long walk keeps moving (it is not stuck) and never leaves the ranges', () => {
+    fc.assert(fc.property(fc.integer(), (seed) => {
+      let s = seed | 0;
+      const r = () => { s = (s * 1103515245 + 12345) | 0; return ((s >>> 0) % 10000) / 10000; };
+      let v = { heartRate: 72, respRate: 16, spo2: 97, systolic: 118, diastolic: 76 };
+      const seen = new Set<number>();
+      for (let i = 0; i < 200; i++) { v = simulateVitalsStep(v, r); seen.add(v.heartRate); }
+      expect(seen.size).toBeGreaterThan(1);
+    }), cfg(622, 100));
+  });
+});
+
+describe('wellbeing: monitor analysis (status and trend, never a diagnosis)', () => {
+  const key = fc.constantFrom<VitalKey>('heartRate', 'respRate', 'spo2', 'systolic', 'diastolic');
+  it('vitalStatus matches the reference range exactly (boundaries are in range)', () => {
+    fc.assert(fc.property(key, fc.integer({ min: -50, max: 300 }), (k, x) => {
+      const r = REFERENCE_RANGES[k];
+      expect(vitalStatus(k, x)).toBe(x < r.min ? 'bajo' : x > r.max ? 'alto' : 'en-rango');
+    }), cfg(623, 500));
+  });
+  it('every simulated reading of the demo monitor is in range', () => {
+    fc.assert(fc.property(fc.double({ min: 0, max: 1, maxExcluded: true, noNaN: true }), (r) => {
+      let v = { heartRate: 72, respRate: 16, spo2: 97, systolic: 118, diastolic: 76 };
+      for (let i = 0; i < 50; i++) {
+        v = simulateVitalsStep(v, () => r);
+        for (const k of ['heartRate', 'respRate', 'spo2', 'systolic', 'diastolic'] as VitalKey[]) expect(vitalStatus(k, v[k])).toBe('en-rango');
+      }
+    }), cfg(624, 200));
+  });
+  it('vitalTrend: flat series are stable; rising/falling beyond tolerance are detected; reversing flips it', () => {
+    fc.assert(fc.property(fc.integer({ min: 6, max: 40 }), fc.integer({ min: 40, max: 120 }), fc.integer({ min: 2, max: 5 }), (n, base, slope) => {
+      expect(vitalTrend(Array(n).fill(base), 1)).toBe('estable');
+      const up = Array.from({ length: n }, (_, i) => base + i * slope);
+      expect(vitalTrend(up, 1)).toBe('sube');
+      expect(vitalTrend([...up].reverse(), 1)).toBe('baja');
+    }), cfg(625));
+  });
+  it('vitalTrend: fewer than 6 readings is always stable; jitter within tolerance is stable', () => {
+    fc.assert(fc.property(fc.array(fc.integer({ min: 0, max: 200 }), { maxLength: 5 }), (v) => {
+      expect(vitalTrend(v, 1)).toBe('estable');
+    }), cfg(626));
+    fc.assert(fc.property(fc.array(fc.integer({ min: 70, max: 72 }), { minLength: 6, maxLength: 40 }), (v) => {
+      expect(vitalTrend(v, 2)).toBe('estable');
+    }), cfg(627));
   });
 });

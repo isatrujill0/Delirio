@@ -17,10 +17,10 @@ export function deriveNotifications(data: AppData, now: Date): AppNotification[]
 
   if (cfg.messages) {
     for (const m of data.messages) {
-      if (m.read) continue;
+      if (m.read || m.from === 'paciente') continue; // only what the family sent
       const who = contact(m.contactId)?.name ?? 'Tu familia';
       // Demo "audio" messages are text read aloud by NEXO, not a recorded voice.
-      const what = m.kind === 'video' ? 'un video' : m.kind === 'audio' && m.media ? 'un mensaje de voz' : 'un mensaje';
+      const what = m.kind === 'video' ? 'un video' : m.kind === 'imagen' ? 'una foto' : m.kind === 'audio' && m.media ? 'un mensaje de voz' : 'un mensaje';
       out.push({ id: `msg:${m.id}`, kind: 'mensaje', title: `${who} te envió ${what}`, body: `${m.demo ? 'Ejemplo · ' : ''}${m.text.slice(0, 90)}`, section: 'gente' });
     }
   }

@@ -24,7 +24,7 @@ test('tras la primera visita la app abre y reproduce música sin conexión', asy
     if (r.status() === 206) ranged.push({ status: 206, range: r.headers()['content-range'] ?? null, sw: r.fromServiceWorker() });
   });
   await reload(page);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 
   // Music (Range requests) is served from the cache.
   await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi mundo' }).click();

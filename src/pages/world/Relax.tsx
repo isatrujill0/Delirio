@@ -67,13 +67,13 @@ export function Breathing({ onClose }: { onClose: () => void }) {
 }
 
 const STEPS = [
-  'Acomódate como estés más cómodo. Deja que la cama sostenga tu cuerpo.',
+  'Acomódate de la forma que te resulte más cómoda. Deja que la cama sostenga tu cuerpo.',
   'Lleva la atención a tu respiración. No tienes que cambiarla, solo notarla.',
   'Siente tus manos. Déjalas pesadas y tranquilas.',
   'Afloja los hombros y la frente. Suelta la mandíbula.',
   'Piensa en un lugar donde te sientas en paz. Míralo con calma.',
   'Recuerda a alguien que te quiere. Siente que te acompaña.',
-  'Vuelve despacio a la habitación. Estás cuidado y acompañado.',
+  'Vuelve despacio a la habitación. Hay personas cuidándote y acompañándote.',
 ];
 const STEP_SECONDS = 25;
 
@@ -115,7 +115,7 @@ export function Meditation({ onClose }: { onClose: () => void }) {
           </>
         ) : done ? (
           <>
-            <p className="lead">Terminaste la meditación. Quédate un momento así, tranquilo.</p>
+            <p className="lead">Terminaste la meditación. Quédate un momento así, en calma.</p>
             <button className="btn btn-primary" onClick={start}>
               <RotateCcw size={20} /> Repetir
             </button>

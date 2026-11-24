@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { RotateCcw, Volume2, Trophy } from 'lucide-react';
+import { Mic, RotateCcw, Volume2, Trophy, ArrowRight } from 'lucide-react';
 import { Sheet } from '../../components/Sheet';
-import { LandscapeArt } from '../../components/Landscape';
-import { LANDSCAPES } from '../../data/media';
+import { AWAKE_SCENES } from '../../data/media';
 import { useAppData } from '../../hooks/useAppData';
 import { audioEngine } from '../../services/audioEngine';
-import { PROVERBS, proverbOptions, extendSequence, checkEcho, revealFraction } from '../../services/games';
+import { PROVERBS, proverbOptions, extendSequence, checkEcho, revealFraction, matchSpokenAnswer } from '../../services/games';
+import { canListen, useSpeechAnswer } from '../../hooks/useSpeechAnswer';
 
 export type GameId = 'despertar' | 'eco' | 'refran';
 
@@ -22,6 +22,7 @@ function Awakening({ onClose }: { onClose: () => void }) {
   const [spots, setSpots] = useState<{ x: number; y: number }[]>([]);
   const { best, record } = useBestScore('despertar');
   const done = revealFraction(spots.length) >= 1;
+  const current = AWAKE_SCENES[scene % AWAKE_SCENES.length];
   const notes = [523, 587, 659, 784, 880, 988, 1047];
 
   const tap = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -38,16 +39,22 @@ function Awakening({ onClose }: { onClose: () => void }) {
     <Sheet title="El despertar del paisaje" onClose={onClose} size="full">
       <p className="game-hint">{done ? '¡Despertaste el paisaje! Respira y disfrútalo.' : 'Toca la pantalla con calma para despejar la neblina.'}</p>
       <div className="awake" onPointerDown={tap} role="button" tabIndex={0} aria-label="Toca para despejar la neblina" onKeyDown={(e) => e.key === 'Enter' && setSpots((s) => [...s, { x: 20 + s.length * 10, y: 50 }])}>
-        <LandscapeArt scene={LANDSCAPES[scene % LANDSCAPES.length]} className="awake-art" />
+        <img className="awake-art" src={current.src} alt={current.title} key={current.id} draggable={false} />
         <div className={`awake-mist ${done ? 'is-clear' : ''}`} style={spots.length ? { WebkitMaskImage: mask, maskImage: mask, WebkitMaskComposite: 'source-in', maskComposite: 'intersect' } : undefined} />
       </div>
       <div className="game-foot">
         <span className="muted num">
-          <Trophy size={18} /> Paisajes despertados: {best}
+          <Trophy size={18} /> Paisajes despertados: {best} · Paisaje {(scene % AWAKE_SCENES.length) + 1} de {AWAKE_SCENES.length}
         </span>
-        <button className="btn btn-primary" onClick={() => { setSpots([]); setScene((s) => s + 1); }}>
-          <RotateCcw size={20} /> {done ? 'Otro paisaje' : 'Empezar de nuevo'}
-        </button>
+        {done ? (
+          <button className="btn btn-primary" onClick={() => { setSpots([]); setScene((s) => s + 1); }}>
+            Siguiente paisaje <ArrowRight size={20} />
+          </button>
+        ) : (
+          <button className="btn btn-ghost" onClick={() => setSpots([])} disabled={spots.length === 0}>
+            <RotateCcw size={20} /> Empezar de nuevo
+          </button>
+        )}
       </div>
     </Sheet>
   );
@@ -135,15 +142,47 @@ function Proverbs({ onClose }: { onClose: () => void }) {
   const [chosen, setChosen] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const { best, record } = useBestScore('refran');
+  const voice = useSpeechAnswer();
   const p = PROVERBS[round % PROVERBS.length];
   const finished = round >= PROVERBS.length;
+  const startText = p.start.replace('…', '');
+
+  /** Says the proverb and the three numbered options, so it can be played without reading. */
+  const sayRound = () =>
+    audioEngine.playSpeech({
+      id: 'refran',
+      title: 'Completa el refrán',
+      subtitle: 'Juego',
+      text: `${startText}... Opción 1: ${options[0]}. Opción 2: ${options[1]}. Opción 3: ${options[2]}.`,
+    });
+
+  // Every new proverb is read aloud as it appears.
+  useEffect(() => {
+    if (!finished) sayRound();
+    return () => audioEngine.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [round, finished]);
 
   const choose = (o: string) => {
     if (chosen) return;
+    voice.stop();
     setChosen(o);
     const ok = o === p.end;
     audioEngine.tone(ok ? 880 : 330, 0.5);
     if (ok) setScore((s) => s + 1);
+    window.setTimeout(
+      () => audioEngine.playSpeech({ id: 'refran', title: 'Completa el refrán', subtitle: 'Juego', text: ok ? `¡Correcto! ${startText}, ${p.end}.` : `Casi. El refrán es: ${startText}, ${p.end}.` }),
+      500,
+    );
+  };
+
+  const answerByVoice = () => {
+    audioEngine.stop();
+    voice.listen((heard) => {
+      const i = matchSpokenAnswer(heard, options);
+      if (i === null) voice.setError(`Te escuché decir «${heard[0] ?? ''}». No coincide con ninguna opción: dila otra vez o di su número.`);
+      else choose(options[i]);
+    });
   };
   const next = () => {
     const r = round + 1;
@@ -179,19 +218,28 @@ function Proverbs({ onClose }: { onClose: () => void }) {
           </p>
           <div className="proverb-start">
             <h3>{p.start}</h3>
-            <button className="icon-btn icon-btn-soft" onClick={() => audioEngine.playSpeech({ id: 'refran', title: 'Completa el refrán', subtitle: 'Juego', text: p.start.replace('…', '') })} aria-label="Escuchar el refrán">
+            <button className="icon-btn icon-btn-soft" onClick={sayRound} aria-label="Escuchar el refrán y las opciones">
               <Volume2 />
             </button>
           </div>
           <div className="proverb-options">
-            {options.map((o) => (
+            {options.map((o, i) => (
               <button key={o} className={`option ${chosen ? (o === p.end ? 'is-right' : o === chosen ? 'is-wrong' : '') : ''}`} onClick={() => choose(o)} disabled={!!chosen && o !== chosen && o !== p.end}>
-                …{o}
+                <span className="option-num num" aria-hidden="true">{i + 1}</span> …{o}
               </button>
             ))}
           </div>
+          {!chosen && (
+            <div className="voice-answer">
+              <button className={`btn ${voice.listening ? 'btn-primary is-listening' : 'btn-ghost'}`} onClick={voice.listening ? voice.stop : answerByVoice} disabled={!canListen()} aria-pressed={voice.listening}>
+                <Mic size={22} /> {voice.listening ? 'Te escucho… di la respuesta' : 'Responder con la voz'}
+              </button>
+              {!canListen() && <small className="muted">Este navegador no permite responder con la voz; toca la respuesta.</small>}
+              {voice.error && <p className="field-error" role="alert">{voice.error}</p>}
+            </div>
+          )}
           <p className="game-hint" aria-live="polite">
-            {chosen ? (chosen === p.end ? '¡Correcto!' : `Era: “${p.end}”.`) : 'Elige cómo termina.'}
+            {chosen ? (chosen === p.end ? '¡Correcto!' : `Era: “${p.end}”.`) : canListen() ? 'Toca la respuesta o dila en voz alta.' : 'Elige cómo termina.'}
           </p>
           {chosen && (
             <button className="btn btn-primary" onClick={next}>

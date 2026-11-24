@@ -15,10 +15,10 @@ Que la persona sepa dónde está, qué día y qué hora es y quién la acompaña
 
 | Sección | Qué hace |
 |---|---|
-| **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, último mensaje de la familia (reproducir, pausar, detener), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
-| **Mi gente** | Carrusel de familiares, perfil individual, agregar/editar/eliminar contactos, mensajes de voz, video y texto, grabación de mensajes de voz, álbum de fotos por persona. |
-| **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, paisajes ilustrados, recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, Eco de luces, Completa el refrán) y relajación (respiración guiada, meditación, sonidos relajantes). |
-| **Mi cuidado** | Nota del equipo de salud, “¿Cómo te sientes hoy?” (registro diario), signos vitales registrados por el personal, plan de cuidado, evolución del ánimo (gráfica de 7 días), tratamientos, procedimientos y recomendaciones por categoría. Solo informativo. |
+| **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia») con el aviso «Mensaje nuevo de …» (solo informa; los mensajes se abren en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
+| **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes o Videollamada), perfil individual con álbum de fotos, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona con texto, emojis, fotos y notas de voz en la misma conversación (escriben tanto la paciente como el familiar) y videollamada simulada. |
+| **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos de viajes (fotos reales de la familia en pase automático con música opcional), recuerdos (fotos y video), juegos cognitivos (El despertar del paisaje, con 11 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán, que se lee en voz alta y se puede responder hablando) y relajación (respiración guiada, meditación, sonidos relajantes). |
+| **Mi cuidado** | Nota del equipo de salud, “¿Cómo te sientes hoy?” (registro diario), signos vitales del monitor integrado (simulado en la demo), plan de cuidado, evolución del ánimo (gráfica de 7 días), tratamientos, procedimientos y recomendaciones por categoría. Solo informativo. |
 | **Controles** | Barra inferior inspirada en la máquina: bajar volumen, reproducir/pausar, subir volumen y campana de notificaciones. Arriba: silenciar y configuración. |
 | **Configuración** | Nombre, volumen, tamaño de texto, reducir movimiento, notificaciones, ubicación y clima de ejemplo, información de la app y restablecer datos de demostración. |
 
@@ -106,6 +106,7 @@ Pendiente de configurar (se hará al final). La app ya está preparada: Vite usa
 - El sonido solo empieza después de un toque (política de reproducción de iOS).
 - Grabar mensajes de voz requiere permiso de micrófono y funciona solo en HTTPS o `localhost`.
 - La lectura en voz alta usa las voces instaladas en el iPad; la calidad depende de ellas.
+- Responder los refranes con la voz usa el reconocimiento de voz del navegador (Safari en iPad lo tiene). Puede necesitar internet y permiso de micrófono; si no está disponible, el juego lo dice y se responde tocando. Aún no se ha probado en un iPad físico.
 - iPadOS puede borrar los datos de sitios web que no se usan en varias semanas; instalada como app de pantalla de inicio, esa limpieza es mucho menos probable.
 
 ### Qué funciona sin conexión
@@ -119,10 +120,12 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 - Reproductor único con reproducir, pausar, reanudar, detener, progreso con búsqueda, anterior/siguiente, volumen y favoritos guardados.
 - Audio real: 6 piezas originales y 1 video de demostración incluidos.
 - Contactos: crear, editar, eliminar (con confirmación), foto desde cámara o galería, perfil.
-- Mensajes: voz grabada en el dispositivo, video, texto; los de demostración se leen en voz alta y están marcados.
+- Chat por persona: burbujas de la paciente y del familiar, texto con emojis, fotos y notas de voz grabadas en el dispositivo; en el mismo equipo se elige quién escribe («Escribe Leslie» / «Escribe Mamá»). Los mensajes de demostración se leen en voz alta y están marcados.
+- Videollamada **simulada**: suena, «contesta» a los pocos segundos y muestra la foto del familiar con tu cámara en la esquina; la pantalla indica que es una simulación.
 - Tratamientos y procedimientos: crear, editar, eliminar con validaciones; recordatorios.
 - Recomendaciones por categoría con lectura en voz alta.
-- Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); signos vitales y nota del equipo editables por el personal.
+- Registro de ánimo diario y gráfica «Tu ánimo» (lo que la persona registró, sin valoraciones clínicas); nota del equipo editable por el personal.
+- **Monitor integrado** (Tu salud): ritmo cardíaco, respiración, oxigenación y presión arterial en vivo (cada 3 s), con mini gráfica de los últimos 2 minutos, tendencia (sube, baja, sin cambios) y si cada valor está dentro del rango de referencia (60–100 lpm, 12–20 rpm, 94–100 %, 90–130 / 60–85 mmHg). Sin diagnósticos: fuera de rango solo se invita a avisar a la enfermera. En esta demo el monitor está **simulado** (valores de una persona tranquila en cama: 68–92 lpm, 14–20 rpm, 94–98 %, 108–128 / 68–82 mmHg) y la tarjeta lo dice («Demo: datos simulados»). El personal también puede escribir los valores a mano con el PIN; esos quedan fijos.
 - Notificaciones dentro de la app con insignia, aviso sonoro y configuración por tipo.
 - Modo cuidador: agregar, editar o eliminar personas, mensajes, fotos, tratamientos, procedimientos, signos, la nota del equipo y restablecer datos piden un PIN (de demostración: **1234**; se cambia en Configuración → Contenido). Queda desbloqueado 10 minutos o hasta tocar «Bloquear». Es una barrera contra toques accidentales, no una medida de seguridad.
 - Configuración persistente; restablecer datos de demostración.
@@ -133,12 +136,12 @@ Todo, después de la primera visita: al instalarse, el service worker guarda la 
 ## Funcionalidades pendientes
 
 - Publicación en GitHub Pages con GitHub Actions.
-- Videollamadas y envío de mensajes desde el paciente hacia la familia (requieren un servicio externo; hoy la familia deja los mensajes en el propio dispositivo).
+- Videollamadas reales y que los mensajes lleguen al teléfono de la familia (requieren un servicio externo; hoy el chat y los audios viven en el propio dispositivo y la videollamada es simulada).
 - Clima real (requiere un servicio meteorológico; hoy es un dato de ejemplo editable).
-- Integración con monitores o historia clínica (hoy los signos y tratamientos se registran a mano).
+- Conexión con un monitor real e historia clínica (hoy el monitor integrado está simulado y los tratamientos se registran a mano).
 - Sincronización entre dispositivos (requiere un servidor y base de datos).
 - Prueba en un iPad físico (las pruebas actuales son en Chromium con el tamaño del iPad).
 
 ## Datos de demostración
 
-Todas las personas, mensajes, fotos, tratamientos, procedimientos, recomendaciones, el historial de ánimo, los signos vitales, la nota del equipo y el clima iniciales son ficticios y aparecen marcados como “Demostración” o “Ejemplo”. Mi cuidado es informativo: no diagnostica ni cambia tratamientos.
+Las fotos de la familia de demostración (la paciente Leslie, Mamá, Papá, su hermano Rafa, su hermana Karen y su novio Bryan) son reales y se usan con permiso de esas personas, según confirmó quien desarrolla el proyecto. Los mensajes, los datos de contacto, los tratamientos, procedimientos, recomendaciones, el historial de ánimo, los signos vitales, la nota del equipo y el clima iniciales son ficticios y aparecen marcados como “Demostración” o “Ejemplo”. Mi cuidado es informativo: no diagnostica ni cambia tratamientos.

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
-import { PROVERBS, proverbOptions, extendSequence, checkEcho, revealFraction } from '../../src/services/games';
+import { PROVERBS, proverbOptions, extendSequence, checkEcho, revealFraction, matchSpokenAnswer } from '../../src/services/games';
 
 const cfg = (seed: number, numRuns = 300) => ({ seed, numRuns });
 const endings = PROVERBS.map((p) => p.end);
@@ -94,5 +94,33 @@ describe('games: revealFraction', () => {
       expect(revealFraction(0, n)).toBe(0);
     }), cfg(409));
     expect(revealFraction(7)).toBe(1);
+  });
+});
+
+describe('games: matchSpokenAnswer (answering the proverb by voice)', () => {
+  const optionSets = fc.integer({ min: 0, max: PROVERBS.length - 1 }).chain((i) => fc.integer().map((seed) => proverbOptions(i, mulberry32(seed))));
+  const filler = fc.constantFrom('', 'eh ', 'creo que ', 'mmm pues ', 'es ');
+  const shout = (s: string) => s.toUpperCase().replace(/a/g, 'á').replace(/e/g, 'é');
+  it('saying an option (with filler words, any case or accents) picks exactly that option', () => {
+    fc.assert(fc.property(optionSets, fc.integer({ min: 0, max: 2 }), filler, fc.boolean(), (opts, k, pre, loud) => {
+      const said = `${pre}${loud ? shout(opts[k]) : opts[k]}`;
+      expect(matchSpokenAnswer([said], opts)).toBe(k);
+    }), cfg(650, 500));
+  });
+  it('saying the option number picks it ("la dos", "tercera", "1")', () => {
+    const forms = [['uno', 'la primera', '1'], ['dos', 'la segunda', 'opción 2'], ['tres', 'la tercera', '3']];
+    fc.assert(fc.property(optionSets, fc.integer({ min: 0, max: 2 }), fc.integer({ min: 0, max: 2 }), (opts, k, f) => {
+      expect(matchSpokenAnswer([forms[k][f]], opts)).toBe(k);
+    }), cfg(651, 300));
+  });
+  it('silence or unrelated words never pick an option (it asks again instead of guessing)', () => {
+    fc.assert(fc.property(optionSets, fc.constantFrom('', 'hola', 'no sé', 'tengo sed', 'qué hora es', 'enfermera por favor'), (opts, said) => {
+      expect(matchSpokenAnswer([said], opts)).toBeNull();
+    }), cfg(652, 300));
+  });
+  it('falls back to the next alternative when the first one does not match', () => {
+    fc.assert(fc.property(optionSets, fc.integer({ min: 0, max: 2 }), (opts, k) => {
+      expect(matchSpokenAnswer(['hola', opts[k]], opts)).toBe(k);
+    }), cfg(653, 200));
   });
 });

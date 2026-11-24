@@ -35,7 +35,7 @@ const lists = ['contacts', 'messages', 'photos', 'treatments', 'procedures', 're
 const isStr = (v: unknown) => typeof v === 'string';
 const nonEmpty = (v: unknown) => typeof v === 'string' && v !== '';
 const isBool = (v: unknown) => typeof v === 'boolean';
-const KINDS = ['audio', 'video', 'texto'];
+const KINDS = ['audio', 'video', 'texto', 'imagen'];
 const STATUSES = ['programado', 'confirmado', 'realizado', 'reprogramado', 'cancelado'];
 const CATS = ['Descanso', 'Alimentación', 'Movimiento', 'Emociones', 'Visitas'];
 
@@ -60,6 +60,8 @@ function assertValid(d: AppData) {
   for (const m of d.messages) {
     expect(nonEmpty(m.contactId)).toBe(true);
     expect(KINDS).toContain(m.kind);
+    expect(['contacto', 'paciente']).toContain(m.from);
+    if (m.kind === 'imagen') expect(typeof m.media).toBe('string');
     expect(isStr(m.text)).toBe(true);
     expect(Number.isFinite(m.createdAt)).toBe(true);
     expect(isBool(m.read) && isBool(m.demo)).toBe(true);
@@ -103,6 +105,8 @@ function assertValid(d: AppData) {
     expect(d.vitals.heartRate).toBeGreaterThanOrEqual(0); expect(d.vitals.heartRate).toBeLessThanOrEqual(250);
     expect(d.vitals.respRate).toBeGreaterThanOrEqual(0); expect(d.vitals.respRate).toBeLessThanOrEqual(80);
     expect(d.vitals.spo2).toBeGreaterThanOrEqual(0); expect(d.vitals.spo2).toBeLessThanOrEqual(100);
+    expect(d.vitals.systolic).toBeGreaterThanOrEqual(0); expect(d.vitals.systolic).toBeLessThanOrEqual(300);
+    expect(d.vitals.diastolic).toBeGreaterThanOrEqual(0); expect(d.vitals.diastolic).toBeLessThanOrEqual(200);
   }
   expect(d.dismissedNotifications.length).toBeLessThanOrEqual(200);
   expect(d.weather.tempC).toBeGreaterThanOrEqual(-40); expect(d.weather.tempC).toBeLessThanOrEqual(60);
@@ -177,7 +181,8 @@ const contactBody = fc.record({ name: nonBlank, relation: text, phone: text, abo
 const messageBody = fc.record({
   contactId: nonBlank, kind: fc.constantFrom(...KINDS) as fc.Arbitrary<FamilyMessage['kind']>, text, media: opt(nonBlank),
   duration: opt(fc.integer({ min: 0, max: 5000 })), createdAt: fc.integer({ min: 0, max: 2e12 }), read: bool, demo: bool,
-}).filter((m) => m.kind === 'texto' || !!m.media || m.text !== '').map((r) => clean(r));
+  from: fc.constantFrom<FamilyMessage['from']>('contacto', 'paciente'),
+}).filter((m) => (m.kind === 'texto' || !!m.media || m.text !== '') && (m.kind !== 'imagen' || !!m.media)).map((r) => clean(r));
 const photoBody = fc.record({ src: nonBlank, caption: text, contactId: opt(nonBlank), demo: bool }).map((r) => clean(r));
 const treatmentBody = fc.record({
   name: nonBlank, description: text, startDate: text, frequency: text, times: fc.array(text, { maxLength: 4 }), observations: text, demo: bool,
@@ -286,7 +291,7 @@ const validData: fc.Arbitrary<AppData> = fc.record({
   recommendations: uniq(recBody, 'r'),
   moods: fc.uniqueArray(fc.tuple(dateStr, fc.integer({ min: 1, max: 5 }), bool), { selector: (x) => x[0], maxLength: 20 })
     .map((a) => a.sort((x, y) => x[0].localeCompare(y[0])).map(([date, value, demo]) => ({ date, value: value as 1 | 2 | 3 | 4 | 5, demo }))),
-  vitals: fc.option(fc.record({ heartRate: fc.integer({ min: 0, max: 250 }), respRate: fc.integer({ min: 0, max: 80 }), spo2: fc.integer({ min: 0, max: 100 }), recordedAt: fc.integer({ min: 0, max: 2e12 }), demo: bool }), { nil: null }),
+  vitals: fc.option(fc.record({ heartRate: fc.integer({ min: 0, max: 250 }), respRate: fc.integer({ min: 0, max: 80 }), spo2: fc.integer({ min: 0, max: 100 }), systolic: fc.integer({ min: 0, max: 300 }), diastolic: fc.integer({ min: 0, max: 200 }), recordedAt: fc.integer({ min: 0, max: 2e12 }), demo: bool }), { nil: null }),
   careNote: fc.record({ text: fc.string({ maxLength: 280 }), updatedAt: fc.integer({ min: 0, max: 2e12 }), demo: bool }),
   favorites: fc.array(text, { maxLength: 5 }),
   scores: fc.dictionary(fc.stringMatching(/^[a-z]{1,8}$/), fc.nat({ max: 1000 }), { maxKeys: 4 }),
@@ -404,5 +409,13 @@ describe('storage: patient moods stay real after a reload', () => {
     const raw = JSON.parse(serialize(base));
     raw.moods.push({ date: '2026-11-21', value: 1 });
     expect(sanitize(raw, base).moods.find((m) => m.date === '2026-11-21')?.demo).toBe(false);
+  });
+});
+
+describe('storage: blood pressure added to vitals', () => {
+  it('older demo readings without pressure get the demo values; older real ones get 0 (shown as —)', () => {
+    const base = { heartRate: 70, respRate: 16, spo2: 97, recordedAt: 1 };
+    expect(sanitize({ ...defaults, vitals: { ...base, demo: true } }, defaults).vitals).toMatchObject({ systolic: 118, diastolic: 76 });
+    expect(sanitize({ ...defaults, vitals: { ...base, demo: false } }, defaults).vitals).toMatchObject({ systolic: 0, diastolic: 0 });
   });
 });

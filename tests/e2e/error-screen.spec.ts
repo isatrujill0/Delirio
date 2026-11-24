@@ -44,7 +44,7 @@ test('pantalla de error: restablecer pide confirmación, guarda respaldo y no bo
   await page.evaluate(() => sessionStorage.setItem('nexo-test:crash', 'off'));
   await page.getByRole('button', { name: 'Restablecer datos de demostración' }).click();
   await page.getByRole('button', { name: 'Sí, restablecer' }).click();
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 
   const after = await page.evaluate(async () => ({
     backup: localStorage.getItem('nexo:data:v1:respaldo'),
@@ -74,5 +74,5 @@ test('Volver a intentar recarga y la app vuelve a funcionar', async ({ page }) =
   await expect(page.getByRole('alert')).toContainText('Algo no salió bien');
   await page.evaluate(() => sessionStorage.setItem('nexo-test:crash', 'off'));
   await page.getByRole('button', { name: 'Volver a intentar' }).click();
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 });

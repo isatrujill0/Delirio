@@ -47,12 +47,12 @@ test('música real en Mi mundo, volumen del dock, estado de ánimo y tratamiento
   // --- Mi cuidado: ánimo ---
   await rail.getByRole('button', { name: 'Mi cuidado' }).click();
   const mood = page.getByRole('radiogroup', { name: 'Cómo te sientes hoy' });
-  await mood.getByRole('radio', { name: 'Cansado' }).click();
-  await expect(mood.getByRole('radio', { name: 'Cansado' })).toHaveAttribute('aria-checked', 'true');
-  await expect(page.getByRole('status')).toContainText('Hoy te sientes: cansado');
+  await mood.getByRole('radio', { name: 'Con cansancio' }).click();
+  await expect(mood.getByRole('radio', { name: 'Con cansancio' })).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByRole('status')).toContainText('Hoy te sientes: con cansancio');
 
   // --- Tratamiento ---
-  await page.getByRole('button', { name: /Mi tratamiento/ }).click();
+  await page.getByRole('button', { name: /^Tratamiento/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mi tratamiento' })).toBeVisible();
   await page.getByRole('button', { name: 'Registrar' }).click();
   await enterPin(page);
@@ -77,7 +77,7 @@ test('música real en Mi mundo, volumen del dock, estado de ánimo y tratamiento
   expect(data.moods.at(-1).value).toBe(2);
   await expect(page.getByRole('meter', { name: 'Volumen' })).toHaveAttribute('aria-valuenow', String(before + 10));
   await rail.getByRole('button', { name: 'Mi cuidado' }).click();
-  await expect(page.getByRole('radio', { name: 'Cansado' })).toHaveAttribute('aria-checked', 'true');
-  await page.getByRole('button', { name: /Mi tratamiento/ }).click();
+  await expect(page.getByRole('radio', { name: 'Con cansancio' })).toHaveAttribute('aria-checked', 'true');
+  await page.getByRole('button', { name: /^Tratamiento/ }).click();
   await expect(page.getByRole('heading', { level: 3, name: 'Vitamina D' })).toBeVisible();
 });

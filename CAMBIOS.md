@@ -170,3 +170,106 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/services/wellbeing.ts, src/services/storage.ts, tests/property/storage.test.ts, tests/property/wellbeing.test.ts.
 * Resultado: propiedades 125/125; E2E de bienestar, migración y datos clínicos 5/5; tsc PASS. No hubo una cuarta ronda de revisión (el límite es de 3 rondas). No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:17 — Fotos reales de la familia de demostración
+
+* La paciente de demostración pasa a ser Leslie (hija). Contactos: Mamá, Papá, Rafa (hermano), Karen (hermana) y Bryan (novio), cada uno con la foto entregada por el usuario (recortada y reducida para el avatar). Se quitaron Daniela y Tía Carmen.
+* El usuario confirmó que tiene permiso de estas personas para usar sus fotos en el prototipo.
+* Inicio muestra la foto de la familia; el álbum incluye la foto de Mamá con Leslie y las de cada familiar.
+* El video de demostración «Recuerdos en familia» se regeneró con la nueva foto familiar.
+* Los mensajes de demostración se adaptaron (hija, hermanita) y siguen marcados como «Demostración»; no se inventaron datos personales de la familia.
+* Textos neutros en género: estados de ánimo «En calma», «Con cansancio» y «Sin ánimo», y frases de relajación y recomendaciones.
+* Archivos afectados: src/assets/img/* (nuevas: rafa, karen, bryan, mama-y-leslie; reemplazadas: familia, mama, papa; eliminada: daniela), src/assets/video/recuerdos-en-familia.mp4, scripts/generate-media.mjs, src/data/demo.ts, src/data/media.ts, src/services/wellbeing.ts, src/pages/world/Relax.tsx, README.md, tests/e2e/*.spec.ts, tests/e2e/fixtures.ts.
+* Resultado: tsc PASS; propiedades 125/125; E2E 17/17; capturas de Inicio, Mi gente y Mi cuidado revisadas a 1180 × 820. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+10:30 — Signos vitales: textos que no se salen y simulación en vivo
+
+* En pantallas angostas (celular, vertical o texto grande), cada recuadro de signos muestra ícono, etiqueta y valor uno debajo del otro; las etiquetas se dividen con guion si no caben y los valores quedan alineados. Verificado: ningún texto sale de su recuadro a 1180 × 820 ni en un iPhone 13.
+* A pedido del usuario, los signos de demostración ahora se mueven: cada 4 segundos dan un paso pequeño dentro de rangos tranquilos (ritmo cardíaco 68–92 lpm, respiración 14–20 rpm, oxigenación 94–98 %). El corazón late al ritmo simulado (se detiene con «Reducir movimiento»).
+* Honestidad: la tarjeta dice «Valores simulados: no vienen de un monitor» con la etiqueta «Simulación»; los valores registrados por el personal no se mueven. NEXO sigue sin interpretar los valores.
+* Pruebas: 3 propiedades nuevas (siempre dentro de rango, sin saltos bruscos, no se queda quieta).
+* Archivos afectados: src/services/wellbeing.ts, src/pages/care/Wellbeing.tsx, src/styles/pages.css, tests/property/wellbeing.test.ts, README.md.
+* Resultado: tsc PASS; propiedades 128/128; E2E 17/17. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+10:36 — «Tu salud» como monitor integrado en vivo, con análisis
+
+* A pedido del usuario, los signos vitales se presentan como un monitor integrado de NEXO: «Monitor integrado · en vivo», con ritmo cardíaco, respiración y oxigenación que cambian cada 4 segundos.
+* Análisis por signo: mini gráfica de los últimos 2 minutos, tendencia (sube, baja o sin cambios) y estado frente al rango de referencia (60–100 lpm, 12–20 rpm, 94–100 %); en la cabecera, «Todo en rango» o «Revisa: …».
+* Sin diagnósticos: la app no califica la salud de la persona; fuera de rango solo muestra «Si te sientes mal, avisa a tu enfermera». Se actualizó RELIABILITY.md (punto 4) para reflejar esta decisión del usuario.
+* En la demo el monitor es simulado (persona tranquila en cama) y la tarjeta muestra «Demo: datos simulados». Los valores que el personal escribe a mano con el PIN quedan fijos.
+* En el iPad horizontal, el estado «en rango» es un punto verde en la esquina para que Mi cuidado siga cabiendo sin desplazarse; en el celular se muestra el texto completo.
+* Pruebas: 4 propiedades nuevas (estado exacto frente al rango, la simulación siempre queda en rango, detección de tendencia, ruido pequeño = sin cambios).
+* Archivos afectados: src/services/wellbeing.ts, src/pages/care/Wellbeing.tsx, src/styles/pages.css, src/types/index.ts, tests/property/wellbeing.test.ts, README.md, RELIABILITY.md.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS (1180 × 820, 1180 × 760 y vertical); en iPhone 13 ningún texto sale de su recuadro. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+10:42 — «Paisajes» pasa a ser «Recuerdos de viajes» con fotos reales
+
+* En Mi mundo, el acceso «Paisajes» ahora es «Viajes» y abre «Recuerdos de viajes»: 12 fotos de la familia entregadas por el usuario (Machu Picchu, Taj Mahal, Cristo Redentor, playa, montaña, crucero, cumpleaños, los perritos, entre otras).
+* Cuadrícula de 4 columnas en el iPad (2 en vertical) y visor a pantalla completa con anterior/siguiente, pase automático cada 9 segundos y música suave opcional («Amanecer sereno»).
+* Las fotos se redujeron a un máximo de 1100 px (1,3 MB en total) y quedan guardadas para uso sin conexión.
+* Las ilustraciones de paisajes se conservan donde ya se usaban como arte (playlist, juegos).
+* Archivos afectados: src/assets/img/viajes/*.jpg (12 nuevas), src/data/media.ts, src/pages/WorldPage.tsx, src/styles/pages.css, README.md.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS (incluye tamaño táctil). Sin errores de consola al abrir la cuadrícula y el visor. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+10:49 — 10 recuerdos más, cada uno con su lugar
+
+* Se agregaron 10 fotos a «Recuerdos de viajes» (22 en total): Burj Khalifa (Dubái, Emiratos Árabes Unidos), templo en kimono y puente entre montañas (Japón), comida coreana (Seúl, Corea del Sur), calles de Nueva York (Estados Unidos), Disneyland (California, Estados Unidos), Día de Muertos (México), juego en la nieve, concierto y bus de colores.
+* Los recuerdos se ordenaron por viaje: primero los de lugares conocidos y al final los de casa.
+* Donde el lugar no se distingue en la foto, se usó una descripción (por ejemplo «Un viaje de invierno») en vez de inventar un país.
+* Archivos afectados: src/assets/img/viajes/*.jpg (10 nuevas, 1,2 MB), src/data/media.ts.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+11:39 — Juego con fotos reales de paisajes y widget de familia solo con la foto
+
+* «El despertar del paisaje» usa ahora las 3 fotos reales entregadas por el usuario (isla entre montañas, atardecer con palmeras, pradera con flores) en lugar de ilustraciones. Al despejar toda la neblina aparece «Siguiente paisaje» para pasar al otro; mientras tanto, «Empezar de nuevo» vuelve a cubrir el mismo. Se muestra «Paisaje N de 3».
+* La miniatura del juego en Mi mundo usa la primera foto.
+* Inicio: el widget de familia ya no muestra el mensaje pendiente ni el contador de mensajes; solo la foto con «Tu familia», y al tocarlo abre Mi gente, donde se escuchan los mensajes. Se borraron los estilos que quedaron sin uso.
+* Prueba ajustada: la de silenciar un mensaje hablado ahora lo reproduce desde Mi gente.
+* Archivos afectados: src/assets/img/paisajes/*.jpg (3 nuevas), src/data/media.ts, src/pages/world/Games.tsx, src/pages/WorldPage.tsx, src/pages/HomePage.tsx, src/styles/pages.css, tests/e2e/sound.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 132/132; E2E 17/17; smoke PASS; el juego se completó y pasó al paisaje 2 sin errores de consola. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+11:57 — Mi gente como WhatsApp: chat, videollamada y audios; 8 paisajes más para el juego
+
+* Al tocar la burbuja de una persona en Mi gente aparecen tres opciones grandes: Mensajes, Videollamada y Audios. El panel lateral también las ofrece (junto con Fotos).
+* Mensajes: chat estilo WhatsApp por persona, con burbujas a la derecha (la paciente) y a la izquierda (el familiar). Se puede escribir con emojis, enviar fotos y grabar notas de voz. Sobre la caja de texto se elige quién escribe («Escribe Leslie» / «Escribe Mamá»), así ambos pueden escribir en el mismo dispositivo. Al tocar una burbuja se abre el mensaje (verlo en grande, escucharlo, eliminarlo con PIN). Lista de conversaciones con vista previa y mensajes nuevos.
+* Videollamada: pantalla de llamada que suena, se conecta a los 4 segundos, muestra la foto del familiar y la cámara de la paciente en una esquina, con micrófono, cámara y colgar. Marcada como «Demo: llamada simulada»: NEXO todavía no se conecta con el teléfono de la familia.
+* Audios: lista de las notas de voz que dejó cada familiar.
+* Se quitó el antiguo «Grabar mensaje» (sus funciones pasaron al chat). Los mensajes guardan quién los escribió; los de la paciente no generan notificaciones. Los datos guardados antes se cargan como mensajes del familiar.
+* Juego «El despertar del paisaje»: 8 paisajes más entregados por el usuario (11 en total).
+* Pruebas: E2E adaptadas al chat (la de limpieza de archivos ahora envía y borra una foto en el chat); propiedades nuevas: los mensajes de la paciente nunca notifican; validación del remitente y de los mensajes con foto.
+* Archivos afectados: src/pages/people/Chat.tsx y VideoCall.tsx (nuevos), src/hooks/useRecorder.ts (nuevo), src/pages/people/MessageComposer.tsx (eliminado), src/pages/PeoplePage.tsx, src/components/MessageViewer.tsx, src/types/index.ts, src/services/storage.ts, src/services/notifications.ts, src/data/demo.ts, src/data/media.ts, src/assets/img/paisajes/* (8 nuevas), src/styles/pages.css, tests/**, README.md.
+* Resultado: tsc PASS; propiedades 133/133; E2E 17/17; smoke PASS; recorrido real en la app (escribir como Leslie y como Mamá con emoji, audios, llamada) sin errores de consola. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+12:18 — Mi gente con solo Mensajes y Videollamada; aviso de mensajes en Inicio; refranes con voz
+
+* Mi gente: al tocar la burbuja de una persona solo aparecen Mensajes y Videollamada. Los audios ya no tienen sección propia: se escuchan dentro del chat. El panel lateral muestra esas dos opciones; el álbum de fotos se movió al perfil (⋯ → «Ver fotos de …»). En el chat queda solo el botón de Videollamada.
+* Inicio: el widget de familia muestra la foto, «Tu familia» y, si hay mensajes sin leer, el aviso «Mensaje nuevo de …» (o «Mensajes nuevos de Mamá, Papá y …»). Es solo un aviso, no se puede tocar; los mensajes se abren en Mi gente.
+* Completa el refrán: cada refrán se lee en voz alta junto con sus tres opciones numeradas (se puede repetir con el botón de sonido). Se puede responder tocando o con «Responder con la voz»: se dice la terminación o el número de la opción. Si lo que se escuchó no coincide, el juego lo dice y pide repetir en vez de adivinar. Al responder, la voz dice si fue correcto y el refrán completo.
+* Se corrigió el aviso de Inicio para que no sea una región que los lectores de pantalla anuncian sin parar (lo detectó una prueba).
+* Pruebas: 4 propiedades nuevas para reconocer la respuesta hablada (con palabras de relleno, mayúsculas o tildes, por número, y nunca adivinar ante silencio o palabras sin relación); 1 E2E nuevo con voz y micrófono simulados; E2E adaptados (fotos desde el perfil, audio desde el chat).
+* Archivos afectados: src/services/games.ts, src/hooks/useSpeechAnswer.ts (nuevo), src/pages/world/Games.tsx, src/pages/PeoplePage.tsx, src/pages/HomePage.tsx, src/styles/pages.css, tests/property/games.test.ts, tests/e2e/voice-proverb.spec.ts (nuevo), tests/e2e/media-cleanup.spec.ts, tests/e2e/sound.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 137/137; E2E 18/18; smoke PASS. El reconocimiento de voz real no se ha probado en un iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
+
+---
+
+21/11/2026
+
+23:01 — Inicio más limpio, contador en Mensajes y Mi cuidado reorganizado con presión arterial
+
+* Inicio: se quitó el acceso «Escuchar algo tranquilo». El aviso «Mensajes nuevos de …» pasó a un cuadro aparte debajo de la foto de la familia (sigue sin ser tocable).
+* Mi gente: se quitó el recuadro «Mensajes nuevos»; ahora el número de mensajes sin leer aparece como un circulito sobre el botón Mensajes.
+* Mi cuidado, con menos texto: encabezado corto; mensaje del equipo de salud en dos líneas; «¿Cómo te sientes hoy?» se mantiene; «Tu plan de cuidado» pasó a «Lo próximo» (tratamiento y procedimiento con su hora en una línea, y acceso a Consejos); «Tu ánimo» sin el bloque lateral de texto (la tendencia es una etiqueta pequeña).
+* Monitor integrado: se agregó la presión arterial (máxima/mínima, mmHg) con su rango de referencia y tendencia; los cuatro signos se actualizan cada 3 segundos en una cuadrícula 2 × 2. El formulario del personal también registra la presión. Las lecturas guardadas antes reciben valores de ejemplo (si eran de demostración) o «—» (si eran reales).
+* Todo cabe sin desplazarse a 1180 × 820; en celular ningún texto sale de su recuadro.
+* Pruebas: propiedades con presión arterial y su migración (138); E2E adaptadas a los nuevos nombres de botones (18).
+* Archivos afectados: src/pages/HomePage.tsx, src/pages/PeoplePage.tsx, src/pages/CarePage.tsx, src/pages/care/Wellbeing.tsx, src/services/wellbeing.ts, src/services/storage.ts, src/types/index.ts, src/data/demo.ts, src/styles/pages.css, tests/**, README.md.
+* Resultado: tsc PASS; propiedades 138/138; E2E 18/18; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

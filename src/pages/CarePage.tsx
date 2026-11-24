@@ -228,51 +228,52 @@ export function CarePage() {
 
   const next = nextDose(data.treatments, now);
   const proc = orderProcedures(data.procedures).pending[0];
-  const demoShown: Record<ViewId, boolean> = {
-    tratamiento: next ? next.treatments.some((t) => t.demo) : data.treatments.some((t) => t.demo),
-    procedimientos: proc ? proc.demo : false,
-    recomendaciones: data.recommendations.some((r) => r.demo),
-  };
-  const status: Record<ViewId, string> = {
-    tratamiento: next ? `${next.treatments.map((t) => t.name).join(' y ')} · ${hmToLabel(next.time)}` : `${data.treatments.length} registrados`,
-    procedimientos: proc ? `${proc.name} · ${whenLabel(proc, now).toLowerCase()}` : 'Sin pendientes',
-    recomendaciones: `${data.recommendations.length} consejos`,
-  };
 
   return (
     <div className="page care">
-      <header className="section-head care-head">
+      <header className="care-head">
         <Heart className="section-icon" strokeWidth={1.4} />
         <div>
           <h1>Mi cuidado</h1>
-          <p className="section-sub accent">Conoce cómo te sientes, cuida tu bienestar y sigue tu avance.</p>
-          <p className="care-head-note">Solo informativo: no reemplaza las indicaciones de tu equipo de salud.</p>
+          <p className="care-head-note">Solo informativo: no reemplaza a tu equipo de salud.</p>
         </div>
       </header>
       <CareNoteCard />
       <MoodCard />
       <VitalsCard />
-      <article className="plan-card glass">
-        <h2>
-          <Pill strokeWidth={1.5} /> Tu plan de cuidado
-        </h2>
-        <ul className="plan-list">
-          {(Object.keys(VIEWS) as ViewId[]).map((id) => {
-            const { title, Icon } = VIEWS[id];
-            return (
-              <li key={id}>
-                <button className="plan-row" onClick={() => go('cuidado', id)}>
-                  <Icon strokeWidth={1.6} />
-                  <span className="plan-row-text">
-                    <strong>{title} {demoShown[id] && <DemoTag label="Ejemplo" />}</strong>
-                    <small>{status[id]}</small>
-                  </span>
-                  <ArrowRight className="plan-arrow" />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+      <article className="next-card glass">
+        <header className="next-card-head">
+          <h2>
+            <Clock strokeWidth={1.6} /> Lo próximo
+          </h2>
+          <button className="next-link" onClick={() => go('cuidado', 'recomendaciones')}>
+            <Lightbulb size={20} strokeWidth={1.6} /> Consejos <ArrowRight size={18} />
+          </button>
+        </header>
+        <button className="next-item" onClick={() => go('cuidado', 'tratamiento')}>
+          <Pill strokeWidth={1.6} />
+          <span className="next-item-text">
+            <small className="num">
+              Tratamiento{next && ` · ${next.tomorrow ? 'mañana' : 'hoy'} ${hmToLabel(next.time)}`}
+            </small>
+            <strong>
+              {next ? next.treatments.map((t) => t.name).join(' y ') : 'Sin tomas programadas'} {next?.treatments.some((t) => t.demo) && <DemoTag label="Ejemplo" />}
+            </strong>
+          </span>
+          <ArrowRight className="plan-arrow" />
+        </button>
+        <button className="next-item" onClick={() => go('cuidado', 'procedimientos')}>
+          <CalendarClock strokeWidth={1.6} />
+          <span className="next-item-text">
+            <small className="num">
+              Procedimiento{proc && ` · ${whenLabel(proc, now).toLowerCase().replace(' · ', ' ')}`}
+            </small>
+            <strong>
+              {proc ? proc.name : 'Sin pendientes'} {proc?.demo && <DemoTag label="Ejemplo" />}
+            </strong>
+          </span>
+          <ArrowRight className="plan-arrow" />
+        </button>
       </article>
       <MoodHistoryCard />
     </div>

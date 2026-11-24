@@ -13,12 +13,16 @@ export interface Contact {
   demo: boolean;
 }
 
-export type MessageKind = 'audio' | 'video' | 'texto';
+export type MessageKind = 'audio' | 'video' | 'texto' | 'imagen';
+
+/** Who wrote the message in the chat: the family member (contact) or the patient. */
+export type MessageFrom = 'contacto' | 'paciente';
 
 export interface FamilyMessage {
   id: string;
   contactId: string;
   kind: MessageKind;
+  from: MessageFrom;
   /** Text content; for demo voice messages this is read aloud by the device voice. */
   text: string;
   media?: MediaRef;
@@ -81,11 +85,13 @@ export interface MoodEntry {
   demo?: boolean;
 }
 
-/** Vital signs typed in by the care team (NEXO is not connected to monitors). */
+/** Vital signs: from the integrated monitor (simulated in the demo, `demo: true`) or typed in by the care team. */
 export interface Vitals {
   heartRate: number; // lpm
   respRate: number; // rpm
   spo2: number; // %
+  systolic: number; // mmHg (presión arterial, máxima)
+  diastolic: number; // mmHg (presión arterial, mínima)
   recordedAt: number;
   demo: boolean;
 }

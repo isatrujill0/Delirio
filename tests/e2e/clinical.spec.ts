@@ -37,18 +37,19 @@ test('registros dañados en el almacenamiento se descartan sin romper la app', a
     localStorage.setItem('nexo:data:v1', JSON.stringify(d));
   });
   await reload(page);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 
   await rail(page).getByRole('button', { name: 'Mi gente' }).click();
   const carousel = page.locator('[aria-label="Tus personas"]');
-  await expect(carousel.getByRole('img', { name: 'Persona 1 de 4' })).toBeVisible();
+  await expect(carousel.getByRole('img', { name: 'Persona 1 de 5' })).toBeVisible();
   await expect(carousel.getByRole('button', { name: /bad|^x$/ })).toHaveCount(0);
-  await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: 'Mensajes', exact: true }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Mensajes de Mamá' })).toBeVisible();
-  await expect(page.locator('.msg-row')).toHaveCount(1);
+  await page.getByRole('complementary', { name: 'Panel de Mamá' }).getByRole('button', { name: /^Mensajes/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Mamá' })).toBeVisible();
+  // Mamá's valid demo chat: voice note, photo and Leslie's reply — the damaged record is not shown.
+  await expect(page.locator('.bubble-row')).toHaveCount(3);
 
   const data = await readData(page);
-  expect(data.contacts.map((c: { id: string }) => c.id)).toEqual(['c-mama', 'c-papa', 'c-daniela', 'c-carmen']);
+  expect(data.contacts.map((c: { id: string }) => c.id)).toEqual(['c-mama', 'c-papa', 'c-rafa', 'c-karen', 'c-bryan']);
   expect(data.messages.map((m: { id: string }) => m.id)).not.toContain('bad-msg');
   expect(errors).toEqual([]);
 });
@@ -62,7 +63,7 @@ test('el contenido de demostración está etiquetado y no promete evolución', a
   await expect(note).toContainText('Ejemplo');
   expect((await note.innerText()).toLowerCase()).not.toContain('estable');
 
-  await page.getByRole('button', { name: /Mi tratamiento/ }).click();
+  await page.getByRole('button', { name: /^Tratamiento/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mi tratamiento' })).toBeVisible();
   const cards = page.locator('.care-card');
   await expect(cards).toHaveCount(3);
@@ -72,9 +73,10 @@ test('el contenido de demostración está etiquetado y no promete evolución', a
   const everything: string[] = [];
   const grab = async () => everything.push(await page.evaluate(() => document.body.textContent ?? ''));
   await grab(); // tratamiento
-  for (const sub of ['Próximos procedimientos', 'Recomendaciones']) {
+  // Main view buttons ("Procedimiento · …", "Consejos") open these sub-views.
+  for (const [button, sub] of [[/^Procedimiento/, 'Próximos procedimientos'], [/^Consejos/, 'Recomendaciones']] as const) {
     await page.getByRole('button', { name: 'Mi cuidado', exact: true }).first().click();
-    await page.getByRole('button', { name: new RegExp(sub) }).click();
+    await page.getByRole('button', { name: button }).click();
     await expect(page.getByRole('heading', { level: 1, name: sub })).toBeVisible();
     await grab();
   }

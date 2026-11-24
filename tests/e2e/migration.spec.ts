@@ -13,21 +13,21 @@ test('datos guardados con el formato anterior (sin demo ni PIN) se migran: todo 
     localStorage.setItem('nexo:data:v1', JSON.stringify(d));
   });
   await reload(page);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Andrés');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Leslie');
 
   await rail(page).getByRole('button', { name: 'Mi cuidado' }).click();
   await expect(page.locator('.care-note-card')).toContainText('Ejemplo');
   await expect(page.getByRole('main')).not.toContainText(/estable/i);
   await expect(page.locator('.evolution-card').getByRole('heading', { name: /Tu ánimo/ })).toContainText('Ejemplo');
 
-  await page.getByRole('button', { name: /Mi tratamiento/ }).click();
+  await page.getByRole('button', { name: /^Tratamiento/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Mi tratamiento' })).toBeVisible();
   const treatments = page.locator('.care-card');
   await expect(treatments).toHaveCount(3);
   for (const card of await treatments.all()) await expect(card.getByRole('heading', { level: 3 })).toContainText('Ejemplo');
 
   await page.getByRole('button', { name: 'Mi cuidado', exact: true }).first().click();
-  await page.getByRole('button', { name: /Próximos procedimientos/ }).click();
+  await page.getByRole('button', { name: /^Procedimiento/ }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Próximos procedimientos' })).toBeVisible();
   const procs = page.locator('.care-card');
   await expect(procs).toHaveCount(4);
