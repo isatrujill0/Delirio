@@ -64,7 +64,7 @@ test('silenciar mientras suena un mensaje hablado cancela la voz y el dock deja 
   await page.getByRole('button', { name: /^Reproducir audio de Mamá/ }).first().click();
   await expect.poll(async () => (await spy(page)).speak.length).toBe(1);
   expect((await spy(page)).speak[0]).toContain('Hola, mi amor');
-  await expect(dock.getByRole('button', { name: /^Sonando: Mensaje leído por NEXO/ })).toBeVisible();
+  await expect(dock.locator('.player-status')).toHaveText(/^Sonando: Mensaje leído por NEXO/);
   await expect(dock.getByRole('button', { name: 'Pausar', exact: true })).toBeVisible();
 
   const cancelsBefore = (await spy(page)).cancel;
@@ -72,8 +72,7 @@ test('silenciar mientras suena un mensaje hablado cancela la voz y el dock deja 
   await expect.poll(async () => (await spy(page)).cancel).toBeGreaterThan(cancelsBefore);
   await expect(dock.getByRole('button', { name: 'Pausar', exact: true })).toHaveCount(0);
   await expect(dock.getByRole('button', { name: 'Reproducir', exact: true })).toBeVisible();
-  await expect(dock.getByText('En pausa')).toBeVisible();
-  await expect(dock.locator('.dock-now-dot.on')).toHaveCount(0);
+  await expect(dock.locator('.player-status')).toHaveText(/^En pausa:/);
 });
 
 test('con el sonido silenciado el video Recuerdos en familia queda muted; con sonido no', async ({ page }) => {
