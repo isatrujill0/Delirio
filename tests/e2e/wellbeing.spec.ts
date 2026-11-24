@@ -25,7 +25,7 @@ test('música real en Mi mundo, volumen del dock, estado de ánimo y tratamiento
   await dock.getByRole('button', { name: 'Pausar', exact: true }).click();
   await expect.poll(async () => (await audioState(page)).paused).toBe(true);
   await expect(dock.getByRole('button', { name: 'Reproducir', exact: true })).toBeVisible();
-  await expect(dock.getByText('En pausa')).toBeVisible();
+  await expect(dock.locator('.player-status')).toHaveText(/^En pausa:/); // announced to screen readers
   const frozen = (await audioState(page)).t;
   await expect.poll(async () => (await audioState(page)).t).toBe(frozen);
 

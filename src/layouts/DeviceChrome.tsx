@@ -1,4 +1,5 @@
 import { Bell, Heart, House, Minus, Music2, Plus, Settings, Users, Volume2, VolumeX, Pause, Play, LoaderCircle, LockKeyholeOpen } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import type { SectionId } from '../types';
 import { NexoLogo } from '../components/Brand';
 import { useUI } from '../hooks/useUI';
@@ -79,7 +80,7 @@ const STEP = 10;
 
 export function ControlDock({ unread }: { unread: number }) {
   const { data, update } = useAppData();
-  const { toast, openPanel, go } = useUI();
+  const { toast, openPanel } = useUI();
   const player = usePlayer();
   const playing = player.status === 'playing' || player.status === 'loading';
   const vol = data.prefs.muted ? 0 : data.prefs.volume;
@@ -89,6 +90,13 @@ export function ControlDock({ unread }: { unread: number }) {
     update((d) => ({ ...d, prefs: { ...d.prefs, volume: next, muted: next === 0 ? d.prefs.muted : false } }));
     toast(next === 0 ? 'Volumen al mínimo' : `Volumen ${next} %`);
   };
+
+  // Playback problems used to show in the corner panel: now they appear as a notice.
+  const lastError = useRef<string | null>(null);
+  useEffect(() => {
+    if (player.status === 'error' && player.error && player.error !== lastError.current) toast(player.error, 'error');
+    lastError.current = player.status === 'error' ? player.error : null;
+  }, [player.status, player.error, toast]);
 
   const playPause = () => {
     if (player.kind !== 'none') return audioEngine.toggle();
@@ -101,14 +109,11 @@ export function ControlDock({ unread }: { unread: number }) {
 
   return (
     <footer className="dock" aria-label="Controles">
-      <button className="dock-now" onClick={() => go('mundo')} aria-label={player.kind === 'none' ? 'Abrir Mi mundo' : `Sonando: ${player.title}. Abrir Mi mundo`}>
-        <span className={`dock-now-dot ${playing ? 'on' : ''}`} aria-hidden="true" />
-        <span className="dock-now-text">
-          <strong>{player.kind === 'none' ? 'Nada sonando' : player.title}</strong>
-          <small>{player.kind === 'none' ? 'Toca ▶ para escuchar algo tranquilo' : player.status === 'paused' ? 'En pausa' : player.status === 'error' ? player.error : player.subtitle}</small>
-        </span>
-      </button>
-
+      {/* What is playing is only announced to screen readers: the visible controls are the centre buttons. */}
+      <span className="dock-side" aria-hidden="true" />
+      <span className="sr-only player-status" aria-live="polite">
+        {player.kind === 'none' ? '' : `${player.status === 'paused' ? 'En pausa' : 'Sonando'}: ${player.title}`}
+      </span>
       <div className="dock-center">
         <button className="hw-btn" onClick={() => setVolume(-STEP)} aria-label="Bajar volumen" disabled={data.prefs.volume === 0}>
           <Minus strokeWidth={2} />

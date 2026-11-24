@@ -312,3 +312,11 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/HomePage.tsx, src/styles/pages.css.
 * Resultado: revisado a 1180 × 820 y a 1130 × 640 (vista previa en iPad); propiedades 141/141; E2E 19/19; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+10:47 — Se quitó el recuadro «Nada sonando» de la barra inferior
+
+* A pedido del usuario, se quitó el recuadro de la esquina inferior izquierda («Nada sonando» / lo que está sonando). Los controles del centro (−, reproducir/pausar, + y volumen) y la campana siguen en su lugar, centrados.
+* Lo que mostraba ese recuadro no se perdió: si algo no se puede reproducir, ahora aparece como aviso emergente; y lo que está sonando se anuncia a los lectores de pantalla (texto invisible).
+* Archivos afectados: src/layouts/DeviceChrome.tsx, src/styles/layout.css, tests/e2e/sound.spec.ts, tests/e2e/wellbeing.spec.ts.
+* Resultado: tsc PASS; propiedades 141/141; E2E 19/19; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

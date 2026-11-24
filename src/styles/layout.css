@@ -214,56 +214,11 @@
 .dock {
   grid-area: dock;
   display: grid;
+  /* Left column stays empty so the controls remain centred; the bell sits on the right. */
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: var(--s5);
   padding: 0 10px 0 6px;
-}
-.dock-now {
-  justify-self: start;
-  display: flex;
-  align-items: center;
-  gap: var(--s3);
-  min-height: var(--touch);
-  max-width: 100%;
-  padding: 8px 20px 8px 16px;
-  border-radius: var(--r-pill);
-  background: var(--panel);
-  border: 1px solid var(--rim-soft);
-  text-align: left;
-}
-.dock-now-dot {
-  flex: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--ink-3);
-  opacity: 0.6;
-}
-.dock-now-dot.on {
-  background: var(--ok);
-  opacity: 1;
-  box-shadow: 0 0 0 4px rgb(126 224 176 / 0.25);
-  animation: pulse 1.8s ease-in-out infinite;
-}
-.dock-now-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.dock-now-text strong,
-.dock-now-text small {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.dock-now-text strong {
-  font-weight: 500;
-  font-size: 1rem;
-}
-.dock-now-text small {
-  font-size: 0.85rem;
-  color: var(--ink-2);
 }
 .dock-center {
   display: flex;
@@ -424,7 +379,7 @@
   .brand-sep {
     display: none;
   }
-  .dock-now {
+  .dock-side {
     display: none;
   }
   .dock {
