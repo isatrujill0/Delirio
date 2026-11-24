@@ -5,8 +5,8 @@
  * - Built assets: cache first.
  * - Audio/video Range requests: answered from the cached full file (206), so music plays offline.
  */
-const CACHE = 'nexo-v2';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+const CACHE = 'nexo-v3';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './models/tiny_face_detector_model-weights_manifest.json', './models/tiny_face_detector_model.bin'];
 const LIST = './precache.json';
 
 async function builtFiles(source) {
