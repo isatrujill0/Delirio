@@ -273,3 +273,15 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/HomePage.tsx, src/pages/PeoplePage.tsx, src/pages/CarePage.tsx, src/pages/care/Wellbeing.tsx, src/services/wellbeing.ts, src/services/storage.ts, src/types/index.ts, src/data/demo.ts, src/styles/pages.css, tests/**, README.md.
 * Resultado: tsc PASS; propiedades 138/138; E2E 18/18; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+---
+
+24/11/2026
+
+10:21 — Publicación automática en GitHub Pages (pendiente de activar)
+
+* Se agregó el workflow .github/workflows/deploy.yml: compila NEXO y lo publica en GitHub Pages cada vez que cambia main, o a mano desde Actions.
+* Falta un paso que solo puede hacer el dueño del repositorio: Settings → Pages → Source: «GitHub Actions». El repositorio es privado: en el plan gratuito de GitHub, Pages requiere hacerlo público (o un plan de pago).
+* Archivos afectados: .github/workflows/deploy.yml (nuevo), README.md, CAMBIOS.md.
+* Resultado: la compilación de producción pasa localmente. La publicación no se ha verificado en GitHub porque Pages aún no está activado.
+* Estado: En progreso (esperando la activación de Pages).
