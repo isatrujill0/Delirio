@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Heart, MapPin, MessageCircle, CalendarClock, Pill } from 'lucide-react';
 import { useAppData } from '../hooks/useAppData';
+import { unreadFromFamily } from '../services/messages';
 import { useUI } from '../hooks/useUI';
 import { useNow } from '../hooks/useNow';
 import { clock, longDate, partOfDay, hmToLabel, relativeDay } from '../services/time';
@@ -67,7 +68,7 @@ function FamilyCard() {
   const { data } = useAppData();
   const cover = data.photos[0]?.src;
   // A notice only: the card is not tappable. Messages are opened from Mi gente.
-  const unread = data.messages.filter((m) => !m.read && m.from !== 'paciente').sort((x, y) => y.createdAt - x.createdAt);
+  const unread = unreadFromFamily(data.messages).sort((x, y) => y.createdAt - x.createdAt);
   const names = [...new Set(unread.map((m) => data.contacts.find((c) => c.id === m.contactId)?.name).filter(Boolean))] as string[];
   const notice =
     unread.length === 0 ? null : names.length === 1 ? `${unread.length === 1 ? 'Mensaje nuevo' : `${unread.length} mensajes nuevos`} de ${names[0]}` : `Mensajes nuevos de ${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;

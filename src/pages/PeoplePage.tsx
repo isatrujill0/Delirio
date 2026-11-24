@@ -1,48 +1,23 @@
 import { useState } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Images, MessageCircle, Mic, MoreHorizontal, Pencil, Phone, Plus, Trash2, Users, Video, Type } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Images, MessageCircle, MoreHorizontal, Pencil, Phone, Plus, Trash2, Users, Video } from 'lucide-react';
 import type { Contact, FamilyMessage } from '../types';
 import { useAppData } from '../hooks/useAppData';
+import { lastMessage, unreadFromFamily } from '../services/messages';
 import { useUI } from '../hooks/useUI';
 import { useCaregiver } from '../hooks/useCaregiver';
 import { Avatar, DemoTag } from '../components/Media';
-import { PlayButton, Waveform } from '../components/PlayerControls';
-import { MessageViewer, kindLabel, messageDuration, useMessageControl } from '../components/MessageViewer';
+import { MessageViewer } from '../components/MessageViewer';
 import { Confirm, Sheet } from '../components/Sheet';
 import { ContactForm, type ContactDraft } from './people/ContactForm';
 import { Chat } from './people/Chat';
 import { VideoCall } from './people/VideoCall';
 import { PhotoAlbum } from './people/PhotoAlbum';
 import { deleteMedia } from '../services/mediaStore';
-import { mmss, timeAgo } from '../services/time';
+import { timeAgo } from '../services/time';
 import { uid } from '../services/id';
 
-function MessageRow({ m, contact, showName = false, onOpen }: { m: FamilyMessage; contact?: Contact; showName?: boolean; onOpen: () => void }) {
-  const { toast } = useUI();
-  const from = contact?.name ?? 'Tu familia';
-  const { player, isThis, playing, toggle } = useMessageControl(m, from, (e) => toast(e, 'error'));
-  const Icon = m.kind === 'video' ? Video : m.kind === 'imagen' ? Images : m.kind === 'texto' ? Type : Mic;
-  const visual = m.kind === 'video' || m.kind === 'imagen';
-  return (
-    <div className={`msg-row ${m.read ? '' : 'is-new'}`}>
-      {visual ? (
-        <button className="play-btn play-md" onClick={onOpen} aria-label={`Ver ${m.kind === 'video' ? 'video' : 'foto'} de ${from}`}>
-          <Icon />
-        </button>
-      ) : (
-        <PlayButton playing={playing} loading={isThis && player.status === 'loading'} onClick={toggle} label={`mensaje de ${from}, ${timeAgo(m.createdAt, Date.now()).toLowerCase()}`} />
-      )}
-      <button className="msg-row-main" onClick={onOpen}>
-        {visual ? <span className="msg-row-kind"><Icon size={18} /> {kindLabel(m)}</span> : <Waveform active={playing} bars={12} />}
-        <span className="num msg-row-dur">{isThis && player.status !== 'idle' ? mmss(player.position) : visual && m.duration === undefined ? '' : mmss(messageDuration(m))}</span>
-        <span className="msg-row-when">
-          {showName && <strong>{from} · </strong>}
-          {timeAgo(m.createdAt, Date.now())}
-        </span>
-        {!m.read && <span className="new-dot" aria-label="Nuevo" />}
-      </button>
-    </div>
-  );
-}
+/** One-line summary of a message for lists. */
+const preview = (m: FamilyMessage) => (m.kind === 'imagen' ? `📷 Foto${m.text ? `: ${m.text}` : ''}` : m.kind === 'video' ? '🎬 Video' : m.kind === 'audio' ? '🎤 Audio' : m.text);
 
 function Carousel({ contacts, index, setIndex, onAdd, onOpen }: { contacts: Contact[]; index: number; setIndex: (i: number) => void; onAdd: () => void; onOpen: (c: Contact) => void }) {
   const n = contacts.length;
@@ -197,15 +172,15 @@ export function PeoplePage() {
                 {contacts.map((c) => {
                   const thread = data.messages.filter((m) => m.contactId === c.id).sort((a, b) => b.createdAt - a.createdAt);
                   const lastMsg = thread[0];
-                  const unread = thread.filter((m) => !m.read && m.from !== 'paciente').length;
-                  const preview = lastMsg ? `${lastMsg.from === 'paciente' ? 'Tú: ' : ''}${lastMsg.kind === 'imagen' ? '📷 Foto' : lastMsg.kind === 'video' ? '🎬 Video' : lastMsg.kind === 'audio' ? '🎤 Audio' : lastMsg.text}` : 'Sin mensajes todavía';
+                  const unread = unreadFromFamily(thread).length;
+                  const text = lastMsg ? `${lastMsg.from === 'paciente' ? 'Tú: ' : ''}${preview(lastMsg)}` : 'Sin mensajes todavía';
                   return (
                     <li key={c.id}>
                       <button className="chat-index-row" onClick={() => go('gente', `mensajes:${c.id}`)}>
                         <Avatar contact={c} className="avatar-sm" />
                         <span className="chat-index-text">
                           <strong>{c.name}</strong>
-                          <small>{preview}</small>
+                          <small>{text}</small>
                         </span>
                         {lastMsg && <span className="muted num chat-index-when">{timeAgo(lastMsg.createdAt, Date.now())}</span>}
                         {unread > 0 && <span className="badge num">{unread}</span>}
@@ -222,8 +197,8 @@ export function PeoplePage() {
     );
   }
 
-  const newCount = selected ? data.messages.filter((m) => m.contactId === selected.id && !m.read && m.from !== 'paciente').length : 0;
-  const last = selected ? data.messages.filter((m) => m.contactId === selected.id && m.from !== 'paciente').sort((a, b) => b.createdAt - a.createdAt)[0] : undefined;
+  const newCount = selected ? unreadFromFamily(data.messages, selected.id).length : 0;
+  const last = selected ? lastMessage(data.messages, selected.id) : undefined;
 
   return (
     <div className="page people">
@@ -276,7 +251,17 @@ export function PeoplePage() {
                 </button>
               </div>
               <p className="panel-label">Último mensaje</p>
-              {last ? <MessageRow m={last} contact={selected} onOpen={() => setViewing(last)} /> : <p className="muted">{selected.name} aún no ha dejado mensajes.</p>}
+              {last ? (
+                <button className="chat-index-row last-msg" onClick={() => go('gente', `mensajes:${selected.id}`)}>
+                  <span className="chat-index-text">
+                    <strong>{last.from === 'paciente' ? 'Tú' : selected.name}</strong>
+                    <small>{preview(last)}</small>
+                  </span>
+                  <span className="muted num chat-index-when">{timeAgo(last.createdAt, Date.now())}</span>
+                </button>
+              ) : (
+                <p className="muted">Todavía no hay mensajes con {selected.name}.</p>
+              )}
               {selected.about && <p className="panel-about">{selected.about}</p>}
             </aside>
           )}
