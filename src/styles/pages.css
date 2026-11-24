@@ -2452,3 +2452,27 @@ html:not([data-text='normal']) .family-card {
     margin-left: 0;
   }
 }
+
+/* ── Short screens (e.g. NEXO inside a browser with toolbars, or the Claude preview on iPad):
+   when the full layout does not fit in the height, rows grow with their content and the
+   section scrolls instead of piling cards on top of the controls. Same rules as large text. ── */
+@media (orientation: landscape) and (max-height: 739px) {
+  .stage {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .stage > .page:not(.subpage) {
+    height: auto;
+    min-height: 100%;
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    overflow: visible;
+    padding-bottom: 8px;
+  }
+  .stage > .page:not(.subpage) > * {
+    min-height: auto;
+  }
+  .home-right .family-card {
+    min-height: 300px;
+  }
+}
