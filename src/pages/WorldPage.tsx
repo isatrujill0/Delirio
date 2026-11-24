@@ -302,6 +302,7 @@ export function WorldPage() {
         </div>
         <ul className="col-list">
           <ColItem art={<img src={AWAKE_SCENES[0].src} alt="" />} label="El despertar del paisaje" effort="Muy bajo" level={0} onOpen={() => setGame('despertar')} />
+          <ColItem art={<span className="art-bird" aria-hidden="true">🐦</span>} label="Vuelo del colibrí" effort="Bajo" level={0} onOpen={() => setGame('vuelo')} />
           <ColItem art={<span className="art-lights" />} label="Eco de luces" effort="Medio" level={1} onOpen={() => setGame('eco')} />
           <ColItem art={<span className="art-quote">“ ”</span>} label="Completa el refrán" effort="Avanzado" level={2} onOpen={() => setGame('refran')} />
         </ul>

@@ -2655,3 +2655,74 @@ html:not([data-text='normal']) .family-card {
 .call-pip {
   top: 78px;
 }
+
+/* ── Vuelo del colibrí (face-movement game) ── */
+.flight {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  border-radius: 28px;
+  overflow: hidden;
+}
+.flight-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.flight-cam {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 150px;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgb(255 255 255 / 0.5);
+  background: #10133a;
+}
+.flight-cam.is-ok {
+  border-color: var(--ok);
+}
+.flight-cam video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+.flight-cam-label {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  font-size: 0.75rem;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.7);
+}
+.flight-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.art-bird {
+  font-size: 1.6rem;
+}
+/* Columns with four items (the games): tighter so all of them fit at 1180 × 820. Targets stay ≥ 56 px. */
+.col-list:has(> li:nth-child(4)) {
+  gap: 6px;
+  justify-content: flex-start;
+}
+.col-list:has(> li:nth-child(4)) .col-item {
+  padding-block: 2px;
+}
+.col-list:has(> li:nth-child(4)) .col-item-main {
+  min-height: 56px;
+}
+.col-list:has(> li:nth-child(4)) .col-item-text {
+  gap: 2px;
+}
+.col-list:has(> li:nth-child(4)) .col-art {
+  height: 46px;
+}
+.world-col:has(.col-list > li:nth-child(4)) .col-head small {
+  display: none; /* the four game names already say what is inside */
+}

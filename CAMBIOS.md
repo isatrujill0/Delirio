@@ -341,3 +341,16 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/people/Chat.tsx, src/pages/people/VideoCall.tsx, src/styles/pages.css, tests/e2e/videocall.spec.ts (nuevo), README.md.
 * Resultado: tsc PASS; propiedades 146/146; E2E 20/20; smoke PASS; con cámara simulada de Chromium se vio el video propio en la ventana pequeña. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+11:06 — Juego nuevo «Vuelo del colibrí», controlado con la cabeza
+
+* Idea del usuario: un juego de estimulación facial además de táctil. Es original de NEXO (no es copia de ningún juego existente): un colibrí vuela entre arcos de flores, y la paciente lo guía subiendo o bajando la cabeza frente a la cámara. Está pensado para una paciente en la UCI: es lento, las aberturas son amplias, chocar no termina el juego (solo dice «¡Casi!») y cada arco superado suena y suma.
+* Al empezar se calibra («Mira de frente a la pantalla un momento…»); una ventana pequeña muestra la cámara con «Te veo». Si no ve la cara, lo dice. También se puede jugar con el dedo, y si no hay cámara (por ejemplo en la vista previa de claude.ai) cambia solo a modo dedo.
+* Privacidad: la detección de la cara corre dentro del iPad; la imagen no se graba ni se envía. Se dice en la pantalla.
+* Dependencia nueva (RELIABILITY 10): @vladmandic/face-api 1.7.15 (licencia MIT), fijada a versión exacta. Se carga solo al abrir el juego: el JavaScript principal sigue en 323 kB (sin cambio) y la librería va aparte (1,31 MB, 330 kB comprimida). Modelo del detector: 193 kB en public/models, guardado para uso sin conexión (caché nexo-v3). La vista previa de claude.ai no incluye la librería (allí no hay cámara); su tamaño sigue en 12,0 MB. Motivo: es la opción más liviana que funciona sin internet y sin enviar la imagen a un servidor.
+* Mi mundo: la columna de Juegos cognitivos se compactó para que los 4 juegos quepan a 1180 × 820 (botones de al menos 56 px).
+* Probado con una cámara simulada que muestra una cara moviéndose arriba y abajo: el colibrí siguió la cara (altura entre 0,20 y 0,95, al ritmo del movimiento).
+* Pruebas: 6 propiedades nuevas (el colibrí y las aberturas siempre dentro de la pantalla; cada arco cuenta una sola vez; el juego es justo: apuntar al centro de cada abertura pasa todos los arcos; mover la cabeza hacia arriba sube el colibrí); 1 E2E nuevo (modo dedo y pausa); la prueba sin conexión ahora acepta cualquier versión de la caché e incluye el modelo.
+* Archivos afectados: src/services/flight.ts y src/services/faceTracker.ts (nuevos), src/pages/world/HeadFlight.tsx (nuevo), src/pages/world/Games.tsx, src/pages/WorldPage.tsx, src/styles/pages.css, public/models/* (nuevos), public/sw.js, package.json, package-lock.json, tests/property/flight.test.ts y tests/e2e/flight.spec.ts (nuevos), tests/e2e/offline.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 152/152; E2E 21/21; smoke PASS. Sin probar todavía en el iPad físico. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

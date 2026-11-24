@@ -11,9 +11,11 @@ test('tras la primera visita la app abre y reproduce música sin conexión', asy
   const missing = () =>
     page.evaluate(async () => {
       const files: string[] = await (await fetch('/precache.json', { cache: 'no-store' })).json();
-      const cache = await caches.open('nexo-v2');
-      const cached = new Set((await cache.keys()).map((r) => new URL(r.url).pathname));
-      return files.map((f) => `/${f}`).filter((p) => !cached.has(p));
+      // Whatever the current cache version is called (nexo-v2, nexo-v3, …).
+      const name = (await caches.keys()).find((k) => k.startsWith('nexo-'));
+      if (!name) return ['(no cache yet)'];
+      const cached = new Set((await (await caches.open(name)).keys()).map((r) => new URL(r.url).pathname));
+      return [...files.map((f) => `/${f}`), '/models/tiny_face_detector_model.bin'].filter((p) => !cached.has(p));
     });
   await expect.poll(missing, { timeout: 20_000 }).toEqual([]);
   expect((await page.evaluate(() => fetch('/precache.json').then((r) => r.json()))).length).toBeGreaterThan(10);

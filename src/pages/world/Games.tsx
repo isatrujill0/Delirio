@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Mic, RotateCcw, Volume2, Trophy, ArrowRight } from 'lucide-react';
 import { Sheet } from '../../components/Sheet';
 import { AWAKE_SCENES } from '../../data/media';
+import { HeadFlight } from './HeadFlight';
 import { useAppData } from '../../hooks/useAppData';
 import { audioEngine } from '../../services/audioEngine';
 import { PROVERBS, proverbOptions, extendSequence, checkEcho, revealFraction, matchSpokenAnswer } from '../../services/games';
 import { canListen, useSpeechAnswer } from '../../hooks/useSpeechAnswer';
 
-export type GameId = 'despertar' | 'eco' | 'refran';
+export type GameId = 'despertar' | 'eco' | 'refran' | 'vuelo';
 
 function useBestScore(game: GameId) {
   const { data, update } = useAppData();
@@ -255,5 +256,6 @@ function Proverbs({ onClose }: { onClose: () => void }) {
 export function Game({ id, onClose }: { id: GameId; onClose: () => void }) {
   if (id === 'despertar') return <Awakening onClose={onClose} />;
   if (id === 'eco') return <EchoLights onClose={onClose} />;
+  if (id === 'vuelo') return <HeadFlight onClose={onClose} />;
   return <Proverbs onClose={onClose} />;
 }
