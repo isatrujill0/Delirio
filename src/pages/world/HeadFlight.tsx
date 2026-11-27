@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, Hand, Pause, Play, RotateCcw, ScanFace, Trophy } from 'lucide-react';
+import { Camera, ExternalLink, Hand, Pause, Play, RotateCcw, ScanFace, Trophy } from 'lucide-react';
 import { Sheet } from '../../components/Sheet';
 import { useAppData } from '../../hooks/useAppData';
 import { audioEngine } from '../../services/audioEngine';
@@ -13,11 +13,18 @@ type CamState = 'apagada' | 'pidiendo' | 'calibrando' | 'lista' | 'sin-cara' | '
 const CALIBRATION_MS = 1800;
 
 /** Draws one frame: violet sky, clouds, flower arches and an original hummingbird. */
-function draw(ctx: CanvasRenderingContext2D, w: number, h: number, s: FlightState, t: number) {
+function draw(ctx: CanvasRenderingContext2D, w: number, h: number, s: FlightState, t: number, overCamera: boolean) {
+  ctx.clearRect(0, 0, w, h);
   const sky = ctx.createLinearGradient(0, 0, 0, h);
-  sky.addColorStop(0, '#3a3aa8');
-  sky.addColorStop(0.6, '#6f63d8');
-  sky.addColorStop(1, '#c9a7f0');
+  if (overCamera) {
+    // The person's own camera image is the background: only a soft violet veil over it.
+    sky.addColorStop(0, 'rgb(58 58 168 / 0.32)');
+    sky.addColorStop(1, 'rgb(201 167 240 / 0.12)');
+  } else {
+    sky.addColorStop(0, '#3a3aa8');
+    sky.addColorStop(0.6, '#6f63d8');
+    sky.addColorStop(1, '#c9a7f0');
+  }
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, w, h);
 
@@ -112,7 +119,7 @@ function draw(ctx: CanvasRenderingContext2D, w: number, h: number, s: FlightStat
 /** Plain-language reason why the camera could not start, and what to do. */
 function cameraProblem(e: unknown): string {
   const name = e instanceof DOMException ? e.name : e instanceof Error ? e.message : '';
-  if (window.self !== window.top) return 'Esta vista previa no permite usar la cámara. Abre SYNK desde su dirección (isatrujill0.github.io/Delirio) o desde la app instalada.';
+  if (inFrame && (name === 'NotAllowedError' || name === 'SecurityError')) return 'Esta vista previa no deja usar la cámara. Toca «Abrir SYNK con cámara» para jugar con la cabeza en la app completa.';
   if (!window.isSecureContext) return 'La cámara solo funciona en una dirección segura (https).';
   if (name === 'NotAllowedError' || name === 'SecurityError') return 'No hay permiso para la cámara. En el iPad: Ajustes → Safari → Cámara → Permitir (o «Preguntar»), y toca «Activar cámara» otra vez.';
   if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No se encontró una cámara en este dispositivo.';
@@ -121,25 +128,55 @@ function cameraProblem(e: unknown): string {
   return 'No se pudo encender la cámara. Vuelve a intentarlo.';
 }
 
-/** Draws the detected face (box and its 68 points) over the camera preview. */
-function drawFace(c: HTMLCanvasElement, face: FacePosition | null) {
-  const ctx = c.getContext('2d');
-  if (!ctx) return;
-  const w = (c.width = c.clientWidth * (window.devicePixelRatio || 1));
-  const h = (c.height = c.clientHeight * (window.devicePixelRatio || 1));
-  ctx.clearRect(0, 0, w, h);
-  if (!face) return;
+/**
+ * Draws the detected face (box and its 68 points) on the game canvas, over the full-screen camera
+ * image: the video fills the screen ("cover") and is mirrored, so the points are mapped the same way.
+ */
+function drawFace(ctx: CanvasRenderingContext2D, w: number, h: number, face: FacePosition, vw: number, vh: number) {
+  const scale = Math.max(w / vw, h / vh);
+  const ox = (w - vw * scale) / 2;
+  const oy = (h - vh * scale) / 2;
+  const X = (x: number) => w - (ox + x * vw * scale); // mirrored
+  const Y = (y: number) => oy + y * vh * scale;
+  ctx.save();
+  ctx.globalAlpha = 0.55;
   ctx.strokeStyle = '#7ee0b0';
-  ctx.lineWidth = Math.max(1.5, w / 120);
-  ctx.strokeRect(face.box.x * w, face.box.y * h, face.box.w * w, face.box.h * h);
+  ctx.lineWidth = 2;
+  ctx.strokeRect(X(face.box.x + face.box.w), Y(face.box.y), face.box.w * vw * scale, face.box.h * vh * scale);
   ctx.fillStyle = '#ffd36e';
-  const r = Math.max(1.2, w / 160);
   for (const p of face.points) {
     ctx.beginPath();
-    ctx.arc(p.x * w, p.y * h, r, 0, Math.PI * 2);
+    ctx.arc(X(p.x), Y(p.y), 2, 0, Math.PI * 2);
     ctx.fill();
   }
+  ctx.restore();
 }
+
+/** Asks the browser to show the game on the whole screen; quietly does nothing where it is not allowed. */
+function enterFullscreen(el: HTMLElement | null) {
+  const node = el as (HTMLElement & { webkitRequestFullscreen?: () => void }) | null;
+  if (!node || document.fullscreenElement) return;
+  try {
+    const p = node.requestFullscreen?.() ?? node.webkitRequestFullscreen?.();
+    if (p instanceof Promise) p.catch(() => undefined);
+  } catch {
+    /* not allowed here (e.g. inside a preview) */
+  }
+}
+
+function exitFullscreen() {
+  if (document.fullscreenElement) document.exitFullscreen?.().catch(() => undefined);
+}
+
+/** The published app, where the camera always works (the preview frame may not allow it). */
+const APP_URL = 'https://isatrujill0.github.io/Delirio/';
+const inFrame = (() => {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+})();
 
 /**
  * Face-movement game: the hummingbird follows the patient's head (up and down) through flower arches.
@@ -153,7 +190,8 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
   const [camError, setCamError] = useState('');
   const [camRequest, setCamRequest] = useState(0);
   const [summary, setSummary] = useState<FaceSummary | null>(null);
-  const overlay = useRef<HTMLCanvasElement>(null);
+  const face = useRef<FacePosition | null>(null);
+  const root = useRef<HTMLDivElement>(null);
   const faceLog = useRef<FaceSample[]>([]);
   const roundStart = useRef(0);
   const runningRef = useRef(false);
@@ -206,21 +244,21 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
         setCam('calibrando');
         const loop = async () => {
           if (cancelled || !video.current) return;
-          const face = await tracker.detect(video.current).catch(() => null);
+          const found = await tracker.detect(video.current).catch(() => null);
           if (cancelled) return;
-          if (overlay.current) drawFace(overlay.current, face);
-          if (runningRef.current) faceLog.current.push({ t: (performance.now() - roundStart.current) / 1000, y: face ? face.y : null });
-          if (face) {
+          face.current = found;
+          if (runningRef.current) faceLog.current.push({ t: (performance.now() - roundStart.current) / 1000, y: found ? found.y : null });
+          if (found) {
             missed = 0;
             if (neutral.current === null) {
               if (!calibStart) calibStart = performance.now();
-              samples.push(face.y);
+              samples.push(found.y);
               if (performance.now() - calibStart > CALIBRATION_MS) {
                 neutral.current = samples.reduce((a, b) => a + b, 0) / samples.length;
                 setCam('lista');
               }
             } else {
-              target.current = headToTarget(face.y, neutral.current);
+              target.current = headToTarget(found.y, neutral.current);
               setCam('lista');
             }
           } else if (++missed > 8) {
@@ -242,6 +280,7 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
       window.clearTimeout(timer);
       stream.current?.getTracks().forEach((t) => t.stop());
       stream.current = null;
+      face.current = null;
     };
   }, [mode, camRequest]);
 
@@ -283,14 +322,19 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
           }
         }
       }
-      draw(ctx, w, h, state.current, (now - t0) / 1000);
+      const v = video.current;
+      const live = mode === 'cabeza' && !!v && !!v.videoWidth && !!stream.current;
+      draw(ctx, w, h, state.current, (now - t0) / 1000, live);
+      if (live && face.current && v) drawFace(ctx, w, h, face.current, v.videoWidth, v.videoHeight);
       c.dataset.bird = state.current.birdY.toFixed(2); // read by tests
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running]);
+  }, [running, mode]);
+
+  useEffect(() => exitFullscreen, []);
 
   const startRound = () => {
     faceLog.current = [];
@@ -308,6 +352,7 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
   };
 
   const close = () => {
+    exitFullscreen();
     if (score > best) update((d) => ({ ...d, scores: { ...d.scores, vuelo: score } }));
     onClose();
   };
@@ -333,12 +378,21 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
             ? 'No veo tu cara. Acércate un poco a la pantalla.'
             : 'Sube o baja la cabeza para pasar por el hueco de cada arco sin tocarlo.';
 
+  const askCamera = () => {
+    enterFullscreen(root.current?.closest<HTMLElement>('.sheet') ?? root.current);
+    setCamRequest((n) => n + 1);
+  };
+
+  const toggleRun = () => {
+    enterFullscreen(root.current?.closest<HTMLElement>('.sheet') ?? root.current);
+    if (!running && !score && !state.current.arches.length) startRound();
+    setRunning((r) => !r);
+  };
+
   return (
-    <Sheet title="Vuelo del colibrí" onClose={close} size="full">
-      <p className="game-hint" aria-live="polite">
-        {over ? `¡Chocaste! Pasaste ${score} ${score === 1 ? 'arco' : 'arcos'}.` : status}
-      </p>
-      <div className="flight">
+    <Sheet title="Vuelo del colibrí" onClose={close} size="full" bare>
+      <div ref={root} className={`flight ${mode === 'cabeza' && (cam === 'lista' || cam === 'calibrando' || cam === 'sin-cara') ? 'is-camera' : ''}`}>
+        {mode === 'cabeza' && <video ref={video} className="flight-video" playsInline muted autoPlay aria-hidden="true" />}
         <canvas
           ref={canvas}
           className="flight-canvas"
@@ -347,6 +401,16 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
           role="img"
           aria-label={`Colibrí volando entre arcos de flores. Arcos superados: ${score}`}
         />
+        <div className="flight-top">
+          <p className="game-hint" aria-live="polite">
+            {over ? `¡Chocaste! Pasaste ${score} ${score === 1 ? 'arco' : 'arcos'}.` : status}
+          </p>
+          {mode === 'cabeza' && cam !== 'apagada' && cam !== 'error' && (
+            <span className={`flight-cam-label ${cam === 'lista' ? 'is-ok' : ''}`}>
+              <ScanFace size={18} aria-hidden="true" /> {cam === 'lista' ? 'Te veo' : cam === 'calibrando' ? 'Calibrando…' : cam === 'sin-cara' ? 'No te veo' : '…'}
+            </span>
+          )}
+        </div>
         {over && (
           <div className="flight-over" role="alert">
             <strong>¡Chocaste!</strong>
@@ -380,9 +444,14 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
         {mode === 'cabeza' && (cam === 'apagada' || cam === 'error') && !over && (
           <div className="flight-over flight-camera-ask">
             <Camera size={40} strokeWidth={1.5} aria-hidden="true" />
-            {cam === 'error' ? <p role="alert">{camError}</p> : <p>Activa la cámara para guiar al colibrí con la cabeza. La imagen se usa solo en este dispositivo.</p>}
+            {cam === 'error' ? <p role="alert">{camError}</p> : <p>Activa la cámara: te verás en toda la pantalla y el colibrí seguirá tu cabeza. La imagen se usa solo en este dispositivo.</p>}
             <div className="flight-actions">
-              <button className="btn btn-primary" onClick={() => setCamRequest((n) => n + 1)}>
+              {cam === 'error' && inFrame ? (
+                <a className="btn btn-primary" href={APP_URL} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={20} /> Abrir SYNK con cámara
+                </a>
+              ) : null}
+              <button className={`btn ${cam === 'error' && inFrame ? 'btn-ghost' : 'btn-primary'}`} onClick={askCamera}>
                 <Camera size={20} /> {cam === 'error' ? 'Intentar otra vez' : 'Activar cámara'}
               </button>
               <button className="btn btn-ghost" onClick={() => setMode('dedo')}>
@@ -391,30 +460,23 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         )}
-        {mode === 'cabeza' && (
-          <div className={`flight-cam ${cam === 'lista' ? 'is-ok' : ''}`}>
-            <video ref={video} playsInline muted autoPlay />
-            <canvas ref={overlay} className="flight-cam-face" aria-hidden="true" />
-            <span className="flight-cam-label">{cam === 'lista' ? 'Te veo' : cam === 'calibrando' ? 'Calibrando…' : '…'}</span>
-          </div>
-        )}
-      </div>
-      <div className="game-foot">
-        <span className="muted num">
-          <Trophy size={18} /> Arcos: {score} · Mejor: {Math.max(best, score)}
-        </span>
-        <div className="flight-actions">
-          <button className="btn btn-ghost" onClick={() => setMode((m) => (m === 'cabeza' ? 'dedo' : 'cabeza'))}>
-            {mode === 'cabeza' ? <Hand size={20} /> : <ScanFace size={20} />} {mode === 'cabeza' ? 'Jugar con el dedo' : 'Jugar con la cabeza'}
-          </button>
-          {!over && (
-            <button className="btn btn-primary" onClick={() => { if (!running && !score && !state.current.arches.length) startRound(); setRunning((r) => !r); }} disabled={mode === 'cabeza' && cam !== 'lista' && !running}>
-              {running ? <Pause size={20} /> : <Play size={20} />} {running ? 'Pausar' : score || state.current.arches.length ? 'Continuar' : 'Empezar'}
+        <div className="flight-bottom">
+          <span className="flight-score num">
+            <Trophy size={18} /> Arcos: {score} · Mejor: {Math.max(best, score)}
+          </span>
+          <div className="flight-actions">
+            <button className="btn btn-ghost" onClick={() => setMode((m) => (m === 'cabeza' ? 'dedo' : 'cabeza'))}>
+              {mode === 'cabeza' ? <Hand size={20} /> : <ScanFace size={20} />} {mode === 'cabeza' ? 'Jugar con el dedo' : 'Jugar con la cabeza'}
             </button>
-          )}
+            {!over && (
+              <button className="btn btn-primary" onClick={toggleRun} disabled={mode === 'cabeza' && cam !== 'lista' && !running}>
+                {running ? <Pause size={20} /> : <Play size={20} />} {running ? 'Pausar' : score || state.current.arches.length ? 'Continuar' : 'Empezar'}
+              </button>
+            )}
+          </div>
+          <p className="fine-print">La cámara solo se usa en este iPad para seguir tu cara; no se graba ni se envía a ningún lugar.</p>
         </div>
       </div>
-      <p className="fine-print">La cámara solo se usa en este iPad para seguir tu cara; no se graba ni se envía a ningún lugar.</p>
     </Sheet>
   );
 }

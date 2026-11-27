@@ -439,3 +439,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/components/NurseCall.tsx (nuevo), src/layouts/DeviceChrome.tsx, src/layouts/DeviceLayout.tsx, src/components/NotificationCenter.tsx, src/pages/SettingsPanel.tsx, src/styles/layout.css, tests/e2e/nurse-call.spec.ts (nuevo), tests/e2e/migration.spec.ts, README.md.
 * Resultado: tsc PASS; propiedades 157/157; E2E 27/27; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+— Colibrí a pantalla completa con la imagen de la cámara
+
+* Por indicación del usuario, el juego ya no muestra a la persona en una ventanita: la imagen de la cámara frontal (como un espejo) llena toda la pantalla y el colibrí y los arcos de flores vuelan encima. La persona mueve el colibrí subiendo o bajando la cabeza. Los puntos de la cara se dibujan sobre su imagen; el estado («Te veo», «Calibrando…», «No te veo»), los arcos, los botones y el aviso de privacidad flotan sobre el juego.
+* El juego ocupa la pantalla entera, sin márgenes, y al tocar «Activar cámara» o «Empezar» pide al navegador pantalla completa (si no se permite, no pasa nada). La X para cerrar sigue visible.
+* Vista previa de claude.ai: el visor no permite la cámara en ninguna página (se intentó declarar el permiso de cámara y el visor lo rechaza). Ahora, si la cámara falla dentro de la vista previa, el juego lo explica y ofrece «Abrir SYNK con cámara», que abre la app publicada (isatrujill0.github.io/Delirio) en otra pestaña, donde sí funciona. Siguen «Intentar otra vez» y «Jugar con el dedo».
+* Probado con una cámara simulada (una foto que sube y baja): la imagen llena la pantalla y el colibrí la siguió de 0,05 a 0,85 de alto.
+* Archivos afectados: src/pages/world/HeadFlight.tsx, src/styles/pages.css, CAMBIOS.md.
+* Resultado: tsc PASS; propiedades 157/157; E2E 27/27. Sin probar todavía con la cámara real del iPad. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
