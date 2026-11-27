@@ -375,3 +375,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/world/HeadFlight.tsx, src/services/faceTracker.ts, src/assets/models/* (movidos desde public/models), public/sw.js, src/styles/pages.css, tests/e2e/flight.spec.ts, tests/e2e/offline.spec.ts, README.md.
 * Resultado: tsc PASS; propiedades 152/152; E2E 23/23; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+---
+
+26/11/2026
+
+21:39 — Publicación en GitHub Pages por la rama gh-pages
+
+* El usuario hizo público el repositorio. Pages seguía sin activar, y las publicaciones por «GitHub Actions» fallaban en ese paso.
+* El workflow ahora compila la app y la sube a la rama gh-pages (método clásico de GitHub Pages), que en repositorios públicos suele activar Pages sin pasos manuales. Si GitHub no lo activa solo: Settings → Pages → Deploy from a branch → gh-pages.
+* Archivos afectados: .github/workflows/deploy.yml, README.md, CAMBIOS.md.
+* Estado: En progreso (se verifica la publicación en GitHub).

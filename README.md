@@ -90,11 +90,11 @@ Otros comandos:
 
 ## Despliegue en GitHub Pages
 
-El workflow `.github/workflows/deploy.yml` compila la app y la publica cada vez que cambia `main` (también se puede lanzar a mano desde la pestaña Actions → «Publicar en GitHub Pages» → Run workflow). Vite usa `base: './'`, así que funciona en la subruta del repositorio, y la navegación es interna, sin errores 404 al recargar.
+El workflow `.github/workflows/deploy.yml` compila la app y sube el resultado a la rama `gh-pages` cada vez que cambia `main` (también se puede lanzar a mano desde Actions → «Publicar en GitHub Pages» → Run workflow). Vite usa `base: './'`, así que funciona en la subruta del repositorio, y la navegación es interna, sin errores 404 al recargar.
 
-Activación (una sola vez, la hace el dueño del repositorio): Settings → Pages → Source: **GitHub Actions**. La dirección queda como `https://isatrujill0.github.io/Delirio/`.
+Activación (una sola vez, si GitHub no la hace solo): Settings → Pages → Source: **Deploy from a branch** → rama **gh-pages**, carpeta **/ (root)**. La dirección es `https://isatrujill0.github.io/Delirio/`.
 
-Importante: el repositorio es privado. GitHub Pages desde un repositorio privado requiere un plan de pago (GitHub Pro, Team o Enterprise); con el plan gratuito hay que hacer el repositorio público. En ambos casos el sitio publicado es público para quien tenga el enlace (incluidas las fotos de la familia de demostración).
+El repositorio es público y el sitio también: cualquiera con el enlace ve la app, incluidas las fotos de la familia de demostración.
 
 ## Instalar en el iPad (PWA)
 
