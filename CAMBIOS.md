@@ -410,3 +410,10 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/components/Splash.tsx (nuevo), src/components/Brand.tsx, src/App.tsx, src/layouts/DeviceChrome.tsx, src/styles/layout.css, textos en src/**, index.html, public/manifest.webmanifest, public/icons/*, public/sw.js, scripts/*, package.json, package-lock.json, tests/e2e/splash.spec.ts (nuevo), tests/e2e/sound.spec.ts, README.md, PRODUCT.md, RELIABILITY.md, VERIFICACION.md.
 * Resultado: tsc PASS; propiedades 152/152; E2E 25/25; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+22:00 — Logo de SYNK con el arco de siempre
+
+* A pedido del usuario, el logo de SYNK vuelve a tener el arco suave encima del nombre (el mismo de NEXO) en lugar de la onda. Cambió en la barra superior, la pantalla de entrada, Acerca de y los íconos de la app.
+* Archivos afectados: src/components/Brand.tsx, scripts/generate-icons.cjs, public/icons/*.
+* Resultado: propiedades 152/152; E2E 25/25; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
