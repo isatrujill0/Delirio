@@ -386,3 +386,10 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * El workflow ahora compila la app y la sube a la rama gh-pages (método clásico de GitHub Pages), que en repositorios públicos suele activar Pages sin pasos manuales. Si GitHub no lo activa solo: Settings → Pages → Deploy from a branch → gh-pages.
 * Archivos afectados: .github/workflows/deploy.yml, README.md, CAMBIOS.md.
 * Estado: En progreso (se verifica la publicación en GitHub).
+
+21:46 — Intento de activar Pages desde Actions (rechazado por GitHub)
+
+* Se probó activar GitHub Pages con un proceso de Actions usando el permiso propio del repositorio. GitHub respondió «HTTP 403 — Resource not accessible by integration»: ese ajuste solo lo puede hacer la dueña del repositorio. Se retiró el ayudante.
+* La app ya está compilada en la rama gh-pages; falta solo Settings → Pages → Deploy from a branch → gh-pages → / (root) → Save.
+* Archivos afectados: .github/workflows/activar-pages.yml (creado y retirado), CAMBIOS.md.
+* Estado: Pendiente de la activación por la dueña del repositorio.
