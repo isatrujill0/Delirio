@@ -13,7 +13,7 @@ const svg = (pad) => `
   <rect width="512" height="512" fill="url(#bg)"/>
   <rect width="512" height="512" fill="url(#glow)"/>
   <g transform="translate(256 ${266}) scale(${1 - pad})">
-    <path d="M-120 -95 C-80 -150 -50 -150 -10 -95 S70 -40 110 -95" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round"/>
+    <path d="M-112 -70 Q0 -170 112 -70" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
     <text x="0" y="60" text-anchor="middle" font-family="Lexend" font-size="150" font-weight="400" letter-spacing="10" fill="#fff">SYNK</text>
   </g>
 </svg>`;
