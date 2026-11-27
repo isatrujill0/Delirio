@@ -66,3 +66,20 @@ test('Vuelo del colibrí: si la cámara no se puede usar, explica por qué y ofr
   await game.locator('.flight-camera-ask').getByRole('button', { name: 'Jugar con el dedo' }).click();
   await expect(game.getByRole('button', { name: 'Empezar' })).toBeEnabled();
 });
+
+test('Vuelo del colibrí: «Salir del juego» y la X cierran el juego, también mientras se juega', async ({ page }) => {
+  const open = async () => {
+    await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi mundo' }).click();
+    await page.getByRole('button', { name: /Vuelo del colibrí/ }).first().click();
+    return page.getByRole('dialog', { name: 'Vuelo del colibrí' });
+  };
+  let game = await open();
+  await game.locator('.flight-camera-ask').getByRole('button', { name: 'Jugar con el dedo' }).click();
+  await game.getByRole('button', { name: 'Empezar' }).click();
+  await game.getByRole('button', { name: 'Salir del juego' }).click();
+  await expect(game).toHaveCount(0);
+
+  game = await open();
+  await game.getByRole('button', { name: 'Cerrar' }).click();
+  await expect(game).toHaveCount(0);
+});

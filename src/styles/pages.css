@@ -2668,8 +2668,9 @@ html:not([data-text='normal']) .family-card {
 }
 .sheet:has(.flight) .sheet-head {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  /* clear of the iPad status bar and the full-screen controls */
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
   z-index: 5;
   padding: 0;
 }
@@ -2700,7 +2701,7 @@ html:not([data-text='normal']) .family-card {
 }
 .flight-top {
   position: absolute;
-  top: 14px;
+  top: max(14px, env(safe-area-inset-top));
   left: 50%;
   transform: translateX(-50%);
   width: min(720px, calc(100% - 140px));
@@ -2880,4 +2881,12 @@ html:not([data-text='normal']) .family-card {
 /* The hummingbird game takes the whole screen, with no margin around it. */
 .sheet-backdrop:has(.flight) {
   padding: 0;
+}
+/* The bottom bar floats over the game: only its buttons take touches, the rest reaches the game. */
+.flight-bottom,
+.flight-bottom .flight-actions {
+  pointer-events: none;
+}
+.flight-bottom .btn {
+  pointer-events: auto;
 }
