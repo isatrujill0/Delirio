@@ -393,3 +393,10 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * La app ya está compilada en la rama gh-pages; falta solo Settings → Pages → Deploy from a branch → gh-pages → / (root) → Save.
 * Archivos afectados: .github/workflows/activar-pages.yml (creado y retirado), CAMBIOS.md.
 * Estado: Pendiente de la activación por la dueña del repositorio.
+
+21:48 — NEXO publicado en GitHub Pages
+
+* La dueña del repositorio activó Pages (rama gh-pages). GitHub confirma Pages activo y la publicación «pages build and deployment» terminó con éxito.
+* Dirección: https://isatrujill0.github.io/Delirio/ — cada cambio que llegue a main se publica solo.
+* No se pudo abrir la dirección desde la sesión de desarrollo (el acceso a github.io está bloqueado allí); la verificación es por el estado de GitHub.
+* Estado: Completado.
