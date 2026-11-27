@@ -5,7 +5,10 @@ test('Vuelo del colibrí: sin cámara se juega con el dedo y el colibrí sigue e
   await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi mundo' }).click();
   await page.getByRole('button', { name: /Vuelo del colibrí/ }).first().click();
   const game = page.getByRole('dialog', { name: 'Vuelo del colibrí' });
-  await expect(game.locator('.game-hint')).toContainText('mueve el colibrí con el dedo');
+  // Head mode first asks to turn the camera on; this test plays with a finger instead.
+  await expect(game.getByRole('button', { name: 'Activar cámara' })).toBeVisible();
+  await game.locator('.flight-camera-ask').getByRole('button', { name: 'Jugar con el dedo' }).click();
+  await expect(game.locator('.game-hint')).toContainText('Desliza el dedo');
   await expect(game.getByText('no se graba ni se envía')).toBeVisible();
   await game.getByRole('button', { name: 'Empezar' }).click();
 
@@ -31,6 +34,7 @@ test('Vuelo del colibrí: chocar con un arco termina la ronda y «Jugar otra vez
   await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi mundo' }).click();
   await page.getByRole('button', { name: /Vuelo del colibrí/ }).first().click();
   const game = page.getByRole('dialog', { name: 'Vuelo del colibrí' });
+  await game.locator('.flight-camera-ask').getByRole('button', { name: 'Jugar con el dedo' }).click();
   await game.getByRole('button', { name: 'Empezar' }).click();
   const canvas = game.locator('.flight-canvas');
   const box = (await canvas.boundingBox())!;
@@ -49,4 +53,16 @@ test('Vuelo del colibrí: chocar con un arco termina la ronda y «Jugar otra vez
   await expect(game.getByRole('alert')).toHaveCount(0);
   await expect(game.getByRole('button', { name: 'Pausar' })).toBeVisible();
   await expect.poll(async () => Number(await canvas.getAttribute('data-bird'))).toBeCloseTo(0.5, 1); // fresh round
+});
+
+test('Vuelo del colibrí: si la cámara no se puede usar, explica por qué y ofrece reintentar o jugar con el dedo', async ({ page }) => {
+  await page.getByRole('navigation', { name: 'Secciones' }).getByRole('button', { name: 'Mi mundo' }).click();
+  await page.getByRole('button', { name: /Vuelo del colibrí/ }).first().click();
+  const game = page.getByRole('dialog', { name: 'Vuelo del colibrí' });
+  await game.getByRole('button', { name: 'Activar cámara' }).click(); // the test browser has no camera
+  await expect(game.locator('.flight-camera-ask').getByRole('alert')).toContainText(/cámara/);
+  await expect(game.getByRole('button', { name: 'Intentar otra vez' })).toBeVisible();
+  await expect(game.getByRole('button', { name: 'Empezar' })).toBeDisabled();
+  await game.locator('.flight-camera-ask').getByRole('button', { name: 'Jugar con el dedo' }).click();
+  await expect(game.getByRole('button', { name: 'Empezar' })).toBeEnabled();
 });

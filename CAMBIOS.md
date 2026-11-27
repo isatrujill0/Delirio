@@ -417,3 +417,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/components/Brand.tsx, scripts/generate-icons.cjs, public/icons/*.
 * Resultado: propiedades 152/152; E2E 25/25; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+22:10 — Colibrí: botón para activar la cámara y análisis de la cara
+
+* Cámara: en modo cabeza, el juego muestra «Activar cámara» y el iPad pide el permiso al tocarlo. Si no se puede, explica el motivo y qué hacer (vista previa que no permite cámara, permiso negado en Ajustes → Safari → Cámara, sin cámara, otra app usándola, detector sin cargar) y ofrece «Intentar otra vez» o «Jugar con el dedo». Ya no cambia solo a modo dedo sin explicar.
+* Análisis de la cara: además del detector de caras se carga el modelo de 68 puntos (77 kB, licencia MIT, del mismo paquete face-api; empaquetado con la app y disponible sin conexión). La vista de la cámara dibuja el recuadro y los puntos de la cara detectada. Al terminar cada ronda aparece «Análisis de tu cara en esta ronda»: porcentaje del tiempo con la cara visible, amplitud del movimiento de la cabeza (pequeño, moderado o amplio) y cuántos movimientos de subir y bajar hizo. Se aclara que es un seguimiento del ejercicio, no una evaluación médica, y no se guarda.
+* Probado con una cámara simulada con una cara moviéndose: se dibujaron los puntos de la cara y el análisis mostró 100 % de tiempo visible, movimiento amplio y 2 movimientos en 7 s.
+* Tamaños: vista previa 13,7 MB (límite 16 MB); JavaScript principal sin cambio.
+* Pruebas: 5 propiedades nuevas del análisis (rangos válidos, porcentaje exacto, una cara quieta no cuenta movimientos, oscilaciones claras se cuentan bien); E2E de modo dedo adaptados y 1 nuevo (sin cámara explica el motivo y ofrece reintentar o jugar con el dedo).
+* Archivos afectados: src/pages/world/HeadFlight.tsx, src/services/faceTracker.ts, src/services/faceAnalysis.ts (nuevo), src/assets/models/face_landmark_68_tiny_model* (nuevos), src/styles/pages.css, tests/property/face-analysis.test.ts (nuevo), tests/e2e/flight.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 157/157; E2E 26/26; smoke PASS. Sin probar todavía con la cámara real del iPad. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.
