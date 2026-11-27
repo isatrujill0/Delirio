@@ -54,12 +54,12 @@ export function DeviceLayout({ children }: { children: ReactNode }) {
   return (
     <div className="device">
       <Petals />
-      <TopBar />
+      <TopBar unread={notifications.length} />
       <NavRail />
       <main className="stage" key={`${section}:${sub ?? ''}`}>
         {children}
       </main>
-      <ControlDock unread={notifications.length} />
+      <ControlDock />
 
       <div className="toasts" role="status" aria-live="polite">
         {toasts.map((t) => (

@@ -121,7 +121,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
 
       {tab === 'avisos' && (
         <div className="settings-group">
-          <Toggle label="Notificaciones" hint="Avisos dentro de SYNK (campana de la barra inferior)." checked={n.enabled} onChange={(v) => setNotif('enabled', v)} />
+          <Toggle label="Notificaciones" hint="Avisos dentro de SYNK (botón Avisos de la barra superior)." checked={n.enabled} onChange={(v) => setNotif('enabled', v)} />
           <div className={n.enabled ? '' : 'is-disabled'}>
             <Toggle label="Mensajes nuevos de la familia" disabled={!n.enabled} checked={n.messages} onChange={(v) => setNotif('messages', v)} />
             <Toggle label="Recordatorios de tratamiento" disabled={!n.enabled} hint="Una hora antes de cada toma registrada." checked={n.treatments} onChange={(v) => setNotif('treatments', v)} />

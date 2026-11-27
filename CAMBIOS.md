@@ -428,3 +428,14 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/world/HeadFlight.tsx, src/services/faceTracker.ts, src/services/faceAnalysis.ts (nuevo), src/assets/models/face_landmark_68_tiny_model* (nuevos), src/styles/pages.css, tests/property/face-analysis.test.ts (nuevo), tests/e2e/flight.spec.ts, README.md.
 * Resultado: tsc PASS; propiedades 157/157; E2E 26/26; smoke PASS. Sin probar todavía con la cámara real del iPad. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+22:13 — La campana llama a la enfermera; los avisos pasan a la barra superior
+
+* Por indicación del usuario, la campana de la barra inferior ya no abre las notificaciones: sirve para llamar a la enfermera. Abre «Llamar a la enfermera» con un botón grande y motivos opcionales (Tengo dolor, Necesito ir al baño, Tengo sed o hambre, Me siento mal, Otra cosa). Mientras el llamado está activo, la campana se pone roja y late en todas las secciones; en la ventana se ve el motivo, cuánto tiempo lleva y «Cancelar llamado».
+* Seguridad: SYNK aún no está conectado al sistema de llamado de la clínica, así que es una simulación y se dice en la pantalla, con la indicación «si necesitas ayuda ahora, usa el timbre de tu cama o pide ayuda en voz alta».
+* Las notificaciones de la app se movieron a un botón «Avisos» en la barra superior, con su contador.
+* Colibrí (cambios de esta misma tanda): botón «Activar cámara» con motivos claros si falla, y análisis de la cara al final de cada ronda (ver entrada anterior).
+* Pruebas: 1 E2E nuevo (llamar con motivo, sigue activo al cambiar de sección, cancelar, y Avisos arriba); prueba de migración adaptada al botón Avisos.
+* Archivos afectados: src/components/NurseCall.tsx (nuevo), src/layouts/DeviceChrome.tsx, src/layouts/DeviceLayout.tsx, src/components/NotificationCenter.tsx, src/pages/SettingsPanel.tsx, src/styles/layout.css, tests/e2e/nurse-call.spec.ts (nuevo), tests/e2e/migration.spec.ts, README.md.
+* Resultado: tsc PASS; propiedades 157/157; E2E 27/27; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

@@ -27,7 +27,7 @@ export function NotificationCenter({ items, onClose }: { items: AppNotification[
 
   return (
     <Sheet
-      title="Notificaciones"
+      title="Avisos"
       onClose={onClose}
       footer={
         items.length > 0 ? (
