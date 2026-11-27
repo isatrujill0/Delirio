@@ -1,5 +1,6 @@
-import { Bell, Heart, House, Minus, Music2, Plus, Settings, Users, Volume2, VolumeX, Pause, Play, LoaderCircle, LockKeyholeOpen } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { Bell, Heart, House, Minus, Music2, Plus, Settings, Users, Volume2, VolumeX, Pause, Play, LoaderCircle, LockKeyholeOpen, BellRing, Inbox } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { NurseCall, type ActiveCall } from '../components/NurseCall';
 import type { SectionId } from '../types';
 import { SynkLogo } from '../components/Brand';
 import { useUI } from '../hooks/useUI';
@@ -16,7 +17,7 @@ export const SECTIONS: { id: SectionId; label: string; Icon: typeof House }[] = 
   { id: 'cuidado', label: 'Mi cuidado', Icon: Heart },
 ];
 
-export function TopBar() {
+export function TopBar({ unread }: { unread: number }) {
   const { data, update } = useAppData();
   const { openPanel, toast } = useUI();
   const { unlocked, lock } = useCaregiver();
@@ -44,6 +45,10 @@ export function TopBar() {
           }}
         >
           {muted ? <VolumeX strokeWidth={1.75} /> : <Volume2 strokeWidth={1.75} />}
+        </button>
+        <button className="round-btn" onClick={() => openPanel('notificaciones')} aria-label={unread ? `Avisos: ${unread} nuevos` : 'Avisos'}>
+          <Inbox strokeWidth={1.75} />
+          {unread > 0 && <span className="badge num">{unread}</span>}
         </button>
         <button className="round-btn" aria-label="Configuración" onClick={() => openPanel('ajustes')}>
           <Settings strokeWidth={1.75} />
@@ -74,9 +79,9 @@ export function NavRail() {
 
 const STEP = 10;
 
-export function ControlDock({ unread }: { unread: number }) {
+export function ControlDock() {
   const { data, update } = useAppData();
-  const { toast, openPanel } = useUI();
+  const { toast } = useUI();
   const player = usePlayer();
   const playing = player.status === 'playing' || player.status === 'loading';
   const vol = data.prefs.muted ? 0 : data.prefs.volume;
@@ -93,6 +98,16 @@ export function ControlDock({ unread }: { unread: number }) {
     if (player.status === 'error' && player.error && player.error !== lastError.current) toast(player.error, 'error');
     lastError.current = player.status === 'error' ? player.error : null;
   }, [player.status, player.error, toast]);
+
+  // Nurse call (stays active while moving between sections, until cancelled)
+  const [call, setCall] = useState<ActiveCall | null>(null);
+  const [callOpen, setCallOpen] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!call) return;
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, [call]);
 
   const playPause = () => {
     if (player.kind !== 'none') return audioEngine.toggle();
@@ -127,10 +142,25 @@ export function ControlDock({ unread }: { unread: number }) {
         </span>
       </div>
 
-      <button className="hw-btn hw-bell" onClick={() => openPanel('notificaciones')} aria-label={unread ? `Notificaciones: ${unread} nuevas` : 'Notificaciones'}>
-        <Bell strokeWidth={1.75} />
-        {unread > 0 && <span className="badge num">{unread}</span>}
+      <button className={`hw-btn hw-bell ${call ? 'is-calling' : ''}`} onClick={() => setCallOpen(true)} aria-label={call ? 'Llamado a la enfermera activo' : 'Llamar a la enfermera'}>
+        {call ? <BellRing strokeWidth={1.9} /> : <Bell strokeWidth={1.75} />}
       </button>
+      {callOpen && (
+        <NurseCall
+          call={call}
+          now={now}
+          onCall={(reason) => {
+            setCall({ reason, at: Date.now() });
+            audioEngine.chime();
+            toast('Llamado a la enfermera (demostración)', 'ok');
+          }}
+          onCancel={() => {
+            setCall(null);
+            toast('Llamado cancelado');
+          }}
+          onClose={() => setCallOpen(false)}
+        />
+      )}
     </footer>
   );
 }

@@ -39,11 +39,11 @@ test('datos guardados con el formato anterior (sin demo ni PIN) se migran: todo 
   expect(((await page.locator('body').textContent()) ?? '').toLowerCase()).not.toContain('estable');
 
   // Bell: demo notifications are labelled.
-  await page.getByRole('button', { name: /^Notificaciones/ }).click();
-  const items = page.getByRole('dialog', { name: 'Notificaciones' }).locator('.notif-list li');
+  await page.getByRole('button', { name: /^Avisos/ }).click();
+  const items = page.getByRole('dialog', { name: 'Avisos' }).locator('.notif-list li');
   expect(await items.count()).toBeGreaterThan(0);
   for (const li of await items.all()) await expect(li).toContainText('Ejemplo · ');
-  await page.getByRole('dialog', { name: 'Notificaciones' }).getByRole('button', { name: /Cerrar/ }).first().click();
+  await page.getByRole('dialog', { name: 'Avisos' }).getByRole('button', { name: /Cerrar/ }).first().click();
 
   // The PIN falls back to the demo one.
   await rail(page).getByRole('button', { name: 'Mi gente' }).click();
