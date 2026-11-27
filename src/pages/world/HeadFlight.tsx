@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, ExternalLink, Hand, Pause, Play, RotateCcw, ScanFace, Trophy } from 'lucide-react';
+import { Camera, ExternalLink, Hand, LogOut, Pause, Play, RotateCcw, ScanFace, Trophy } from 'lucide-react';
 import { Sheet } from '../../components/Sheet';
 import { useAppData } from '../../hooks/useAppData';
 import { audioEngine } from '../../services/audioEngine';
@@ -131,7 +131,7 @@ function cameraProblem(e: unknown): string {
 /** Asks the browser to show the game on the whole screen; quietly does nothing where it is not allowed. */
 function enterFullscreen(el: HTMLElement | null) {
   const node = el as (HTMLElement & { webkitRequestFullscreen?: () => void }) | null;
-  if (!node || document.fullscreenElement) return;
+  if (!node || document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement) return;
   try {
     const p = node.requestFullscreen?.() ?? node.webkitRequestFullscreen?.();
     if (p instanceof Promise) p.catch(() => undefined);
@@ -141,7 +141,13 @@ function enterFullscreen(el: HTMLElement | null) {
 }
 
 function exitFullscreen() {
-  if (document.fullscreenElement) document.exitFullscreen?.().catch(() => undefined);
+  const d = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void };
+  try {
+    if (d.fullscreenElement) d.exitFullscreen?.().catch(() => undefined);
+    else if (d.webkitFullscreenElement) d.webkitExitFullscreen?.();
+  } catch {
+    /* already out of full screen */
+  }
 }
 
 /** The published app, where the camera always works (the preview frame may not allow it). */
@@ -437,6 +443,9 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
             <Trophy size={18} /> Arcos: {score} · Mejor: {Math.max(best, score)}
           </span>
           <div className="flight-actions">
+            <button className="btn btn-ghost" onClick={close}>
+              <LogOut size={20} /> Salir del juego
+            </button>
             <button className="btn btn-ghost" onClick={() => setMode((m) => (m === 'cabeza' ? 'dedo' : 'cabeza'))}>
               {mode === 'cabeza' ? <Hand size={20} /> : <ScanFace size={20} />} {mode === 'cabeza' ? 'Jugar con el dedo' : 'Jugar con la cabeza'}
             </button>

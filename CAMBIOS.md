@@ -456,3 +456,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/world/HeadFlight.tsx, CAMBIOS.md.
 * Resultado: tsc PASS; E2E del colibrí 3/3; probado con cámara simulada (el colibrí siguió la cara de 0,05 a 0,88). Sin probar todavía con la cámara real del iPad.
 * Estado: Completado.
+
+— Colibrí: siempre se puede salir del juego
+
+* Problema reportado por el usuario: en el iPad no dejaba salir del juego. En el navegador de pruebas la X sí cerraba, así que lo más probable es que en el iPad la X (arriba a la derecha, pegada al borde) quedara debajo de la barra de estado o de los controles de pantalla completa, donde los toques no llegan.
+* Arreglo: la X se separa de los bordes respetando las zonas seguras del iPad; hay un botón grande «Salir del juego» en la barra de abajo, siempre visible; al salir se cierra también la pantalla completa (incluida la forma de Safari).
+* La barra de abajo ya no tapa el juego: solo sus botones reciben toques, así el dedo llega hasta abajo en el modo dedo.
+* Pruebas: 1 E2E nuevo («Salir del juego» y la X cierran, también mientras se juega).
+* Archivos afectados: src/pages/world/HeadFlight.tsx, src/styles/pages.css, tests/e2e/flight.spec.ts, CAMBIOS.md.
+* Resultado: tsc PASS; propiedades 157/157; E2E 28/28. Sin probar todavía en el iPad real.
+* Estado: Completado.
