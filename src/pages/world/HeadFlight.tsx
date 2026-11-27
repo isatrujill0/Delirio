@@ -3,7 +3,7 @@ import { Camera, ExternalLink, Hand, Pause, Play, RotateCcw, ScanFace, Trophy } 
 import { Sheet } from '../../components/Sheet';
 import { useAppData } from '../../hooks/useAppData';
 import { audioEngine } from '../../services/audioEngine';
-import { loadFaceTracker, type FacePosition, type FaceTracker } from '../../services/faceTracker';
+import { loadFaceTracker, type FaceTracker } from '../../services/faceTracker';
 import { rangeLabel, summarizeFace, type FaceSample, type FaceSummary } from '../../services/faceAnalysis';
 import { BIRD_R, BIRD_X, COL_W, GAP_H, headToTarget, initialFlight, stepFlight, type FlightState } from '../../services/flight';
 
@@ -128,30 +128,6 @@ function cameraProblem(e: unknown): string {
   return 'No se pudo encender la cámara. Vuelve a intentarlo.';
 }
 
-/**
- * Draws the detected face (box and its 68 points) on the game canvas, over the full-screen camera
- * image: the video fills the screen ("cover") and is mirrored, so the points are mapped the same way.
- */
-function drawFace(ctx: CanvasRenderingContext2D, w: number, h: number, face: FacePosition, vw: number, vh: number) {
-  const scale = Math.max(w / vw, h / vh);
-  const ox = (w - vw * scale) / 2;
-  const oy = (h - vh * scale) / 2;
-  const X = (x: number) => w - (ox + x * vw * scale); // mirrored
-  const Y = (y: number) => oy + y * vh * scale;
-  ctx.save();
-  ctx.globalAlpha = 0.55;
-  ctx.strokeStyle = '#7ee0b0';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(X(face.box.x + face.box.w), Y(face.box.y), face.box.w * vw * scale, face.box.h * vh * scale);
-  ctx.fillStyle = '#ffd36e';
-  for (const p of face.points) {
-    ctx.beginPath();
-    ctx.arc(X(p.x), Y(p.y), 2, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
 /** Asks the browser to show the game on the whole screen; quietly does nothing where it is not allowed. */
 function enterFullscreen(el: HTMLElement | null) {
   const node = el as (HTMLElement & { webkitRequestFullscreen?: () => void }) | null;
@@ -190,7 +166,6 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
   const [camError, setCamError] = useState('');
   const [camRequest, setCamRequest] = useState(0);
   const [summary, setSummary] = useState<FaceSummary | null>(null);
-  const face = useRef<FacePosition | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const faceLog = useRef<FaceSample[]>([]);
   const roundStart = useRef(0);
@@ -246,7 +221,6 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
           if (cancelled || !video.current) return;
           const found = await tracker.detect(video.current).catch(() => null);
           if (cancelled) return;
-          face.current = found;
           if (runningRef.current) faceLog.current.push({ t: (performance.now() - roundStart.current) / 1000, y: found ? found.y : null });
           if (found) {
             missed = 0;
@@ -280,7 +254,6 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
       window.clearTimeout(timer);
       stream.current?.getTracks().forEach((t) => t.stop());
       stream.current = null;
-      face.current = null;
     };
   }, [mode, camRequest]);
 
@@ -325,7 +298,6 @@ export function HeadFlight({ onClose }: { onClose: () => void }) {
       const v = video.current;
       const live = mode === 'cabeza' && !!v && !!v.videoWidth && !!stream.current;
       draw(ctx, w, h, state.current, (now - t0) / 1000, live);
-      if (live && face.current && v) drawFace(ctx, w, h, face.current, v.videoWidth, v.videoHeight);
       c.dataset.bird = state.current.birdY.toFixed(2); // read by tests
       frame = requestAnimationFrame(tick);
     };
