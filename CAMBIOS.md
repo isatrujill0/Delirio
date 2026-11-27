@@ -449,3 +449,10 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Archivos afectados: src/pages/world/HeadFlight.tsx, src/styles/pages.css, CAMBIOS.md.
 * Resultado: tsc PASS; propiedades 157/157; E2E 27/27. Sin probar todavía con la cámara real del iPad. No se ejecutó el procedimiento completo de VERIFICACION.md.
 * Estado: Completado.
+
+— Colibrí: ya no se dibuja el análisis de la cara durante el juego
+
+* Por indicación del usuario, durante el juego ya no se dibujan el recuadro ni los puntos de la cara sobre la imagen: se ve solo la persona, el colibrí y los arcos. La cara se sigue detectando para mover el colibrí, y el análisis de la ronda se sigue mostrando al terminar. Queda solo la etiqueta pequeña «Te veo» / «No te veo».
+* Archivos afectados: src/pages/world/HeadFlight.tsx, CAMBIOS.md.
+* Resultado: tsc PASS; E2E del colibrí 3/3; probado con cámara simulada (el colibrí siguió la cara de 0,05 a 0,88). Sin probar todavía con la cámara real del iPad.
+* Estado: Completado.
