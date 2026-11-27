@@ -64,7 +64,7 @@ test('silenciar mientras suena un mensaje hablado cancela la voz y el dock deja 
   await page.getByRole('button', { name: /^Reproducir audio de Mamá/ }).first().click();
   await expect.poll(async () => (await spy(page)).speak.length).toBe(1);
   expect((await spy(page)).speak[0]).toContain('Hola, mi amor');
-  await expect(dock.locator('.player-status')).toHaveText(/^Sonando: Mensaje leído por NEXO/);
+  await expect(dock.locator('.player-status')).toHaveText(/^Sonando: Mensaje leído por SYNK/);
   await expect(dock.getByRole('button', { name: 'Pausar', exact: true })).toBeVisible();
 
   const cancelsBefore = (await spy(page)).cancel;

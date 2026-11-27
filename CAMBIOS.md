@@ -400,3 +400,13 @@ Las horas corresponden a la finalización real de cada cambio (tomadas del reloj
 * Dirección: https://isatrujill0.github.io/Delirio/ — cada cambio que llegue a main se publica solo.
 * No se pudo abrir la dirección desde la sesión de desarrollo (el acceso a github.io está bloqueado allí); la verificación es por el estado de GitHub.
 * Estado: Completado.
+
+21:58 — NEXO pasa a llamarse SYNK, con pantalla de entrada
+
+* Nuevo nombre: SYNK, con el eslogan «En sintonía con tu bienestar» (reemplaza «Orientación que conecta, tecnología que acompaña»). Cambió en el logo (ahora con una onda suave, como de sintonía), la barra superior, Configuración → Acerca de, el título de la página, el nombre al instalarla en el iPad, los íconos y todos los textos de la app y la documentación. Las entradas anteriores de esta bitácora conservan el nombre NEXO tal como se escribieron.
+* Los nombres internos de los datos guardados (por ejemplo nexo:data:v1) no cambiaron, para no perder lo que ya está guardado en el iPad.
+* Pantalla de entrada: al abrir la app, durante 3 segundos aparece «SYNK» y luego el eslogan con una aparición suave; después se desvanece y muestra Inicio. Tocarla la salta. Con «Reducir movimiento» solo aparece, sin desplazamiento.
+* Pruebas: 2 E2E nuevos (la entrada dura unos 3 segundos y muestra nombre y eslogan; tocarla la salta). Los navegadores de prueba automatizados no la ven, para no esperar 3 segundos en cada prueba.
+* Archivos afectados: src/components/Splash.tsx (nuevo), src/components/Brand.tsx, src/App.tsx, src/layouts/DeviceChrome.tsx, src/styles/layout.css, textos en src/**, index.html, public/manifest.webmanifest, public/icons/*, public/sw.js, scripts/*, package.json, package-lock.json, tests/e2e/splash.spec.ts (nuevo), tests/e2e/sound.spec.ts, README.md, PRODUCT.md, RELIABILITY.md, VERIFICACION.md.
+* Resultado: tsc PASS; propiedades 152/152; E2E 25/25; smoke PASS. No se ejecutó el procedimiento completo de VERIFICACION.md.
+* Estado: Completado.

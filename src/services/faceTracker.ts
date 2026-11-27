@@ -1,7 +1,7 @@
 /**
  * Finds the patient's face in the camera image, on the device: the small "tiny face detector"
  * model (190 KB, bundled with the app) runs in the browser; nothing is recorded or sent anywhere.
- * The library is loaded only when a face game opens, so the rest of NEXO stays light.
+ * The library is loaded only when a face game opens, so the rest of SYNK stays light.
  */
 import manifest from '../assets/models/tiny_face_detector_model-weights_manifest.json';
 import modelUrl from '../assets/models/tiny_face_detector_model.bin?url';

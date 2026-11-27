@@ -104,7 +104,7 @@ export type VitalKey = keyof typeof SIM_RANGES;
 
 /**
  * Reference ranges the monitor view compares against (adult at rest). In a real deployment the
- * care team sets them; NEXO only says "inside / outside the reference range" — it never diagnoses.
+ * care team sets them; SYNK only says "inside / outside the reference range" — it never diagnoses.
  */
 export const REFERENCE_RANGES: Record<VitalKey, { min: number; max: number }> = {
   heartRate: { min: 60, max: 100 },

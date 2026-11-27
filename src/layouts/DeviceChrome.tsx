@@ -1,7 +1,7 @@
 import { Bell, Heart, House, Minus, Music2, Plus, Settings, Users, Volume2, VolumeX, Pause, Play, LoaderCircle, LockKeyholeOpen } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import type { SectionId } from '../types';
-import { NexoLogo } from '../components/Brand';
+import { SynkLogo } from '../components/Brand';
 import { useUI } from '../hooks/useUI';
 import { useCaregiver } from '../hooks/useCaregiver';
 import { useAppData } from '../hooks/useAppData';
@@ -24,13 +24,9 @@ export function TopBar() {
   return (
     <header className="topbar">
       <div className="brand">
-        <NexoLogo />
+        <SynkLogo />
         <span className="brand-sep" aria-hidden="true" />
-        <p className="brand-tag">
-          Orientación que conecta,
-          <br />
-          tecnología que acompaña.
-        </p>
+        <p className="brand-tag">En sintonía con tu bienestar</p>
       </div>
       <div className="topbar-actions">
         {unlocked && (

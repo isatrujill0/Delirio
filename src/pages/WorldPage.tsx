@@ -204,7 +204,7 @@ function Memories() {
       {video && (
         <Sheet title="Recuerdos en familia" onClose={() => setVideo(false)} size="lg">
           <Video className="msg-video" src={ASSETS['video-recuerdos']} controls playsInline autoPlay preload="metadata" />
-          <p className="fine-print">Video de demostración creado con la foto de ejemplo y música original de NEXO.</p>
+          <p className="fine-print">Video de demostración creado con la foto de ejemplo y música original de SYNK.</p>
         </Sheet>
       )}
     </>
@@ -252,7 +252,7 @@ export function WorldPage() {
               ))}
             </ul>
           )}
-          {sub !== 'recuerdos' && <p className="fine-print">Piezas originales de NEXO, compuestas y sintetizadas para este dispositivo. Los sonidos de naturaleza se repiten hasta que los detengas.</p>}
+          {sub !== 'recuerdos' && <p className="fine-print">Piezas originales de SYNK, compuestas y sintetizadas para este dispositivo. Los sonidos de naturaleza se repiten hasta que los detengas.</p>}
         </div>
       </div>
     );

@@ -7,7 +7,7 @@ import { useAppData } from '../hooks/useAppData';
 import { useUI } from '../hooks/useUI';
 import { useCaregiver } from '../hooks/useCaregiver';
 import { audioEngine } from '../services/audioEngine';
-import { NexoLogo } from '../components/Brand';
+import { SynkLogo } from '../components/Brand';
 
 type Tab = 'general' | 'sonido' | 'avisos' | 'contenido' | 'acerca';
 
@@ -121,7 +121,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
 
       {tab === 'avisos' && (
         <div className="settings-group">
-          <Toggle label="Notificaciones" hint="Avisos dentro de NEXO (campana de la barra inferior)." checked={n.enabled} onChange={(v) => setNotif('enabled', v)} />
+          <Toggle label="Notificaciones" hint="Avisos dentro de SYNK (campana de la barra inferior)." checked={n.enabled} onChange={(v) => setNotif('enabled', v)} />
           <div className={n.enabled ? '' : 'is-disabled'}>
             <Toggle label="Mensajes nuevos de la familia" disabled={!n.enabled} checked={n.messages} onChange={(v) => setNotif('messages', v)} />
             <Toggle label="Recordatorios de tratamiento" disabled={!n.enabled} hint="Una hora antes de cada toma registrada." checked={n.treatments} onChange={(v) => setNotif('treatments', v)} />
@@ -140,7 +140,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
             {(id) => <input id={id} value={place} onChange={(e) => setPlace(e.target.value)} maxLength={80} />}
           </Field>
           <p className="field-label">Clima de ejemplo</p>
-          <p className="fine-print">NEXO no se conecta a un servicio de clima. Este dato se muestra marcado como “Ejemplo”.</p>
+          <p className="fine-print">SYNK no se conecta a un servicio de clima. Este dato se muestra marcado como “Ejemplo”.</p>
           <div className="form-row three">
             <Field label="Ciudad">{(id) => <input id={id} value={weather.city} onChange={(e) => setWeather({ ...weather, city: e.target.value })} maxLength={30} />}</Field>
             <Field label="Temperatura °C">{(id) => <input id={id} value={weather.tempC} inputMode="numeric" onChange={(e) => setWeather({ ...weather, tempC: e.target.value })} maxLength={4} />}</Field>
@@ -166,8 +166,8 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
 
       {tab === 'acerca' && (
         <div className="settings-group about">
-          <NexoLogo size="lg" />
-          <p className="lead">Orientación que conecta, tecnología que acompaña.</p>
+          <SynkLogo size="lg" />
+          <p className="lead">En sintonía con tu bienestar.</p>
           <p>Versión 1.0.0 · Diseñado para iPad Air de 11 pulgadas en horizontal.</p>
           <ul className="about-list">
             <li>Los datos se guardan solo en este dispositivo (LocalStorage; fotos, audios y videos en IndexedDB).</li>
@@ -175,7 +175,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
             <li>Los cambios de contactos, mensajes, fotos y Mi cuidado piden el PIN de cuidador.</li>
             <li>El clima es un dato de ejemplo; no hay conexión con un servicio meteorológico.</li>
             <li>Los mensajes de demostración se leen con la voz del sistema; no son grabaciones reales.</li>
-            <li>La música y los sonidos son piezas originales sintetizadas para NEXO.</li>
+            <li>La música y los sonidos son piezas originales sintetizadas para SYNK.</li>
             <li>Mi cuidado es informativo y no reemplaza las indicaciones del equipo de salud.</li>
           </ul>
         </div>

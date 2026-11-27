@@ -15,7 +15,7 @@ export const messageDuration = (m: FamilyMessage) => m.duration ?? speechSeconds
 export function kindLabel(m: FamilyMessage): string {
   if (m.kind === 'video') return 'Video';
   if (m.kind === 'imagen') return 'Foto';
-  if (m.kind === 'audio') return m.media ? 'Mensaje de voz' : 'Mensaje leído por NEXO';
+  if (m.kind === 'audio') return m.media ? 'Mensaje de voz' : 'Mensaje leído por SYNK';
   return 'Mensaje escrito';
 }
 
@@ -27,7 +27,7 @@ export async function playMessage(m: FamilyMessage, from: string): Promise<void>
     if (!url) throw new Error('missing');
     audioEngine.playMedia({ id: m.id, title: 'Mensaje de voz', subtitle, src: url }, url.startsWith('blob:'));
   } else {
-    audioEngine.playSpeech({ id: m.id, title: m.kind === 'audio' ? 'Mensaje leído por NEXO' : 'Mensaje escrito', subtitle, text: m.text });
+    audioEngine.playSpeech({ id: m.id, title: m.kind === 'audio' ? 'Mensaje leído por SYNK' : 'Mensaje escrito', subtitle, text: m.text });
   }
 }
 
@@ -108,7 +108,7 @@ export function MessageViewer({ message: m, contact, onClose, onDelete, onError 
 
         {m.text && <blockquote className="msg-text">“{m.text}”</blockquote>}
         {m.demo && m.kind === 'audio' && !m.media && (
-          <p className="fine-print">Mensaje de demostración: no hay una grabación real; NEXO lee el texto en voz alta con la voz del sistema.</p>
+          <p className="fine-print">Mensaje de demostración: no hay una grabación real; SYNK lee el texto en voz alta con la voz del sistema.</p>
         )}
         {onDelete && (
           <button className="btn btn-ghost btn-danger-text" onClick={onDelete}>

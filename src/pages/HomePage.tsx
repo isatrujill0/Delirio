@@ -152,7 +152,7 @@ export function HomePage() {
               {w.city}: {w.tempC} °C, {w.condition.toLowerCase()}.
             </p>
             <p>
-              <strong>Este es un dato de ejemplo, no un pronóstico real.</strong> NEXO no está conectado a un servicio meteorológico. Tu familia puede actualizarlo desde Configuración.
+              <strong>Este es un dato de ejemplo, no un pronóstico real.</strong> SYNK no está conectado a un servicio meteorológico. Tu familia puede actualizarlo desde Configuración.
             </p>
             <button className="btn btn-ghost" onClick={() => { setInfo(null); openPanel('ajustes'); }}>
               Editar el clima

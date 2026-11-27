@@ -19,7 +19,7 @@ export function deriveNotifications(data: AppData, now: Date): AppNotification[]
   if (cfg.messages) {
     for (const m of unreadFromFamily(data.messages)) {
       const who = contact(m.contactId)?.name ?? 'Tu familia';
-      // Demo "audio" messages are text read aloud by NEXO, not a recorded voice.
+      // Demo "audio" messages are text read aloud by SYNK, not a recorded voice.
       const what = m.kind === 'video' ? 'un video' : m.kind === 'imagen' ? 'una foto' : m.kind === 'audio' && m.media ? 'un mensaje de voz' : 'un mensaje';
       out.push({ id: `msg:${m.id}`, kind: 'mensaje', title: `${who} te envió ${what}`, body: `${m.demo ? 'Ejemplo · ' : ''}${m.text.slice(0, 90)}`, section: 'gente' });
     }

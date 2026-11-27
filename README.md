@@ -1,8 +1,8 @@
-# NEXO
+# SYNK
 
-**Orientación que conecta, tecnología que acompaña.**
+**En sintonía con tu bienestar.**
 
-NEXO es una máquina inteligente de bienestar y conexión familiar pensada para acompañar a una persona hospitalizada (por ejemplo, en una UCI) desde la mesa de noche. El hardware es un **iPad Air de 11 pulgadas en horizontal** y esta aplicación web es el software que le da vida: no es una página web sobre NEXO, es la pantalla del dispositivo.
+SYNK es una máquina inteligente de bienestar y conexión familiar pensada para acompañar a una persona hospitalizada (por ejemplo, en una UCI) desde la mesa de noche. El hardware es un **iPad Air de 11 pulgadas en horizontal** y esta aplicación web es el software que le da vida: no es una página web sobre SYNK, es la pantalla del dispositivo.
 
 Vista previa actual (privada): https://claude.ai/artifact/JpmgYYNtLgyiwFb3FSWezo
 Publicación en GitHub Pages: automática desde `main` (ver «Despliegue en GitHub Pages»).
@@ -15,6 +15,7 @@ Que la persona sepa dónde está, qué día y qué hora es y quién la acompaña
 
 | Sección | Qué hace |
 |---|---|
+| **Entrada** | Al abrir la app, durante 3 segundos aparece «SYNK» con el eslogan «En sintonía con tu bienestar» con una aparición suave (tocar la pantalla la salta). |
 | **Inicio** | Saludo según la hora con el nombre configurado, fecha y reloj en vivo, foto de la familia («Tu familia») con el aviso «Mensaje nuevo de …» (solo informa; los mensajes se abren en Mi gente), dónde está, tarjeta de bienestar, clima de ejemplo y accesos rápidos. |
 | **Mi gente** | Carrusel de familiares (al tocar la burbuja: Mensajes o Videollamada), perfil individual con álbum de fotos, agregar/editar/eliminar contactos, chat estilo WhatsApp por persona con texto, emojis, fotos y notas de voz en la misma conversación (lo que se escribe lo envía la paciente) y videollamada simulada con cámara propia. |
 | **Mi mundo** | Mi playlist (favoritos, anterior/siguiente), música suave, sonidos de naturaleza, recuerdos (viajes de la familia con fotos reales en pase automático y música opcional, más fotos y video en familia), juegos cognitivos (El despertar del paisaje, con 11 fotos reales de paisajes y botón «Siguiente paisaje», Eco de luces, Completa el refrán, que se lee en voz alta y se puede responder hablando, y Vuelo del colibrí, que se juega moviendo la cabeza frente a la cámara o con el dedo) y relajación (respiración guiada, meditación guiada por una voz femenina tranquila sobre música suave, sonidos relajantes). |
@@ -100,13 +101,13 @@ El repositorio es público y el sitio también: cualquiera con el enlace ve la a
 
 1. Abre la dirección publicada en **Safari**.
 2. Toca **Compartir → Agregar a pantalla de inicio**.
-3. Abre NEXO desde el ícono: se ve a pantalla completa, sin barras de Safari.
+3. Abre SYNK desde el ícono: se ve a pantalla completa, sin barras de Safari.
 4. Para un uso como dispositivo dedicado, activa **Ajustes → Accesibilidad → Acceso guiado** y bloquea la pantalla en horizontal desde el Centro de control.
 
 ### Limitaciones de Safari / iPadOS
 
-- Safari no permite forzar la orientación horizontal; en vertical NEXO cambia a un diseño de una columna con menú inferior.
-- El volumen del sistema se controla con los botones físicos; los botones de NEXO ajustan el volumen de la app mediante Web Audio (iPadOS ignora `audio.volume`).
+- Safari no permite forzar la orientación horizontal; en vertical SYNK cambia a un diseño de una columna con menú inferior.
+- El volumen del sistema se controla con los botones físicos; los botones de SYNK ajustan el volumen de la app mediante Web Audio (iPadOS ignora `audio.volume`).
 - El sonido solo empieza después de un toque (política de reproducción de iOS).
 - Grabar mensajes de voz requiere permiso de micrófono y funciona solo en HTTPS o `localhost`.
 - La lectura en voz alta usa las voces instaladas en el iPad; la calidad depende de ellas. La meditación elige una voz femenina en español si el iPad la tiene (por ejemplo «Paulina» o «Mónica»); si no, usa la voz en español disponible.

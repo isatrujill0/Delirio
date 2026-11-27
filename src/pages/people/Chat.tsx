@@ -40,7 +40,7 @@ function Bubble({ m, contact, isNew, onOpen }: { m: FamilyMessage; contact: Cont
           <button className="bubble-body" onClick={onOpen}>
             <Waveform active={playing} bars={16} />
             <span className="num bubble-dur">{isThis && player.status !== 'idle' ? mmss(player.position) : mmss(messageDuration(m))}</span>
-            {!m.media && <small className="bubble-note">Leído por NEXO</small>}
+            {!m.media && <small className="bubble-note">Leído por SYNK</small>}
             {meta}
           </button>
         </div>

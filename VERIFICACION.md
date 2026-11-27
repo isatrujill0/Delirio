@@ -1,6 +1,6 @@
-# Verificación de NEXO
+# Verificación de SYNK
 
-Lista de pasos para verificar NEXO antes de dar un cambio por terminado o hacer commit. Es un documento normal del proyecto (no una skill de Claude Code): se sigue a mano o se le pide a Claude que lo siga.
+Lista de pasos para verificar SYNK antes de dar un cambio por terminado o hacer commit. Es un documento normal del proyecto (no una skill de Claude Code): se sigue a mano o se le pide a Claude que lo siga.
 
 Run the steps **in order** from the repo root (`/home/user/Delirio` or wherever the repo lives).
 Stop at the first failing **cheap** step, fix it, and start again from step 1: there is no point paying for E2E on a build that does not compile.

@@ -1,4 +1,4 @@
-/* NEXO service worker: the whole app works offline after the first visit.
+/* SYNK service worker: the whole app works offline after the first visit.
  * - Install: stores the shell plus every built file listed in precache.json (JS, CSS, fonts,
  *   images, music and video), so nothing depends on what the first visit happened to load.
  * - Page (navigation): network first, cached copy when offline.
