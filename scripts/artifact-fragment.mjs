@@ -10,7 +10,7 @@ html = html
   .replace(/<\/?body>/gi, '')
   .replace(/<meta charset="UTF-8" \/>/, '')
   .replace(/<meta name="viewport"[^>]*>/, '');
-const title = '<title>NEXO</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n';
-html = title + html.replace(/<title>NEXO<\/title>/, '');
+const title = '<title>SYNK</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n';
+html = title + html.replace(/<title>SYNK<\/title>/, '');
 writeFileSync(out, html.trim() + '\n');
 console.log(out, (html.length / 1e6).toFixed(2), 'MB');

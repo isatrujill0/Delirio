@@ -7,7 +7,7 @@ import { DEMO_PIN } from '../data/demo';
 
 /**
  * The demo PIN is printed in the prompt only in the preview build (and in development), where people
- * explore NEXO. On the installed device it would be shown to the patient; there it is documented in the README.
+ * explore SYNK. On the installed device it would be shown to the patient; there it is documented in the README.
  */
 const SHOW_DEMO_PIN = import.meta.env.DEV || import.meta.env.MODE === 'artifact';
 

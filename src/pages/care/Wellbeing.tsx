@@ -280,7 +280,7 @@ export function VitalsCard() {
           onClose={() => setEdit(false)}
           footer={<><button className="btn btn-ghost" onClick={() => setEdit(false)}>Cancelar</button><button className="btn btn-primary" onClick={save}>Guardar</button></>}
         >
-          <p className="muted">Para el personal de salud, cuando el monitor integrado no está disponible. Los valores escritos a mano se muestran tal cual y reemplazan la lectura del monitor; NEXO solo indica si están dentro del rango de referencia.</p>
+          <p className="muted">Para el personal de salud, cuando el monitor integrado no está disponible. Los valores escritos a mano se muestran tal cual y reemplazan la lectura del monitor; SYNK solo indica si están dentro del rango de referencia.</p>
           <div className="form-row three">
             <Field label="Ritmo cardíaco (lpm)" error={errors.heartRate}>{(id, by) => <input id={id} aria-describedby={by} inputMode="numeric" value={form.heartRate} onChange={(e) => setForm({ ...form, heartRate: e.target.value })} />}</Field>
             <Field label="Respiración (rpm)" error={errors.respRate}>{(id, by) => <input id={id} aria-describedby={by} inputMode="numeric" value={form.respRate} onChange={(e) => setForm({ ...form, respRate: e.target.value })} />}</Field>

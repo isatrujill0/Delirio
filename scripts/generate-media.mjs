@@ -1,4 +1,4 @@
-// Generates NEXO's demo media: original music and nature soundscapes synthesized in code
+// Generates SYNK's demo media: original music and nature soundscapes synthesized in code
 // (no third-party recordings, so there are no licensing restrictions), plus a short demo video.
 // Requires ffmpeg on PATH. Run: npm run media
 import { spawnSync } from 'node:child_process';

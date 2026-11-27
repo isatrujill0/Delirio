@@ -129,7 +129,7 @@ export function VideoCall({ contact, onClose }: { contact: Contact; onClose: () 
             <PhoneOff />
           </button>
         </div>
-        <p className="call-note">Simulación: la cámara de {contact.name} se muestra con su foto; NEXO todavía no se conecta con su teléfono.</p>
+        <p className="call-note">Simulación: la cámara de {contact.name} se muestra con su foto; SYNK todavía no se conecta con su teléfono.</p>
       </div>
     </Sheet>
   );

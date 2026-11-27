@@ -2454,7 +2454,7 @@ html:not([data-text='normal']) .family-card {
   }
 }
 
-/* ── Short screens (e.g. NEXO inside a browser with toolbars, or the Claude preview on iPad):
+/* ── Short screens (e.g. SYNK inside a browser with toolbars, or the Claude preview on iPad):
    when the full layout does not fit in the height, rows grow with their content and the
    section scrolls instead of piling cards on top of the controls. Same rules as large text. ── */
 @media (orientation: landscape) and (max-height: 739px) {

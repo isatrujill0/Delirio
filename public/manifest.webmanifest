@@ -1,7 +1,7 @@
 {
-  "name": "NEXO — Bienestar y conexión familiar",
-  "short_name": "NEXO",
-  "description": "Orientación que conecta, tecnología que acompaña.",
+  "name": "SYNK — En sintonía con tu bienestar",
+  "short_name": "SYNK",
+  "description": "En sintonía con tu bienestar. Bienestar y conexión familiar junto a la cama.",
   "lang": "es-CO",
   "start_url": "./",
   "scope": "./",

@@ -2,6 +2,7 @@ import { AppDataProvider } from './hooks/useAppData';
 import { UIProvider, useUI } from './hooks/useUI';
 import { CaregiverProvider } from './hooks/useCaregiver';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { Splash } from './components/Splash';
 import { DeviceLayout } from './layouts/DeviceLayout';
 import { HomePage } from './pages/HomePage';
 import { PeoplePage } from './pages/PeoplePage';
@@ -31,6 +32,7 @@ export default function App() {
             <DeviceLayout>
               <CurrentSection />
             </DeviceLayout>
+            <Splash />
           </CaregiverProvider>
         </UIProvider>
       </AppDataProvider>

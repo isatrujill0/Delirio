@@ -30,7 +30,7 @@ export function Avatar({ contact, className = '' }: { contact: Pick<Contact, 'na
 }
 
 /**
- * <video> that follows NEXO's sound settings: muted when the device is muted, at the app volume
+ * <video> that follows SYNK's sound settings: muted when the device is muted, at the app volume
  * otherwise (iPadOS ignores element volume, but honours `muted`). Starting it stops other audio.
  */
 export function Video(props: VideoHTMLAttributes<HTMLVideoElement>) {

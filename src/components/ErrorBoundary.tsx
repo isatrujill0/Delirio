@@ -19,7 +19,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
   }
 
   componentDidCatch(error: unknown) {
-    console.error('NEXO se detuvo por un error inesperado', error);
+    console.error('SYNK se detuvo por un error inesperado', error);
   }
 
   private reset = () => {
@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
     return (
       <div className="crash" role="alert">
         <h1>Algo no salió bien</h1>
-        <p>NEXO tuvo un problema al mostrar esta pantalla. Pide ayuda a tu familia o a tu enfermera. Si al volver a intentar aparece otra vez este aviso, la persona que te cuida puede restablecer los datos.</p>
+        <p>SYNK tuvo un problema al mostrar esta pantalla. Pide ayuda a tu familia o a tu enfermera. Si al volver a intentar aparece otra vez este aviso, la persona que te cuida puede restablecer los datos.</p>
         <div className="crash-actions">
           <button className="btn btn-primary" onClick={() => location.reload()}>
             Volver a intentar

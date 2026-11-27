@@ -1,11 +1,11 @@
-/** NEXO wordmark: the name under a soft arc, like the device's printed logo. */
-export function NexoLogo({ size = 'md' }: { size?: 'md' | 'lg' }) {
+/** SYNK wordmark: the name under a soft wave, two signals in tune ("en sintonía"). */
+export function SynkLogo({ size = 'md' }: { size?: 'md' | 'lg' | 'xl' }) {
   return (
-    <span className={`logo logo-${size}`} aria-label="NEXO">
+    <span className={`logo logo-${size}`} aria-label="SYNK">
       <svg className="logo-arc" viewBox="0 0 60 14" aria-hidden="true">
-        <path d="M4 12 Q30 -6 56 12" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+        <path d="M3 7 C10 0 16 0 22 7 S34 14 40 7 S52 0 57 7" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
       </svg>
-      <span aria-hidden="true">NEXO</span>
+      <span aria-hidden="true">SYNK</span>
     </span>
   );
 }

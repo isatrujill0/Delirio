@@ -16,11 +16,11 @@ React + TypeScript + Vite, CSS3 (no UI framework), Lucide React icons, LocalStor
 
 ## Product Purpose
 
-NEXO is a dedicated bedside device for wellbeing, orientation and family connection. The hardware is an 11" iPad Air in landscape. The app is the device's software, not a website about it. Success means the patient knows where they are, what day and time it is, and who is with them; hears their family; can calm down; understands their care; and can ask for help with a single touch.
+SYNK is a dedicated bedside device for wellbeing, orientation and family connection. The hardware is an 11" iPad Air in landscape. The app is the device's software, not a website about it. Success means the patient knows where they are, what day and time it is, and who is with them; hears their family; can calm down; understands their care; and can ask for help with a single touch.
 
 ## Positioning
 
-"Orientación que conecta, tecnología que acompaña." An ICU companion that puts orientation, family and calm on one screen built for someone lying in bed. It is not a clinical record and not a general-purpose tablet.
+"En sintonía con tu bienestar." An ICU companion that puts orientation, family and calm on one screen built for someone lying in bed. It is not a clinical record and not a general-purpose tablet.
 
 ## Operating Context
 
@@ -38,7 +38,7 @@ NEXO is a dedicated bedside device for wellbeing, orientation and family connect
 
 ## Brand Commitments
 
-- Name: NEXO. Tagline: "Orientación que conecta, tecnología que acompaña."
+- Name: SYNK. Tagline: "En sintonía con tu bienestar."
 - The attached reference image (four screens: Inicio, Mi gente, Mi mundo, Mi cuidado) is the binding visual reference: deep blue / blue-violet / lavender, soft gradients, organic waves, rounded cards, violet glow, minimal line icons, large buttons.
 - Spanish (Colombia) voice: warm, second person ("tú"), short sentences.
 

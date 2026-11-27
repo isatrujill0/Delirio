@@ -15,7 +15,7 @@ import { Segmented } from '../components/Form';
 import { TreatmentForm, ProcedureForm } from './care/CareForms';
 import { CareNoteCard, MoodHistoryCard, MoodCard, VitalsCard } from './care/Wellbeing';
 
-const DISCLAIMER = 'Información de consulta. NEXO no diagnostica ni cambia tratamientos: sigue siempre las indicaciones de tu equipo de salud.';
+const DISCLAIMER = 'Información de consulta. SYNK no diagnostica ni cambia tratamientos: sigue siempre las indicaciones de tu equipo de salud.';
 
 const longDay = (iso: string) => {
   const d = new Date(`${iso}T12:00`);
